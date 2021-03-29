@@ -16,7 +16,6 @@
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.5",
         "meilisearch/meilisearch-laravel-scout": "^0.12.5",
-        "swisnl/laravel-fulltext": "^0.20.0",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {

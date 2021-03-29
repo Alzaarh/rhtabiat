@@ -10,10 +10,10 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PosterController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-/* Shop related routes */
 Route::get('/banners/main', [BannerController::class, 'getMain']);
 Route::apiResource('/banners', BannerController::class);
 
@@ -23,6 +23,7 @@ Route::apiResource('/posters', PosterController::class)->except([
 
 Route::apiResource('/categories', CategoryController::class);
 
+Route::get('/products/search', ProductSearchController::class);
 Route::apiResource('/products', ProductController::class);
 Route::get(
     '/products/{product}/related', [ProductController::class, 'getRelated']
