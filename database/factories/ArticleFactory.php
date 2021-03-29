@@ -15,7 +15,7 @@ class ArticleFactory extends Factory
         return [
             'title' => $this->faker->sentence(6),
             'thumbnail' => 'images/article.jpg',
-            'body' => $this->faker->randomHtml(3, 4),
+            'body' => $this->faker->realText(1000),
             'meta' => collect([
                 'keywords' => ['keyword1', 'keyword2', 'keyword3', 'keyword4'],
                 'description' => 'some description',

@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\Banner;
 use App\Models\BlogCategory;
 use App\Models\Category;
+use App\Models\Contact;
 use App\Models\Poster;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
@@ -34,5 +35,7 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         BlogCategory::factory(5)->hasArticles(3)->create();
+
+        Contact::factory(10)->create();
     }
 }

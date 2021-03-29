@@ -7,6 +7,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PosterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -75,7 +76,8 @@ Route::apiResource('/users/addresses', AddressController::class);
 
 Route::get('/comments', [CommentController::class, 'index']);
 
-/* Blog related routes */
+Route::apiResource('/contacts', ContactController::class)->except('update');
+
 Route::apiResource('/blogs/categories', BlogCategoryController::class);
 
 Route::apiResource('/articles', ArticleController::class);
