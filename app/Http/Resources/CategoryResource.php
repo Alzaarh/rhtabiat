@@ -13,6 +13,9 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'icon' => $this->icon,
             'parent' => new self($this->parent),
+            'children' => $this->when(
+                $request->has('withChildren'), $this->children
+            ),
         ];
     }
 }

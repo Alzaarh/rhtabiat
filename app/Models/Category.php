@@ -28,14 +28,14 @@ class Category extends Model
         return filled($value) ? storage() . $value : null;
     }
 
+    public function getChildrenAttribute()
+    {
+        return self::where('parent_id', $this->id)->get();
+    }
+
     public function children()
     {
         return $this->hasMany(self::class, 'parent_id');
-    }
-
-    public static function getTopLevel()
-    {
-        return self::whereNull('parent_id')->get();
     }
 
     public function products()
@@ -46,5 +46,10 @@ class Category extends Model
     public function parent()
     {
         return $this->belongsTo(self::class);
+    }
+
+    public static function getHierarchy()
+    {
+        return self::whereNull('parent_id')->get();
     }
 }

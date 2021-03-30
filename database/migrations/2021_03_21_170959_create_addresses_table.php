@@ -10,19 +10,15 @@ class CreateAddressesTable extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('receiver');
-            $table->string('company');
-            $table->char('mobile', 11);
-            $table->char('phone', 11);
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('receiver_name');
+            $table->string('receiver_company')->nullable();
+            $table->char('receiver_mobile', 11);
+            $table->char('receiver_phone', 11)->nullable();
             $table->string('state');
             $table->string('city');
             $table->char('zipcode', 10);
             $table->string('address', 1000);
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
         });
     }
 

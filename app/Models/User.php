@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Carbon\Carbon;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -25,8 +24,10 @@ class User extends Authenticatable implements JWTSubject
     private function updateDetail($data)
     {
         if (isset($data['newPassword'])) {
-            if (!$this->detail->passwordsMatch($data['oldPassword']))
+            if (!$this->detail->passwordsMatch($data['oldPassword'])) {
                 throw ValidationException::withMessages([]);
+            }
+
             $data['password'] = $data['newPassword'];
         }
         $this->detail->update($data);
@@ -50,7 +51,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function newDetail($data)
     {
-        $this->when(!$this->hasDetail(), function() use ($data) {
+        $this->when(!$this->hasDetail(), function () use ($data) {
             DB::transaction(function () use ($data) {
                 $this->createDetail($data);
                 $this->updatePhone($data['phone']);
@@ -106,5 +107,10 @@ class User extends Authenticatable implements JWTSubject
     public function detail()
     {
         return $this->hasOne(UserDetail::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasManyThrough(Order::class, Address::class);
     }
 }

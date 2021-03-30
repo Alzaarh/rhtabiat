@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Resources\AddressResource;
+use Illuminate\Http\Request;
 
 class AddressController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:user');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        return AddressResource::collection(auth()->user()->addresses);
     }
 
     public function store(StoreAddressRequest $request)

@@ -21,6 +21,12 @@ class ArticleController extends Controller
         return ArticleResource::collection($articles);
     }
 
+    public function show(Request $request, Article $article)
+    {
+        $request->merge(['withDetails' => true]);
+        return new ArticleResource($article);
+    }
+
     public function store(StoreArticleRequest $request)
     {
         $data = $request->except(['thumbnail', 'categoryId']);
@@ -29,12 +35,6 @@ class ArticleController extends Controller
             $data['thumbnail'] = $request->thumbnail->store('images');
         }
         $article = auth('admin')->user()->articles()->save(new Article($data));
-        return new ArticleResource($article);
-    }
-
-    public function show(Request $request, Article $article)
-    {
-        $request->merge(['articles.show' => true]);
         return new ArticleResource($article);
     }
 

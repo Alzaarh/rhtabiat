@@ -11,11 +11,11 @@ class ProductFeatureFactory extends Factory
 
     public function definition()
     {
-        $rand = rand(1, 10);
+        $rand = $this->faker->randomElement([0.25, 0.5, 1, 2, 5, 10, 20]);
         return [
             'weight' => $rand,
             'price' => $rand * 10000,
-            'quantity' => rand(5, 20),
+            'quantity' => $this->faker->randomElement([10, 15, 20]),
         ];
     }
 }

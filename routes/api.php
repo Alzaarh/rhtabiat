@@ -6,12 +6,15 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CategoryHierarchyController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserLoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/banners/main', [BannerController::class, 'getMain']);
@@ -21,6 +24,7 @@ Route::apiResource('/posters', PosterController::class)->except([
     'show', 'update',
 ]);
 
+Route::get('/categories/hierarchy', CategoryHierarchyController::class);
 Route::apiResource('/categories', CategoryController::class);
 
 Route::get('/products/search', ProductSearchController::class);
@@ -62,18 +66,12 @@ Route::post('/users/register', [UserController::class, 'register']);
 Route::post(
     '/users/register/verify', [UserController::class, 'verifyRegister']
 )->name('register.verify');
-Route::post('/users/login', [UserController::class, 'login']);
 Route::post('/users/login/verify', [UserController::class, 'verifyLogin'])
     ->name('login.verify');
-
-Route::get('/users/self', [UserController::class, 'getSelf']);
-Route::put('/users/self', [UserController::class, 'updateSelf']);
 
 Route::post('/users/verify-phone', [UserController::class, 'verifyPhone']);
 Route::post('/users/login', [UserController::class, 'login']);
 Route::post('/users/verify-login', [UserController::class, 'verifyLogin']);
-
-Route::apiResource('/users/addresses', AddressController::class);
 
 Route::get('/comments', [CommentController::class, 'index']);
 
@@ -81,6 +79,16 @@ Route::apiResource('/contacts', ContactController::class)->except('update');
 
 Route::apiResource('/blogs/categories', BlogCategoryController::class);
 
+Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
+
 Route::apiResource('/articles', ArticleController::class);
 
-Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
+Route::apiResource('/orders', OrderController::class);
+
+// User auth
+Route::post('/users/login', UserLoginController::class);
+
+// User dashboard
+Route::get('/users/self', [UserController::class, 'getSelf']);
+Route::apiResource('/users/addresses', AddressController::class);
+Route::apiResource('/users/orders', OrderController::class);

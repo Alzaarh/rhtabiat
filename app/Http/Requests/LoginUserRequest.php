@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\UserDetail;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 class LoginUserRequest extends FormRequest
 {
@@ -12,21 +13,19 @@ class LoginUserRequest extends FormRequest
         return true;
     }
 
-    public function rules()
+    public function rules(Request $request)
     {
-        $rules = [
-            'phone' => [
-                'required_without:email',
-                'exists:users',
-                'string',
-                validPhone()
-            ],
-            'email' => 'email|max:255|exists:user_details',
-            'password' => 'required_with:email|string|max:30',
+        return [
+            'email' => [
+                'required',
+                'email',
+                function ($attr, $value, $fail) use ($request) {
+                    $UserDetail = UserDetail::where('email', $value)->first();
+                    $UserDetail ?
+                    $request->merge(['userDetail' => $UserDetail]) :
+                    $fail(__('validation.login'));
+                }],
+            'password' => 'required',
         ];
-        if (Route::currentRouteName() === 'login.verify') {
-            $rules['code'] = 'required|string|digits:5';
-        }
-        return $rules;
     }
 }

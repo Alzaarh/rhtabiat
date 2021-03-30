@@ -2,28 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\StoreUserDetailRequest;
-use Illuminate\Validation\ValidationException;
-use App\Models\VerificationCode;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\UserResource;
+use App\Models\User;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    private $vcode;
-
-    private $user;
-
-    public function __construct(VerificationCode $vcode, User $user)
+    public function __construct()
     {
-        $this->middleware('throttle:1,1')->only(['register']);
-        $this->middleware('auth')->only(['getSelf']);
-        $this->vcode = $vcode;
-        $this->user = $user;
+        $this->middleware('auth:user');
     }
 
     public function register(RegisterUserRequest $request)
@@ -62,16 +52,15 @@ class UserController extends Controller
             throw ValidationException::withMessages([]);
         }
         return response()->json(['data' => [
-                'token' => auth()->login(
-                    $this->user->findWithPhone($request->phone)
-                ),
-            ]
+            'token' => auth()->login(
+                $this->user->findWithPhone($request->phone)
+            ),
+        ],
         ]);
     }
 
     public function getSelf()
     {
-        auth()->user()->load('detail');
         return new UserResource(auth()->user());
     }
 

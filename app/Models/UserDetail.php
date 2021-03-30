@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 
 class UserDetail extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
+
+    protected $hidden = ['id', 'password', 'user_id'];
 
     protected $guarded = ['user_id'];
 
@@ -19,13 +20,6 @@ class UserDetail extends Model
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
-    }
-
-    public function passwordsMatch($old)
-    {
-        if (!Hash::check($old, $this->password))
-            return false;
-        return true;
     }
 
     public function user()

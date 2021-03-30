@@ -7,8 +7,11 @@ use App\Models\Banner;
 use App\Models\BlogCategory;
 use App\Models\Category;
 use App\Models\Contact;
+use App\Models\Order;
 use App\Models\Poster;
 use App\Models\Product;
+use App\Models\ProductFeature;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -37,5 +40,26 @@ class DatabaseSeeder extends Seeder
         BlogCategory::factory(5)->hasArticles(3)->create();
 
         Contact::factory(10)->create();
+
+        User::factory(10)->hasAddresses(2)->hasDetail(1)->create();
+
+        Order::factory(10)->create()->each(function ($order) {
+            $products = collect();
+            ProductFeature::inRandomOrder()
+                ->take(2)
+                ->get()
+                ->each(function ($product) use ($products) {
+                    $products->put($product->id, [
+                        'price' => $product->price,
+                        'quantity' => rand(1, 5),
+                        'weight' => $product->weight,
+                    ]);
+                });
+            if ($order->total_price < 200000) {
+                $order->delivery_cost = $order->total_weight * 5000;
+                $order->save();
+            }
+            $order->products()->attach($products->all());
+        });
     }
 }
