@@ -25,7 +25,9 @@ class DatabaseSeeder extends Seeder
         Banner::factory(5)->create();
         Banner::factory()->create(['is_active' => true]);
 
-        Poster::factory(5)->create();
+        Poster::factory()->create([
+            'location' => Poster::LOCATIONS['dashboard'],
+        ]);
 
         Category::factory(3)->hasChildren(2)->create();
         Category::factory(4)->create();

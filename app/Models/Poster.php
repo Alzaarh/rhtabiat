@@ -14,6 +14,10 @@ class Poster extends Model
 
     public $timestamps = false;
 
+    const LOCATIONS = [
+        'dashboard' => 1,
+    ];
+
     protected static function booted()
     {
         static::deleting(function ($poster) {
@@ -23,6 +27,6 @@ class Poster extends Model
 
     public function getImageAttribute($value)
     {
-        return storage() . $value;
+        return filled($value) ? storage() . $value : null;
     }
 }

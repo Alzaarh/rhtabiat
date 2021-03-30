@@ -11,6 +11,8 @@ class CreatePostersTable extends Migration
         Schema::create('posters', function (Blueprint $table) {
             $table->id();
             $table->string('image');
+            $table->integer('location')->index();
+            $table->boolean('is_active')->default(true);
         });
     }
 

@@ -20,10 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/banners/main', [BannerController::class, 'getMain']);
 Route::apiResource('/banners', BannerController::class);
 
-Route::apiResource('/posters', PosterController::class)->except([
-    'show', 'update',
-]);
-
 Route::get('/categories/hierarchy', CategoryHierarchyController::class);
 Route::apiResource('/categories', CategoryController::class);
 
@@ -92,3 +88,6 @@ Route::post('/users/login', UserLoginController::class);
 Route::get('/users/self', [UserController::class, 'getSelf']);
 Route::apiResource('/users/addresses', AddressController::class);
 Route::apiResource('/users/orders', OrderController::class);
+
+// Poster
+Route::apiResource('/posters', PosterController::class);

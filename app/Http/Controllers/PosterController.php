@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\PosterResource;
 use App\Models\Poster;
+use Illuminate\Http\Request;
 
 class PosterController extends Controller
 {
@@ -12,16 +13,20 @@ class PosterController extends Controller
         $this->middleware(['auth:admin', 'role:admin'])->except('index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return jsonResponse(Poster::all());
+        return new PosterResource($request->whenHas('dashboard', function () {
+            return Poster::where('location', Poster::LOCATIONS['dashboard'])
+                ->where('is_active', true)
+                ->first();
+        }));
     }
 
     public function store(Request $request)
     {
         $request->validate(['image' => 'required|image|max:5120']);
         return jsonResponse(Poster::create([
-            'image' => saveImageOnDisk($request->image)
+            'image' => saveImageOnDisk($request->image),
         ]), 201);
     }
 
