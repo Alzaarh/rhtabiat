@@ -19,6 +19,7 @@ class CreateAddressesTable extends Migration
             $table->string('city');
             $table->char('zipcode', 10);
             $table->string('address', 1000);
+            $table->softDeletes();
         });
     }
 

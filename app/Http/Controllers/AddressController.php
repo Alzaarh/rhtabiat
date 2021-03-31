@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SaveAddressRequest;
 use App\Http\Resources\AddressResource;
 use App\Models\Address;
-use Illuminate\Http\Request;
 
 class AddressController extends Controller
 {
@@ -19,6 +18,11 @@ class AddressController extends Controller
         return AddressResource::collection(auth()->user()->addresses);
     }
 
+    public function show(Address $address)
+    {
+        return new AddressResource($address);
+    }
+
     public function store(SaveAddressRequest $request)
     {
         return new AddressResource(
@@ -28,37 +32,15 @@ class AddressController extends Controller
         );
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function update(SaveAddressRequest $request, Address $address)
     {
-        //
+        $address->update($request->validated());
+        return new AddressResource($address);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Address $address)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $address->orders()->exists() ? $address->delete() : $address->forceDelete();
+        return jsonResponse(['message' => 'Deleted']);
     }
 }
