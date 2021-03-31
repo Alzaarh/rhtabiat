@@ -13,7 +13,7 @@ class UserDetail extends Model
 
     protected $hidden = ['id', 'password', 'user_id'];
 
-    protected $guarded = ['user_id'];
+    protected $fillable = ['name', 'username', 'email', 'password'];
 
     protected $touches = ['user'];
 

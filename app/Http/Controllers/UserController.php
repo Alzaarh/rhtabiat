@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
-use App\Http\Requests\StoreUserDetailRequest;
+use App\Http\Requests\SaveUserDetailRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
@@ -64,9 +64,9 @@ class UserController extends Controller
         return new UserResource(auth()->user());
     }
 
-    public function updateSelf(StoreUserDetailRequest $request)
+    public function updateSelf(SaveUserDetailRequest $request)
     {
-        auth()->user()->newDetail($request->validated());
-        return new UserResource(auth()->user()->refresh());
+        $request->user()->updateSelf($request->validated());
+        return new UserResource($request->user()->refresh());
     }
 }

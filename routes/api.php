@@ -85,6 +85,7 @@ Route::post('/users/login', UserLoginController::class);
 
 // User dashboard
 Route::get('/users/self', [UserController::class, 'getSelf']);
+Route::put('/users/self', [UserController::class, 'updateSelf']);
 Route::apiResource('/users/addresses', AddressController::class);
 Route::apiResource('/users/orders', OrderController::class);
 
