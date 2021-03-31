@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use App\Models\Banner;
 use App\Models\BlogCategory;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Order;
@@ -43,7 +44,19 @@ class DatabaseSeeder extends Seeder
 
         Contact::factory(10)->create();
 
-        User::factory(10)->hasAddresses(2)->hasDetail(1)->create();
+        User::factory(10)->hasAddresses(2)->hasDetail(1)->create()->each(function ($user) {
+            $products = collect();
+            $cart = $user->cart()->save(new Cart());
+            ProductFeature::inRandomOrder()
+                ->take(3)
+                ->get()
+                ->each(function ($product) use ($products) {
+                    $products->put($product->id, [
+                        'quantity' => rand(1, 3),
+                    ]);
+                });
+            $cart->products()->attach($products->all());
+        });
 
         Order::factory(10)->create()->each(function ($order) {
             $products = collect();
