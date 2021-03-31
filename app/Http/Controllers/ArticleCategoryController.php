@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\ArticleCategory;
 use App\Models\BlogCategory;
+use Illuminate\Http\Request;
 
-class BlogCategoryController extends Controller
+class ArticleCategoryController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth:admin', 'role:boss'])->only([
-            'store',
-            'update',
-            'destroy'
-        ]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware(['auth:admin', 'role:boss'])->only([
+    //         'store',
+    //         'update',
+    //         'destroy',
+    //     ]);
+    // }
 
     public function index()
     {
-        return response()->json([
-            'data' => BlogCategory::orderBy('id', 'asc')->get(),
-        ]);
+        return JsonResponse(ArticleCategory::all());
     }
 
     /**

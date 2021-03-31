@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\ArticleCategory;
 use App\Models\Banner;
-use App\Models\BlogCategory;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Contact;
@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             ->hasFeatures(6, ['container' => 'plastic'])
             ->create();
 
-        BlogCategory::factory(5)->hasArticles(3)->create();
+        ArticleCategory::factory(5)->hasArticles(3)->create();
 
         Contact::factory(10)->create();
 

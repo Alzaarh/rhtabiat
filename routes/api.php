@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BannerController;
-use App\Http\Controllers\BlogCategoryController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryHierarchyController;
 use App\Http\Controllers\CommentController;
@@ -73,8 +74,6 @@ Route::get('/comments', [CommentController::class, 'index']);
 
 Route::apiResource('/contacts', ContactController::class)->except('update');
 
-Route::apiResource('/blogs/categories', BlogCategoryController::class);
-
 Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
 
 Route::apiResource('/articles', ArticleController::class);
@@ -89,5 +88,11 @@ Route::get('/users/self', [UserController::class, 'getSelf']);
 Route::apiResource('/users/addresses', AddressController::class);
 Route::apiResource('/users/orders', OrderController::class);
 
+// Cart
+Route::apiResource('/users/carts', CartController::class);
+
 // Poster
 Route::apiResource('/posters', PosterController::class);
+
+// Article category
+Route::apiResource('/article-categories', ArticleCategoryController::class);

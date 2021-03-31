@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\BlogCategory;
+use App\Models\ArticleCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BlogCategoryFactory extends Factory
+class ArticleCategoryFactory extends Factory
 {
-    protected $model = BlogCategory::class;
+    protected $model = ArticleCategory::class;
 
     public function definition()
     {
