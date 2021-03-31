@@ -4,6 +4,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleSearchController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -76,8 +77,6 @@ Route::apiResource('/contacts', ContactController::class)->except('update');
 
 Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
 
-Route::apiResource('/articles', ArticleController::class);
-
 Route::apiResource('/orders', OrderController::class);
 
 // User auth
@@ -94,5 +93,7 @@ Route::apiResource('/users/carts', CartController::class);
 // Poster
 Route::apiResource('/posters', PosterController::class);
 
-// Article category
+// Article
 Route::apiResource('/article-categories', ArticleCategoryController::class);
+Route::get('/articles/search', ArticleSearchController::class);
+Route::apiResource('/articles', ArticleController::class);

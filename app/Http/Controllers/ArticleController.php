@@ -15,10 +15,14 @@ class ArticleController extends Controller
 {
     public function index(IndexArticleRequest $request)
     {
-        $articles = $request->whenHas('latest', function () use ($request) {
-            return Article::getLatest($request->query('count', 3));
+        $query = Article::query();
+        $request->whenHas('latest', function () use ($request, &$articles) {
+            $articles = Article::getLatest($request->query('count', 3));
         });
-        return ArticleResource::collection($articles);
+        $request->whenHas('article_category_id', function () use ($request, $query) {
+            $query->where('article_category_id', $request->article_category_id);
+        });
+        return ArticleResource::collection($query->paginate($request->count));
     }
 
     public function show(Request $request, Article $article)

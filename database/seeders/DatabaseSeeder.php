@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             ->hasFeatures(6, ['container' => 'plastic'])
             ->create();
 
-        ArticleCategory::factory(5)->hasArticles(3)->create();
+        ArticleCategory::factory(5)->hasArticles(10)->create();
 
         Contact::factory(10)->create();
 

@@ -9,11 +9,11 @@ class CreateAdminsTable extends Migration
     public function up()
     {
         Schema::create('admins', function (Blueprint $table) {
+            $table->id();
             $table->string('name')->nullable();
-            $table->string('username');
+            $table->string('username')->unique();
             $table->string('password');
-            $table->unsignedTinyInteger('role');
-            $table->primary('username');
+            $table->integer('role');
         });
     }
 

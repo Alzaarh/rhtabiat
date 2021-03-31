@@ -14,13 +14,8 @@ class CreateArticlesTable extends Migration
             $table->string('thumbnail')->nullable();
             $table->mediumText('body');
             $table->json('meta')->nullable();
-            $table->foreignId('article_category_id')
-                ->constrained()
-                ->onDelete('cascade');
-            $table->string('admin_username')
-                ->nullable()
-                ->constrained()
-                ->onDelete('set null');
+            $table->foreignId('article_category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }

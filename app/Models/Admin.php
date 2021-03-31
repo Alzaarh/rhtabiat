@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Arr;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Admin extends Authenticatable implements JWTSubject
 {
@@ -17,12 +15,6 @@ class Admin extends Authenticatable implements JWTSubject
     public $timestamps = false;
 
     protected $hidden = ['password'];
-
-    protected $primaryKey = 'username';
-
-    public $intementing = false;
-
-    protected $keyType = 'string';
 
     protected $fillable = [
         'username',
@@ -52,7 +44,7 @@ class Admin extends Authenticatable implements JWTSubject
         return array_search($this->attributes['role'], self::ROLES);
     }
 
-    public function setPasswordAttribute($value) 
+    public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
     }
@@ -75,9 +67,9 @@ class Admin extends Authenticatable implements JWTSubject
     public static function auth(array $credentials): string
     {
         $token = auth('admin')->attempt($credentials);
-        if (! $token) {
+        if (!$token) {
             throw ValidationException::withMessages([
-                'username' => 'Username or password is invalid'
+                'username' => 'Username or password is invalid',
             ]);
         }
         return $token;

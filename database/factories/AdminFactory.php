@@ -13,7 +13,7 @@ class AdminFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'username' => $this->faker->username,
+            'username' => $this->faker->unique()->username,
             'password' => 'password123',
         ];
     }

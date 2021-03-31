@@ -14,9 +14,9 @@ class IndexArticleRequest extends FormRequest
     public function rules()
     {
         return [
-            'count' => 'integer|min:1|max:15',
+            'count' => 'integer|between:1,15',
             'search' => 'string|max:100',
-            'categoryId' => 'integer|min:1',
+            'article_category_id' => 'exists:article_categories,id',
         ];
     }
 }
