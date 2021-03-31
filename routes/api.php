@@ -11,7 +11,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryHierarchyController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosterController;
 use App\Http\Controllers\ProductController;
@@ -72,8 +72,6 @@ Route::post('/users/verify-login', [UserController::class, 'verifyLogin']);
 
 Route::get('/comments', [CommentController::class, 'index']);
 
-Route::apiResource('/contacts', ContactController::class)->except('update');
-
 Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
 
 Route::apiResource('/orders', OrderController::class);
@@ -100,3 +98,6 @@ Route::apiResource('/posters', PosterController::class);
 Route::apiResource('/article-categories', ArticleCategoryController::class);
 Route::get('/articles/search', ArticleSearchController::class);
 Route::apiResource('/articles', ArticleController::class);
+
+// Message (Contact us)
+Route::apiResource('/messages', MessageController::class)->except('update');

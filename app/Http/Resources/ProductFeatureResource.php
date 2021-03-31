@@ -9,6 +9,8 @@ class ProductFeatureResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'product' => $this->whenLoaded('product', $this->product),
+            // 'cartQuantity' => $this->whenPivotLoaded('cart_product')
             $this->mergeWhen(isset($this->container), function () {
                 return [
                     'container' => [

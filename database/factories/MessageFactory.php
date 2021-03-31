@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Contact;
+use App\Models\Message;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ContactFactory extends Factory
+class MessageFactory extends Factory
 {
-    protected $model = Contact::class;
+    protected $model = Message::class;
 
     public function definition()
     {

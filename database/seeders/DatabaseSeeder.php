@@ -7,7 +7,7 @@ use App\Models\ArticleCategory;
 use App\Models\Banner;
 use App\Models\Cart;
 use App\Models\Category;
-use App\Models\Contact;
+use App\Models\Message;
 use App\Models\Order;
 use App\Models\Poster;
 use App\Models\Product;
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
 
         ArticleCategory::factory(5)->hasArticles(10)->create();
 
-        Contact::factory(10)->create();
+        Message::factory(30)->create();
 
         User::factory(10)->hasAddresses(2)->hasDetail(1)->create()->each(function ($user) {
             $products = collect();
