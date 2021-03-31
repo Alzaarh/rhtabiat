@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAddressRequest;
+use App\Http\Requests\SaveAddressRequest;
 use App\Http\Resources\AddressResource;
+use App\Models\Address;
 use Illuminate\Http\Request;
 
 class AddressController extends Controller
@@ -18,10 +19,12 @@ class AddressController extends Controller
         return AddressResource::collection(auth()->user()->addresses);
     }
 
-    public function store(StoreAddressRequest $request)
+    public function store(SaveAddressRequest $request)
     {
         return new AddressResource(
-            auth()->user()->newAddress($request->validated())
+            auth()->user()->addresses()->save(
+                new Address($request->validated())
+            )
         );
     }
 

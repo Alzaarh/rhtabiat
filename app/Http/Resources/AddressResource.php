@@ -10,18 +10,14 @@ class AddressResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'receiverName' => $this->receiver_name,
+            'name' => $this->name,
             'address' => $this->address,
-            $this->mergeWhen($request->has('withDetails'), function () {
-                return [
-                    'receiverCompany' => $this->receiverCompany,
-                    'mobile' => $this->mobile,
-                    'phone' => $this->phone,
-                    'state' => $this->state,
-                    'city' => $this->city,
-                    'zipcode' => $this->zipcode,
-                ];
-            }),
+            'company' => $this->company,
+            'mobile' => $this->mobile,
+            'phone' => $this->phone,
+            'state' => $this->state,
+            'city' => $this->city,
+            'zipcode' => $this->zipcode,
         ];
     }
 }

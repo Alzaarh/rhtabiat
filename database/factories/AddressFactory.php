@@ -12,10 +12,10 @@ class AddressFactory extends Factory
     public function definition()
     {
         return [
-            'receiver_name' => $this->faker->name,
-            'receiver_company' => $this->faker->company,
-            'receiver_mobile' => '0901' . $this->faker->randomNumber(7),
-            'receiver_phone' => '0513' . $this->faker->randomNumber(7),
+            'name' => $this->faker->name,
+            'company' => $this->faker->company,
+            'mobile' => '0901' . $this->faker->randomNumber(7),
+            'phone' => '0513' . $this->faker->randomNumber(7),
             'state' => $this->faker->state,
             'city' => $this->faker->city,
             'zipcode' => $this->faker->randomNumber(7) . '000',
