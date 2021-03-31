@@ -4,11 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderProductFeatureTable extends Migration
+class CreateOrderProductTable extends Migration
 {
     public function up()
     {
-        Schema::create('order_product_feature', function (Blueprint $table) {
+        Schema::create('order_product', function (Blueprint $table) {
             $table->foreignId('order_id')->constrained();
             $table->foreignId('product_feature_id')->constrained();
             $table->integer('price');
@@ -20,6 +20,6 @@ class CreateOrderProductFeatureTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('order_product_feature');
+        Schema::dropIfExists('order_product');
     }
 }

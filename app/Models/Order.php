@@ -54,9 +54,11 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(
-            ProductFeature::class, 'order_product_feature'
-        )->withPivot('price', 'quantity', 'weight');
+        return $this->belongsToMany(ProductFeature::class, 'order_product')->withPivot([
+            'price',
+            'quantity',
+            'weight',
+        ]);
     }
 
     public static function generateCode()

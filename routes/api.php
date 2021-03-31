@@ -6,6 +6,7 @@ use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleSearchController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\BestSellingProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryHierarchyController;
@@ -25,8 +26,6 @@ Route::apiResource('/banners', BannerController::class);
 Route::get('/categories/hierarchy', CategoryHierarchyController::class);
 Route::apiResource('/categories', CategoryController::class);
 
-Route::get('/products/search', ProductSearchController::class);
-Route::apiResource('/products', ProductController::class);
 Route::get(
     '/products/{product}/related', [ProductController::class, 'getRelated']
 );
@@ -78,6 +77,10 @@ Route::apiResource('/contacts', ContactController::class)->except('update');
 Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
 
 Route::apiResource('/orders', OrderController::class);
+// Product
+Route::get('/products/best-selling', BestSellingProductController::class);
+Route::get('/products/search', ProductSearchController::class);
+Route::apiResource('/products', ProductController::class);
 
 // User auth
 Route::post('/users/login', UserLoginController::class);

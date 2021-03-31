@@ -79,4 +79,13 @@ class Product extends Model
     {
         return $this->features()->orderBy('price', 'desc')->value('price');
     }
+
+    public function getBestSelling($count = 10)
+    {
+        return self::selectRaw('products.*, sum(order_product.quantity) as total')
+            ->join('product_features', 'products.id', '=', 'product_features.product_id')
+            ->join('order_product', 'order_product.product_feature_id', '=', 'product_features.id')
+            ->groupBy('products.id')->orderBy('total', 'desc')->take($count)
+            ->get();
+    }
 }
