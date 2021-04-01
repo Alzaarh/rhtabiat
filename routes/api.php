@@ -17,7 +17,6 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosterController;
 // use App\Http\Controllers\ProductController;
 // use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\Shop\ProductCategoryController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\UserController;
@@ -81,7 +80,6 @@ Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'ad
 Route::apiResource('/orders', OrderController::class);
 // Product
 Route::get('/products/best-selling', BestSellingProductController::class);
-Route::get('/products/search', ProductSearchController::class);
 // Route::apiResource('/products', ProductController::class);
 
 // User auth

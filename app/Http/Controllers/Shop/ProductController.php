@@ -32,6 +32,7 @@ class ProductController extends Controller
         request()->validate(['sort_by' => 'in:lowest_price,highest_price,latest,highest_rated']);
         $query = Product::query();
         if (request()->has('sort_by')) $query = $this->productService->orderBy(request()->query('sort_by'));
+        if (request()->has('search')) $query = Product::search(request()->query('search'));
         return new ProductCollection($query->paginate(request()->count));
     }
 
