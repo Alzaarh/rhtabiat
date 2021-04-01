@@ -5,39 +5,40 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use App\Traits\HasImage;
 
 class Product extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory, Searchable, HasImage;
 
-    private const COUNT = 10;
-
-    protected $fillable = [
-        'title',
-        'category_id',
-        'short_desc',
-        'desc',
-        'icon',
-    ];
-
-    public function getIconAttribute($value)
+    /**
+     * Get the price attribute of single item products
+     *
+     * @return int|null
+     */
+    public function getPriceAttribute(): ?int
     {
-        return filled($value) ? storage() . $value : null;
+        return !$this->hasMultipleItems() ? $this->items()->value('price') : null;
     }
 
-    public function getPriceAttribute()
-    {
-        return !$this->hasMultiplePrice() ? $this->getLowestPrice() : null;
-    }
-
+    /**
+     * Get the minimum price of multiple item products
+     *
+     * @return int|null
+     */
     public function getMinPriceAttribute()
     {
-        return $this->hasMultiplePrice() ? $this->getLowestPrice() : null;
+        return $this->hasMultipleItems() ? $this->items()->reorder('price', 'asc')->value('price') : null;
     }
 
+    /**
+     * Get the maximum price of multiple item products
+     *
+     * @return int|null
+     */
     public function getMaxPriceAttribute()
     {
-        return $this->hasMultiplePrice() ? $this->getHighestPrice() : null;
+        return $this->hasMultipleItems() ? $this->items()->reorder('price', 'desc')->value('price') : null;
     }
 
     public function scopeHasDiscount($query)
@@ -60,6 +61,16 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class);
     }
 
+    /**
+     * Get the items of the product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function items()
+    {
+        return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
+    }
+
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
@@ -70,19 +81,24 @@ class Product extends Model
         return self::hasDiscount()->take($count)->get();
     }
 
-    private function hasMultiplePrice(): bool
+    /**
+     * Check if the product has container.
+     *
+     * @return bool
+     */
+    public function hasContainer(): bool
     {
-        return $this->features->count() > 1;
+        return $this->items->contains(fn ($item) => filled($item->container));
     }
 
-    private function getLowestPrice(): int
+    /**
+     * Check if product has more than one items
+     *
+     * @return bool
+     */
+    private function hasMultipleItems(): bool
     {
-        return $this->features()->orderBy('price', 'asc')->value('price');
-    }
-
-    private function getHighestPrice(): int
-    {
-        return $this->features()->orderBy('price', 'desc')->value('price');
+        return $this->items()->count() > 1;
     }
 
     public function getBestSelling($count = 10)

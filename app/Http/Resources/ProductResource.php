@@ -2,43 +2,50 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ProductItem;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Route;
 
 class ProductResource extends JsonResource
 {
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     public function toArray($request)
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'icon' => $this->icon,
+            'slug' => $this->slug,
+            'image' => $this->image,
+            'short_desc' => $this->short_desc,
             'price' => $this->when(filled($this->price), $this->price),
-            'minPrice' => $this->when(
-                filled($this->min_price), $this->min_price
-            ),
-            'maxPrice' => $this->when(
-                filled($this->max_price), $this->max_price
-            ),            $this->mergeWhen($request->has('withDetails'), function () {
+            'min_price' => $this->when(filled($this->min_price), $this->min_price),
+            'max_price' => $this->when(filled($this->max_price), $this->max_price),
+            'off' => $this->off,
+            $this->mergeWhen(Route::currentRouteName() === 'products.show', function () {
                 return [
-                    'shortDesc' => $this->short_desc,
                     'desc' => $this->desc,
-                    'containers' => $this->when(
-                        $this->hasContainer(), function () {
+                    'items' => [
+                        $this->mergeWhen($this->hasContainer(), function () {
                             return [
-                                'zink' => $this->zinkContainerFeatures,
-                                'plastic' => $this->plasticContainerFeatures,
+                                'zink' => ProductItemResource::collection(
+                                    $this->items->where('container', ProductItem::ZINK_CONTAINER)
+                                ),
+                                'plastic' => ProductItemResource::collection(
+                                    $this->items->where('container', ProductItem::PLASTIC_CONTAINER)
+                                ),
                             ];
-                        }
-                    ),
-                    'features' => $this->when(
-                        !$this->hasContainer(), function () {
-                            return $this->features;
-                        }
-                    ),
-                    'category' => new CategoryResource($this->category),
+                        }),
+                        $this->mergeWhen(!$this->hasContainer(), function () {
+                            return ProductItemResource::collection($this->items);
+                        }),
+                    ],
                 ];
             }),
-            'off' => $this->when(filled($this->off), $this->off),
         ];
     }
 }
