@@ -10,11 +10,11 @@ class CreateOrderProductTable extends Migration
     {
         Schema::create('order_product', function (Blueprint $table) {
             $table->foreignId('order_id')->constrained();
-            $table->foreignId('product_feature_id')->constrained();
+            // $table->foreignId('product_feature_id')->constrained();
             $table->integer('price');
             $table->integer('quantity');
             $table->integer('weight');
-            $table->primary(['order_id', 'product_feature_id']);
+            // $table->primary(['order_id', 'product_feature_id']);
         });
     }
 
