@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCommentsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
@@ -13,13 +18,18 @@ class CreateCommentsTable extends Migration
             $table->string('author_name');
             $table->string('author_email');
             $table->string('body', 2000);
-            $table->unsignedTinyInteger('score');
-            $table->unsignedTinyInteger('status')->default(1);
+            $table->integer('score');
+            $table->integer('status');
             $table->morphs('commentable');
             $table->timestamp('created_at')->useCurrent();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('comments');

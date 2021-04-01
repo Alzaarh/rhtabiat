@@ -17,6 +17,6 @@ class ProductSeeder extends Seeder
     {
         ProductCategory::doesntHave('children')
             ->get()
-            ->each(fn ($category) => Product::factory(5)->for($category, 'category')->create());
+            ->each(fn ($category) => Product::factory(5)->for($category, 'category')->hasComments(10)->create());
     }
 }

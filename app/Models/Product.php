@@ -62,7 +62,7 @@ class Product extends Model
     }
 
     /**
-     * Get the items of the product
+     * Get the items of the product.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -71,6 +71,11 @@ class Product extends Model
         return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
     }
 
+    /**
+     * Get the comments of the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
