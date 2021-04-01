@@ -29,20 +29,19 @@ class ProductController extends Controller
      */
     public function index()
     {
+        request()->validate(['sort_by' => 'in:lowest_price,highest_price,latest,highest_rated']);
         $query = Product::query();
-        if (request()->query('sort_by') === 'lowest_price') $query = $this->productService->orderByPrice('asc');
-        if (request()->query('sort_by') === 'highest_price') $query = $this->productService->orderByPrice('desc');
-        if (request()->query('sort_by') === 'latest') $query = Product::latest();
+        if (request()->has('sort_by')) $query = $this->productService->orderBy(request()->query('sort_by'));
         return new ProductCollection($query->paginate(request()->count));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Product  $product
+     * @param Product $product
      * @return \Illuminate\Http\Resources\Json\JsonResource
      */
-    public function show(Product $product): \Illuminate\Http\Resources\Json\JsonResource
+    public function show(Product $product)
     {
         return new ProductResource($product);
     }

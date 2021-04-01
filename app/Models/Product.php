@@ -12,7 +12,7 @@ class Product extends Model
     use HasFactory, Searchable, HasImage;
 
     /**
-     * Get the price attribute of single item products
+     * Get the price of single item product.
      *
      * @return int|null
      */
@@ -22,23 +22,33 @@ class Product extends Model
     }
 
     /**
-     * Get the minimum price of multiple item products
+     * Get the minimum price of multiple item product.
      *
      * @return int|null
      */
-    public function getMinPriceAttribute()
+    public function getMinPriceAttribute(): ?int
     {
         return $this->hasMultipleItems() ? $this->items()->reorder('price', 'asc')->value('price') : null;
     }
 
     /**
-     * Get the maximum price of multiple item products
+     * Get the maximum price of multiple item product.
      *
      * @return int|null
      */
-    public function getMaxPriceAttribute()
+    public function getMaxPriceAttribute(): ?int
     {
         return $this->hasMultipleItems() ? $this->items()->reorder('price', 'desc')->value('price') : null;
+    }
+
+    /**
+     * Get the average score of the product.
+     *
+     * @return float
+     */
+    public function getAvgScoreAttribute(): float
+    {
+        return $this->comments()->count() > 0 ? $this->comments()->avg('score') : 0;
     }
 
     public function scopeHasDiscount($query)
