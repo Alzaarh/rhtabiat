@@ -15,7 +15,8 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosterController;
-use App\Http\Controllers\ProductController;
+// use App\Http\Controllers\ProductController;
+// use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,15 +27,15 @@ Route::apiResource('/banners', BannerController::class);
 Route::get('/categories/hierarchy', CategoryHierarchyController::class);
 Route::apiResource('/categories', CategoryController::class);
 
-Route::get(
-    '/products/{product}/related', [ProductController::class, 'getRelated']
-);
-Route::get(
-    '/products/{product}/comments', [ProductController::class, 'getComments']
-);
-Route::post(
-    '/products/{product}/comments', [ProductController::class, 'addComment']
-);
+// Route::get(
+//     '/products/{product}/related', [ProductController::class, 'getRelated']
+// );
+// Route::get(
+//     '/products/{product}/comments', [ProductController::class, 'getComments']
+// );
+// Route::post(
+//     '/products/{product}/comments', [ProductController::class, 'addComment']
+// );
 /* Admin related routes */
 Route::get('/admins/comments', [AdminController::class, 'getComments'])->middleware([
     'auth:admin',
@@ -78,7 +79,7 @@ Route::apiResource('/orders', OrderController::class);
 // Product
 Route::get('/products/best-selling', BestSellingProductController::class);
 Route::get('/products/search', ProductSearchController::class);
-Route::apiResource('/products', ProductController::class);
+// Route::apiResource('/products', ProductController::class);
 
 // User auth
 Route::prefix('/auth')->group(function () {
@@ -105,3 +106,9 @@ Route::apiResource('/articles', ArticleController::class);
 
 // Message (Contact us)
 Route::apiResource('/messages', MessageController::class)->except('update');
+
+// Route::namespace ('Shop')->group(function () {
+//     Route::prefix('/products')->group(function () {
+//         Route::get('/', ProductController::class);
+//     });
+// });
