@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Poster;
 use App\Models\Product;
 use App\Models\ProductFeature;
+use App\Models\ProductItem;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -24,7 +25,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([ProductCategorySeeder::class]);
+        $this->call([
+            ProductCategorySeeder::class,
+            ProductSeeder::class,
+            ProductItemSeeder::class,
+        ]);
         //     collect(Admin::ROLES)->each(function ($value) {
         //         Admin::factory()->create(['role' => $value]);
         //     });

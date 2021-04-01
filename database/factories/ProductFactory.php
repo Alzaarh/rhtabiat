@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use App\Models\Product;
 
 class ProductFactory extends Factory
@@ -12,7 +13,7 @@ class ProductFactory extends Factory
      *
      * @var string
      */
-    protected string $model = Product::class;
+    protected $model = Product::class;
 
     /**
      * Define the model's default state.
@@ -21,12 +22,14 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $name = $this->faker->sentence(3);
         return [
-            'name' => $this->faker->sentence(3),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'short_desc' => $this->faker->sentence(15),
             'desc' => $this->faker->text(1000),
-            'icon' => 'images/product.jpg',
-            'off' => rand(1, 100) > 50 ? rand(5, 50) : null,
+            'image' => 'images/product.jpg',
+            'off' => rand(1, 100) > 50 ? rand(5, 50) : 0,
         ];
     }
 }

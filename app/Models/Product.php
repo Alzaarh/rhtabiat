@@ -50,9 +50,14 @@ class Product extends Model
         return $this->hasMany(ProductFeature::class);
     }
 
+    /**
+     * Get the category that owns the product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(ProductCategory::class);
     }
 
     public function comments()
