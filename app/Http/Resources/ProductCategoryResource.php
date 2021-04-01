@@ -20,6 +20,8 @@ class ProductCategoryResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'image' => $this->image,
+            'parent_id' => $this->parent_id,
+            'children' => self::collection($this->children),
         ];
     }
 }
