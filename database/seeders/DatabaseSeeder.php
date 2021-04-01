@@ -2,18 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
-use App\Models\ArticleCategory;
-use App\Models\Banner;
-use App\Models\Cart;
-use App\Models\Category;
-use App\Models\Message;
-use App\Models\Order;
-use App\Models\Poster;
-use App\Models\Product;
-use App\Models\ProductFeature;
-use App\Models\ProductItem;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,14 +14,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            AdminSeeder::class,
             ProductCategorySeeder::class,
             ProductSeeder::class,
             ProductItemSeeder::class,
         ]);
-        //     collect(Admin::ROLES)->each(function ($value) {
-        //         Admin::factory()->create(['role' => $value]);
-        //     });
-
         //     Banner::factory(5)->create();
         //     Banner::factory()->create(['is_active' => true]);
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
@@ -115,5 +116,11 @@ Route::namespace('Shop')->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::get('{product:slug}', [ProductController::class, 'show'])->name('products.show');
+    });
+});
+
+Route::namespace('Admin')->group(function () {
+    Route::prefix('admins')->group(function () {
+        Route::post('auth/login', '\App\Http\Controllers\Admin\AdminLoginController');
     });
 });
