@@ -26,6 +26,7 @@ class ProductCategoryFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
+            'image' => 'images/product-category.jpg',
         ];
     }
 }

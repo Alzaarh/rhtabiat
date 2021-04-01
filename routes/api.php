@@ -18,6 +18,7 @@ use App\Http\Controllers\PosterController;
 // use App\Http\Controllers\ProductController;
 // use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
+use App\Http\Controllers\Shop\ProductCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,7 +63,8 @@ Route::apiResource('/admins', AdminController::class)->middleware(['auth:admin',
 /* User related routes */
 Route::post('/users/register', [UserController::class, 'register']);
 Route::post(
-    '/users/register/verify', [UserController::class, 'verifyRegister']
+    '/users/register/verify',
+    [UserController::class, 'verifyRegister']
 )->name('register.verify');
 Route::post('/users/login/verify', [UserController::class, 'verifyLogin'])
     ->name('login.verify');
@@ -107,8 +109,8 @@ Route::apiResource('/articles', ArticleController::class);
 // Message (Contact us)
 Route::apiResource('/messages', MessageController::class)->except('update');
 
-// Route::namespace ('Shop')->group(function () {
-//     Route::prefix('/products')->group(function () {
-//         Route::get('/', ProductController::class);
-//     });
-// });
+Route::namespace('Shop')->group(function () {
+    Route::prefix('product-categories')->group(function () {
+        Route::get('/', [ProductCategoryController::class, 'index']);
+    });
+});
