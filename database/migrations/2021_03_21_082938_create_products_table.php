@@ -12,9 +12,10 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('short_desc', 2000);
-            $table->text('desc');
-            $table->string('icon')->nullable();
-            $table->unsignedTinyInteger('off')->nullable();
+            $table->mediumText('desc');
+            $table->json('meta_tags')->nullable();
+            $table->string('icon');
+            $table->integer('off')->default(0);
             $table->foreignId('category_id')
                 ->constrained()
                 ->onDelete('cascade');

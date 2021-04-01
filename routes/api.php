@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleSearchController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BestSellingProductController;
 use App\Http\Controllers\CartController;
@@ -17,7 +18,6 @@ use App\Http\Controllers\PosterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserLoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/banners/main', [BannerController::class, 'getMain']);
@@ -81,7 +81,10 @@ Route::get('/products/search', ProductSearchController::class);
 Route::apiResource('/products', ProductController::class);
 
 // User auth
-Route::post('/users/login', UserLoginController::class);
+Route::prefix('/auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('forget-password', [AuthController::class, 'forgetPassword']);
+});
 
 // User dashboard
 Route::get('/users/self', [UserController::class, 'getSelf']);
