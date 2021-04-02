@@ -11,11 +11,12 @@ class CreateArticlesTable extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->string('thumbnail')->nullable();
             $table->mediumText('body');
             $table->json('meta')->nullable();
             $table->foreignId('article_category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('admin_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('admin_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

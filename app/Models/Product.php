@@ -45,6 +45,16 @@ class Product extends Model
         return $this->comments()->count() > 0 ? $this->comments()->avg('score') : 0;
     }
 
+    public function scopeWherePriceIsGreater($query, $price)
+    {
+        return $query->whereHas('items', fn ($query) => $query->where('price', '>=', $price));
+    }
+
+    public function scopeWherePriceIsLess($query, $price)
+    {
+        return $query->whereHas('items', fn ($query) => $query->where('price', '<=', $price));
+    }
+
     public function scopeHasDiscount($query)
     {
         return $query->whereNotNull('off');
@@ -55,11 +65,6 @@ class Product extends Model
         return $this->hasMany(ProductFeature::class);
     }
 
-    /**
-     * Get the category that owns the product
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function category()
     {
         return $this->belongsTo(ProductCategory::class);

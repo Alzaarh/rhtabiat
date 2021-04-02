@@ -27,6 +27,7 @@ class ProductResource extends JsonResource
             'max_price' => $this->when(filled($this->max_price), $this->max_price),
             'off' => $this->off,
             'avg_score' => $this->avg_score,
+            'category' => $this->category,
             $this->mergeWhen(Route::currentRouteName() === 'products.show', function () {
                 return [
                     'desc' => $this->desc,

@@ -20,6 +20,7 @@ class ProductCollection extends ResourceCollection
             'meta' => [
                 'min_price' => ProductItem::orderBy('price', 'asc')->value('price'),
                 'max_price' => ProductItem::orderBy('price', 'desc')->value('price'),
+                'search_found_count' => $request->product_search_found_count,
             ]
         ];
     }

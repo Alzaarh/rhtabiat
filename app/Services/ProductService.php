@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    /**
-     * Instance of Product model.
-     * 
-     * @var Product
-     */
     private Product $product;
 
     public function __construct(Product $product)
@@ -21,26 +16,30 @@ class ProductService
         $this->product = $product;
     }
 
-    /**
-     * Sort the products based on some criteria.
-     *
-     * @param string $criteria
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function orderBy(string $criteria)
+    public function orderBy($query, string $criteria)
     {
-        if ($criteria === 'lowest_price') return $this->orderByPrice('asc');
-        if ($criteria === 'highest_price') return $this->orderByPrice('desc');
-        if ($criteria === 'latest') return Product::latest();
-        if ($criteria === 'highest_rated') return $this->orderByScore();
+        if ($criteria === 'lowest_price') $this->orderByPrice($query, 'asc');
+        if ($criteria === 'highest_price') $this->orderByPrice($query, 'desc');
+        if ($criteria === 'latest') $query->latest();
+        if ($criteria === 'highest_rated') $this->orderByScore($query);
     }
 
-    /**
-     * Create the product and its items.
-     *
-     * @param Request $request
-     * @return Product
-     */
+    public function handleSearch()
+    {
+        $productCollection = Product::search()->get();
+        if (request()->min_price) {
+            $filteredProductCollection = $productCollection->filter(
+                fn ($product) =>
+                $product
+                    ->items
+                    ->whereBetween('price', [request()->min_price, request()->max_price])
+                    ->count() > 0
+            )->values();
+        }
+        request()->merge(['product_search_found_count' => $productCollection->count()]);
+        return $filteredProductCollection ?? $productCollection;
+    }
+
     public function create(Request $request): Product
     {
         return DB::transaction(function () use ($request) {
@@ -52,13 +51,6 @@ class ProductService
         });
     }
 
-    /**
-     * Update the product and its items.
-     *
-     * @param Request $request
-     * @param Product $product
-     * @return Product
-     */
     public function update(Request $request, Product $product): Product
     {
         return DB::transaction(function () use ($request, $product) {
@@ -74,28 +66,17 @@ class ProductService
         });
     }
 
-    /**
-     * Sort the products by price in asc or desc direction.
-     *
-     * @param string $dir
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    private function orderByPrice(string $dir)
+    private function orderByPrice($query, string $dir)
     {
-        return Product::selectRaw('products.*')
+        $query->selectRaw('products.*')
             ->join('product_items', 'products.id', '=', 'product_items.product_id')
             ->orderBy('price', $dir)
             ->groupBy('products.id');
     }
 
-    /**
-     * Sort the products by score.
-     *  
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    private function orderByScore()
+    private function orderByScore($query)
     {
-        return Product::selectRaw('products.*, avg(comments.score) as avg_score')
+        $query->selectRaw('products.*, avg(comments.score) as avg_score')
             ->join('comments', 'products.id', '=', 'comments.commentable_id')
             ->groupBy('products.id')
             ->orderBy('avg_score', 'desc');

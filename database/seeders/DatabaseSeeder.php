@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Article;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,7 +19,9 @@ class DatabaseSeeder extends Seeder
             ProductCategorySeeder::class,
             ProductSeeder::class,
             ProductItemSeeder::class,
+            ArticleCategorySeeder::class,
         ]);
+        Article::factory(50)->hasComments(10)->create();
         //     Banner::factory(5)->create();
         //     Banner::factory()->create(['is_active' => true]);
 

@@ -22,17 +22,20 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\ResourceCollection
-     */
     public function index()
     {
         request()->validate(['sort_by' => 'in:lowest_price,highest_price,latest,highest_rated']);
         $query = Product::query();
-        if (request()->has('sort_by')) $query = $this->productService->orderBy(request()->query('sort_by'));
-        if (request()->has('search')) $query = Product::search(request()->query('search'));
+        if (request()->has('sort_by')) $this->productService->orderBy($query, request()->query('sort_by'));
+        if (request()->has('search')) {
+            return new ProductCollection($this->productService->handleSearch());
+        }
+        if (request()->has('min_price')) {
+            $query->wherePriceIsGreater(request()->min_price);
+        }
+        if (request()->has('max_price')) {
+            $query->wherePriceIsLess(request()->max_price);
+        }
         return new ProductCollection($query->paginate(request()->count));
     }
 

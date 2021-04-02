@@ -132,4 +132,28 @@ Route::namespace('Admin')->group(function () {
     Route::apiResource('products', 'ProductController')
         ->except(['index', 'show'])
         ->middleware(['auth:admin', 'role:admin']);
+    Route::apiResource('article-categories', 'ArticleCategoryController')
+        ->except(['index', 'show'])
+        ->middleware(['auth:admin', 'role:admin']);
+    Route::apiResource('comments', 'CommentController')
+        ->except(['store', 'show'])
+        ->middleware(['auth:admin', 'role:admin']);
+});
+
+Route::namespace('Blog')->group(function () {
+    Route::prefix('article-categories')->group(function () {
+        Route::get('/', 'ArticleCategoryController@index');
+    });
+    Route::prefix('articles')->group(function () {
+        Route::get('/', 'ArticleController@index');
+        Route::get('/{article:slug}', 'ArticleController@show')->name('articles.show');
+        Route::get('/{article:slug}/related_products', 'ArticleRelatedProductController');
+        Route::get('/{article:slug}/related_articles', 'ArticleRelatedArticleController');
+    });
+});
+
+Route::namespace('User')->group(function () {
+    Route::prefix('comments')->group(function () {
+        Route::post('/', 'CommentController@store');
+    });
 });

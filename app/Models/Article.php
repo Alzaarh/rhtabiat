@@ -41,21 +41,6 @@ class Article extends Model
         return filled($value) ? storage() . $value : null;
     }
 
-    public function getCreatedAtAttribute($value)
-    {
-        return Carbon::create($value)->toDateTimeString();
-    }
-
-    public function getUpdatedAtAttribute($value)
-    {
-        return Carbon::create($value)->toDateTimeString();
-    }
-
-    public function blogCategory()
-    {
-        return $this->belongsTo(BlogCategory::class);
-    }
-
     public function author()
     {
         return $this->belongsTo(Admin::class, 'admin_id');
