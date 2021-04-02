@@ -113,7 +113,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('Shop')->group(function () {
     Route::prefix('product-categories')->group(function () {
-        Route::get('/', [ProductCategoryController::class, 'index']);
+        Route::get('/', 'ProductCategoryController@index');
+        Route::get('/{productCategory:slug}', 'ProductCategoryController@show');
     });
     Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
@@ -123,8 +124,11 @@ Route::namespace('Shop')->group(function () {
 
 Route::namespace('Admin')->group(function () {
     Route::prefix('admins')->group(function () {
-        Route::post('auth/login', '\App\Http\Controllers\Admin\AdminLoginController');
+        Route::post('auth/login', 'AdminLoginController');
     });
+    Route::apiResource('product-categories', 'ProductCategoryController')
+        ->except(['index', 'show'])
+        ->middleware(['auth:admin', 'role:admin']);
     Route::apiResource('products', 'ProductController')
         ->except(['index', 'show'])
         ->middleware(['auth:admin', 'role:admin']);

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ProductCategory;
 use App\Models\ProductItem;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
@@ -27,7 +27,11 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'slug' => 'required|max:255',
+            'slug' => [
+                'required',
+                'max:255',
+                Rule::unique('product_categories')->ignore(request()->product),
+            ],
             'category_id' => 'required|exists:product_categories,id',
             'short_desc' => 'required|max:2000',
             'desc' => 'required',

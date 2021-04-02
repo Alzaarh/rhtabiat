@@ -6,70 +6,41 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use App\Traits\HasImage;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
     use HasFactory, Searchable, HasImage;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['name', 'slug', 'short_desc', 'desc', 'image', 'off', 'category_id'];
+    protected $guarded = [];
 
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
     protected static function booted()
     {
-        static::saving(function ($product) {
-            Storage::delete($product->getRawOriginal('image'));
-        });
-        static::deleting(function ($product) {
-            Storage::delete($product->getRawOriginal('image'));
-        });
+        static::saving(fn ($product) => self::deleteImage($product));
+        static::deleting(fn ($product) => self::deleteImage($product));
     }
 
-    /**
-     * Get the price of single item product.
-     *
-     * @return int|null
-     */
-    public function getPriceAttribute(): ?int
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = Str::slug($slug);
+    }
+
+    public function getPriceAttribute()
     {
         return !$this->hasMultipleItems() ? $this->items()->value('price') : null;
     }
 
-    /**
-     * Get the minimum price of multiple item product.
-     *
-     * @return int|null
-     */
-    public function getMinPriceAttribute(): ?int
+    public function getMinPriceAttribute()
     {
         return $this->hasMultipleItems() ? $this->items()->reorder('price', 'asc')->value('price') : null;
     }
 
-    /**
-     * Get the maximum price of multiple item product.
-     *
-     * @return int|null
-     */
-    public function getMaxPriceAttribute(): ?int
+    public function getMaxPriceAttribute()
     {
         return $this->hasMultipleItems() ? $this->items()->reorder('price', 'desc')->value('price') : null;
     }
 
-    /**
-     * Get the average score of the product.
-     *
-     * @return float
-     */
-    public function getAvgScoreAttribute(): float
+    public function getAvgScoreAttribute()
     {
         return $this->comments()->count() > 0 ? $this->comments()->avg('score') : 0;
     }

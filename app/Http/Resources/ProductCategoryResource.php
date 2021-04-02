@@ -12,7 +12,7 @@ class ProductCategoryResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request): array
+    public function toArray($request)
     {
         return [
             'id' => $this->id,
@@ -21,6 +21,13 @@ class ProductCategoryResource extends JsonResource
             'image' => $this->image,
             'parent_id' => $this->parent_id,
             'children' => self::collection($this->children),
+            'products' => $this->products->map(fn ($product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+            ]),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

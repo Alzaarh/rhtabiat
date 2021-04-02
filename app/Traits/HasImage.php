@@ -3,17 +3,11 @@
 namespace App\Traits;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 trait HasImage
 {
-    /**
-     * Prepend correct url to image
-     *
-     * @param string $image
-     * @return string
-     */
-    public function getImageAttribute(string $image): string
+    public function getImageAttribute($image)
     {
         return config('app.domain') . ':' . config('app.port') . '/storage/' . $image;
     }
@@ -27,5 +21,16 @@ trait HasImage
     public function storeImage(UploadedFile $image): string
     {
         return $image->store('images');
+    }
+
+    /**
+     * Delete model's image.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return void
+     */
+    static function deleteImage(\Illuminate\Database\Eloquent\Model $model): void
+    {
+        Storage::delete($model->getRawOriginal('image'));
     }
 }
