@@ -6,10 +6,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use App\Traits\HasImage;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
     use HasFactory, Searchable, HasImage;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'slug', 'short_desc', 'desc', 'image', 'off', 'category_id'];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::saving(function ($product) {
+            Storage::delete($product->getRawOriginal('image'));
+        });
+        static::deleting(function ($product) {
+            Storage::delete($product->getRawOriginal('image'));
+        });
+    }
 
     /**
      * Get the price of single item product.

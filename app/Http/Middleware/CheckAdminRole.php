@@ -7,12 +7,17 @@ use Illuminate\Http\Request;
 
 class CheckAdminRole
 {
-    public function handle(Request $request, Closure $next, $role)
+    /**
+     * Check if admin has the needed privilege.
+     *
+     * @param  Illuminate\Http\Request  $request
+     * @param  Closure  $next
+     * @param string $role
+     * @return Closure
+     */
+    public function handle(Request $request, Closure $next, string $role)
     {
-        $admin = $request->user();
-        if ($admin->isAdmin() || $admin->role_name === $role) {
-            return $next($request);
-        }
+        if ($request->user()->isAdmin() || $request->user()->role_name === $role) return $next($request);
         abort(403);
     }
 }

@@ -57,9 +57,23 @@ class Admin extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function getRoleNameAttribute()
+    /**
+     * Get the admin's role in string.
+     *
+     * @return string
+     */
+    public function getRoleNameAttribute(): string
     {
-        return array_search($this->attributes['role'], self::ROLES);
+        switch ($this->role) {
+            case self::ADMIN:
+                return 'admin';
+            case self::ACCOUNTANT:
+                return 'accountant';
+            case self::WRITER:
+                return 'writer';
+            case self::DISCOUNT_GENERATOR:
+                return 'discount_generator';
+        }
     }
 
     /**
@@ -83,19 +97,13 @@ class Admin extends Authenticatable implements JWTSubject
         return $this->hasMany(Article::class);
     }
 
-    public function isAdmin()
+    /**
+     * Check if admin has admin role.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
     {
-        return $this->role === self::ROLES['admin'];
-    }
-
-    public static function auth(array $credentials): string
-    {
-        $token = auth('admin')->attempt($credentials);
-        if (!$token) {
-            throw ValidationException::withMessages([
-                'username' => 'Username or password is invalid',
-            ]);
-        }
-        return $token;
+        return $this->role === self::ADMIN;
     }
 }

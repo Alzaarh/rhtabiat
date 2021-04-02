@@ -10,6 +10,13 @@ class ProductItem extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['weight', 'price', 'quantity', 'container'];
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
@@ -29,6 +36,19 @@ class ProductItem extends Model
      * @var int
      */
     public const PLASTIC_CONTAINER = 2;
+
+    /**
+     * Set the correct container value
+     *
+     * @param string $container
+     * @return void
+     */
+    public function setContainerAttribute(string $container): void
+    {
+        $container === 'zink'
+            ? $this->attributes['container'] = self::ZINK_CONTAINER
+            : $this->attributes['container'] = self::PLASTIC_CONTAINER;
+    }
 
     /**
      * Get the product that owns the item
