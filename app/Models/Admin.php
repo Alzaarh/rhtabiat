@@ -95,11 +95,6 @@ class Admin extends Authenticatable implements JWTSubject
         return $this->hasMany(Article::class);
     }
 
-    /**
-     * Check if admin has admin role.
-     *
-     * @return bool
-     */
     public function isAdmin(): bool
     {
         return $this->role === self::ROLES['admin'];

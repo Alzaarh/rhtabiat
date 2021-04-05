@@ -29,9 +29,11 @@ class Article extends Model
         static::addGlobalScope('latest', function (Builder $builder) {
             $builder->latest('updated_at');
         });
-        static::deleted(function ($article) {
-            Storage::delete($article->getAttributes()['thumbnail']);
-        });
+        
+        static::deleting(
+            fn ($article) =>
+            Storage::delete($article->getRawOriginal('image'))
+        );
     }
 
     public function getMetaAttribute($value)

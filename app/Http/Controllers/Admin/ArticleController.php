@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 
 class ArticleController extends Controller
 {
@@ -27,7 +26,17 @@ class ArticleController extends Controller
         $article->body = $request->body;
         $article->meta = $request->meta;
         $article->article_category_id = $request->article_category_id;
+        $article->is_verifed = false;
         $article->save();
         return new ArticleResource($article);
+    }
+
+    public function destroy(Article $article)
+    {
+        Gate::authorize('destroy-article', $article);
+
+        $article->delete();
+        
+        return response()->json(['message' => 'Success']);
     }
 }
