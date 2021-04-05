@@ -11,9 +11,9 @@ class CreateVerificationCodesTable extends Migration
         Schema::create('verification_codes', function (Blueprint $table) {
             $table->id();
             $table->char('code', 5);
-            $table->char('phone', 11)->unique();
-            $table->unsignedTinyInteger('usage');
-            $table->timestamp('updated_at');
+            $table->char('phone', 11)->index();
+            $table->integer('usage');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

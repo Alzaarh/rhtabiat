@@ -12,11 +12,19 @@ class Product extends Model
 {
     use HasFactory, Searchable, HasImage;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'slug',
+        'off',
+        'image',
+        'short_desc',
+        'desc',
+        'category_id',
+    ];
 
     protected static function booted()
     {
-        static::saving(fn ($product) => self::deleteImage($product));
+        static::updating(fn ($product) => self::deleteImage($product));
         static::deleting(fn ($product) => self::deleteImage($product));
     }
 

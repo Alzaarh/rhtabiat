@@ -12,7 +12,7 @@ class BannerController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:admin', 'role:admin'])->except('getMain');
+        // $this->middleware(['auth:admin', 'role:admin'])->except('getMain');
     }
 
     public function index(Request $request)
@@ -35,7 +35,7 @@ class BannerController extends Controller
     }
 
     public function update(SaveBannerRequest $request, Banner $banner)
-    {    
+    {
         $banner->update(array_merge($request->validated(), [
             'image' => saveImageOnDisk($request->image),
         ]));

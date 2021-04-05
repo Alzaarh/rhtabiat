@@ -10,7 +10,16 @@ class Address extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'company',
+        'mobile',
+        'phone',
+        'state',
+        'city',
+        'zipcode',
+        'address',
+    ];
 
     public $timestamps = false;
 

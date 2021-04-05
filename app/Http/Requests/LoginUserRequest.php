@@ -18,13 +18,13 @@ class LoginUserRequest extends FormRequest
         return [
             'email' => [
                 'required',
-                'email',
-                function ($attr, $value, $fail) use ($request) {
-                    $UserDetail = UserDetail::where('email', $value)->first();
-                    $UserDetail ?
-                    $request->merge(['userDetail' => $UserDetail]) :
-                    $fail(__('validation.login'));
-                }],
+                'email',],
+                // function ($attr, $value, $fail) use ($request) {
+                //     $UserDetail = UserDetail::where('email', $value)->first();
+                //     $UserDetail ?
+                //     $request->merge(['userDetail' => $UserDetail]) :
+                //     $fail(__('validation.login'));
+                // }],
             'password' => 'required',
         ];
     }

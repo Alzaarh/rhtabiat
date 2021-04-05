@@ -30,7 +30,7 @@ class StoreProductRequest extends FormRequest
             'slug' => [
                 'required',
                 'max:255',
-                Rule::unique('product_categories')->ignore(request()->product),
+                Rule::unique('products')->ignore(request()->product),
             ],
             'category_id' => 'required|exists:product_categories,id',
             'short_desc' => 'required|max:2000',

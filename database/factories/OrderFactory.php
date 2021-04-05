@@ -13,10 +13,8 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'status' => $this->faker->randomElement(Order::STATUS_LIST),
-            'payment_method' => $this->faker->randomElement(
-                Order::PAYMENT_METHOD
-            ),
+            'status' => rand(1, 4),
+            'payment_method' => 1,
             'code' => Order::generateCode(),
             'address_id' => Address::inRandomOrder()->value('id'),
         ];

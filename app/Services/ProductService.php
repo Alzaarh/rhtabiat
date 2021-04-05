@@ -18,10 +18,18 @@ class ProductService
 
     public function orderBy($query, string $criteria)
     {
-        if ($criteria === 'lowest_price') $this->orderByPrice($query, 'asc');
-        if ($criteria === 'highest_price') $this->orderByPrice($query, 'desc');
-        if ($criteria === 'latest') $query->latest();
-        if ($criteria === 'highest_rated') $this->orderByScore($query);
+        if ($criteria === 'lowest_price') {
+            $this->orderByPrice($query, 'asc');
+        }
+        if ($criteria === 'highest_price') {
+            $this->orderByPrice($query, 'desc');
+        }
+        if ($criteria === 'latest') {
+            $query->latest();
+        }
+        if ($criteria === 'highest_rated') {
+            $this->orderByScore($query);
+        }
     }
 
     public function handleSearch()

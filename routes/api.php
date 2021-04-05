@@ -24,8 +24,8 @@ use App\Http\Controllers\Shop\ProductCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/banners/main', [BannerController::class, 'getMain']);
-// Route::apiResource('/banners', BannerController::class);
+Route::get('/banners/main', 'BannerController@getMain');
+Route::apiResource('/banners', 'BannerController');
 
 // Route::get('/categories/hierarchy', CategoryHierarchyController::class);
 // Route::apiResource('/categories', CategoryController::class);
@@ -58,25 +58,26 @@ use Illuminate\Support\Facades\Route;
 //     'role:boss',
 // ]);
 
-// Route::get('/admins/roles', [AdminController::class, 'roles'])->middleware(['auth:admin', 'role:boss']);
+Route::get('/admins/roles', 'AdminController@roles');
 
 // Route::post('/admins/login', [AdminController::class, 'login']);
-// Route::apiResource('/admins', AdminController::class)->middleware(['auth:admin', 'role:boss']);
+Route::apiResource('/admins', 'AdminController');
 
 // /* User related routes */
-// Route::post('/users/register', [UserController::class, 'register']);
-// Route::post(
-//     '/users/register/verify',
-//     [UserController::class, 'verifyRegister']
-// )->name('register.verify');
-// Route::post('/users/login/verify', [UserController::class, 'verifyLogin'])
-//     ->name('login.verify');
+Route::post('/users/register', 'UserController@register');
+Route::post(
+    '/users/register/verify',
+    'UserController@verifyRegister'
+)->name('register.verify');
+Route::post('/users/login/verify', 'UserController@verifyLogin')
+    ->name('login.verify');
 
-// Route::post('/users/verify-phone', [UserController::class, 'verifyPhone']);
-// Route::post('/users/login', [UserController::class, 'login']);
-// Route::post('/users/verify-login', [UserController::class, 'verifyLogin']);
+Route::post('/users/verify-phone', [UserController::class, 'verifyPhone']);
+Route::post('/users/login', 'UserController@login');
+Route::post('/users/verify-login', [UserController::class, 'verifyLogin']);
 
-// Route::get('/comments', [CommentController::class, 'index']);
+Route::get('/admins/comments', 'CommentController@index');
+Route::patch('/admins/comments/{comment}', 'CommentController@update');
 
 // Route::post('/blogs/articles/{article}/comments', [ArticleController::class, 'addComment']);
 
@@ -92,9 +93,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // // User dashboard
-// Route::get('/users/self', [UserController::class, 'getSelf']);
-// Route::put('/users/self', [UserController::class, 'updateSelf']);
-// Route::apiResource('/users/addresses', AddressController::class);
+Route::get('/users/self', 'UserController@getSelf');
+Route::put('/users/self', 'UserController@updateSelf');
+Route::apiResource('/users/addresses', 'AddressController');
 // Route::apiResource('/users/orders', OrderController::class);
 
 // // Cart
@@ -106,10 +107,10 @@ use Illuminate\Support\Facades\Route;
 // // Article
 // Route::apiResource('/article-categories', ArticleCategoryController::class);
 // Route::get('/articles/search', ArticleSearchController::class);
-// Route::apiResource('/articles', ArticleController::class);
+// Route::apiResource('/articles', 'ArticleController');
 
 // // Message (Contact us)
-// Route::apiResource('/messages', MessageController::class)->except('update');
+Route::apiResource('/messages', 'MessageController')->except('update');
 
 Route::namespace('Shop')->group(function () {
     Route::prefix('product-categories')->group(function () {
@@ -138,6 +139,9 @@ Route::namespace('Admin')->group(function () {
     Route::apiResource('comments', 'CommentController')
         ->except(['store', 'show'])
         ->middleware(['auth:admin', 'role:admin']);
+    Route::apiResource('articles', 'ArticleController')
+        ->except(['index', 'show'])
+        ->middleware(['auth:admin', 'role:writer']);
 });
 
 Route::namespace('Blog')->group(function () {
@@ -155,5 +159,14 @@ Route::namespace('Blog')->group(function () {
 Route::namespace('User')->group(function () {
     Route::prefix('comments')->group(function () {
         Route::post('/', 'CommentController@store');
+    });
+    Route::prefix('orders')->group(function () {
+        Route::post('/', 'OrderController@store');
+    });
+    Route::prefix('verification-codes')->group(function () {
+        Route::post('/', 'VerificationCodeController@store');
+    });
+    Route::prefix('users')->group(function () {
+        Route::post('/', 'UserController@store');
     });
 });

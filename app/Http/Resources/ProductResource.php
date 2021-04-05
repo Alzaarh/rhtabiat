@@ -31,6 +31,7 @@ class ProductResource extends JsonResource
             $this->mergeWhen(Route::currentRouteName() === 'products.show', function () {
                 return [
                     'desc' => $this->desc,
+                    'meta_tags' => $this->meta_tags,
                     'items' => [
                         $this->mergeWhen($this->hasContainer(), function () {
                             return [

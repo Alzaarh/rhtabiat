@@ -2,7 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\Article;
+use App\Models\Banner;
+use App\Models\Message;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,8 +27,12 @@ class DatabaseSeeder extends Seeder
             ArticleCategorySeeder::class,
         ]);
         Article::factory(50)->hasComments(10)->create();
-        //     Banner::factory(5)->create();
-        //     Banner::factory()->create(['is_active' => true]);
+        Order::factory()
+            ->count(100)
+            ->for(Address::factory())
+            ->create();
+        Banner::factory(5)->create();
+        Banner::factory()->create(['is_active' => true]);
 
         //     Poster::factory()->create([
         //         'location' => Poster::LOCATIONS['dashboard'],
@@ -41,9 +50,10 @@ class DatabaseSeeder extends Seeder
 
         //     ArticleCategory::factory(5)->hasArticles(10)->create();
 
-        //     Message::factory(30)->create();
+        Message::factory(30)->create();
 
-        //     User::factory(10)->hasAddresses(2)->hasDetail(1)->create()->each(function ($user) {
+        User::factory(10)->hasAddresses(2)->hasDetail(1)->create();
+        // ->each(function ($user) {
         //         $products = collect();
         //         $cart = $user->cart()->save(new Cart());
         //         ProductFeature::inRandomOrder()

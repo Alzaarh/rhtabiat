@@ -8,17 +8,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
+use App\Traits\Sluggable;
+use App\Traits\Imageable;
 
 class Article extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory, Searchable, Sluggable, Imageable;
 
     protected $fillable = [
         'title',
+        'slug',
         'body',
         'meta',
-        'thumbnail',
-        'blog_category_id',
+        'image',
+        'article_category_id',
     ];
 
     protected static function booted()

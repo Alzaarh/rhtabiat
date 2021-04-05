@@ -34,7 +34,6 @@ class AdminController extends Controller
             'password' => 'required|string|max:30|min:6',
             'role' => ['required', Rule::in([1, 2, 3, 4])],
         ]);
-        $data['role'] = array_search($data['role'], Admin::ROLES);
         $admin = Admin::create($data);
         return response()->json(['data' => $admin], 201);
     }
@@ -74,7 +73,6 @@ class AdminController extends Controller
             'password' => 'required|string|max:30|min:6',
             'role' => ['required', Rule::in([1, 2, 3, 4])],
         ]);
-        $data['role'] = array_search($data['role'], Admin::ROLES);
         $admin->update($data);
         return response()->json(['data' => $admin]);
     }
@@ -104,11 +102,7 @@ class AdminController extends Controller
     // Get all roles
     public function roles()
     {
-        $data = [];
-        for ($i = 0; $i < count(Admin::ROLES_FA); $i++) {
-            $data[Admin::ROLES_FA[$i]] = $i + 1;
-        }
-        return response()->json(['data' => ['roles' => $data]]);
+        // return response()->json(['data' => ['roles' => Admin:]]);
     }
 
     // Get all comments

@@ -13,7 +13,7 @@ class ProductController extends Controller
 {
     /**
      * Instance of ProductService class.
-     * 
+     *
      * @var ProductService
      */
     private ProductService $productService;

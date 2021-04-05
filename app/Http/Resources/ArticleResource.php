@@ -14,10 +14,11 @@ class ArticleResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'thumbnail' => $this->thumbnail,
+            'image' => $this->image,
             'preview' => Str::of($this->body)->substr(0, 100),
             $this->mergeWhen(Route::currentRouteName() === 'articles.show', function () {
                 return [
+                    'meta' => $this->meta,
                     'body' => $this->body,
                     'comments' => CommentResource::collection($this->comments),
                 ];

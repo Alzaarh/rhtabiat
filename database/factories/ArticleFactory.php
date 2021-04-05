@@ -18,13 +18,14 @@ class ArticleFactory extends Factory
         return [
             'title' => $title,
             'slug' => Str::slug($title),
-            'thumbnail' => 'images/article.jpg',
+            'image' => 'images/article.jpg',
             'body' => $this->faker->realText(10000),
             'meta' => collect([
                 'keywords' => ['keyword1', 'keyword2', 'keyword3', 'keyword4'],
-                'description' => 'some description',
+                'description' => $this->faker->sentence(4),
             ])->toJson(),
-            'admin_id' => Admin::where('role', Admin::WRITER)->inRandomOrder()->value('id'),
+            'is_verified' => rand(1, 100) > 50 ? true : false,
+            'admin_id' => Admin::where('role', Admin::ROLES['writer'])->inRandomOrder()->value('id'),
             'article_category_id' => ArticleCategory::inRandomOrder()->value('id'),
         ];
     }

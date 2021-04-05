@@ -11,10 +11,12 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     const STATUS_LIST = [
-        'waitingForPayment' => 1,
-        'beingProcessed' => 2,
-        'deliveredToPostOffice' => 3,
+        'not_paid' => 1,
+        'being_processed' => 2,
+        'in_post_office' => 3,
         'delivered' => 4,
     ];
 
@@ -25,7 +27,9 @@ class Order extends Model
         'تحویل به مشتری',
     ];
 
-    const PAYMENT_METHOD = ['zarinpal' => 1];
+    const PAYMENT_METHODS = [
+        'zarinpal' => 1,
+    ];
 
     public function getTotalPriceAttribute()
     {
@@ -44,21 +48,20 @@ class Order extends Model
         return self::STATUS_LIST_FA[$this->status - 1];
     }
 
-    // public function getTotalWeightAttribute()
-    // {
-    //     return $this->products->reduce(function ($prev, $curr) {
-    //         return filled($prev) ?
-    //         $prev->pivot->weight * $prev->pivot->quantity : 0 + $curr->pivot->weight * $curr->pivot->quantity;
-    //     });
-    // }
-
-    public function products()
+    public function items()
     {
-        return $this->belongsToMany(ProductFeature::class, 'order_product')->withPivot([
-            'price',
-            'quantity',
-            'weight',
-        ]);
+        return $this->belongsToMany(ProductItem::class, 'order_product_item')
+            ->withPivot([
+                'product_id',
+                'price',
+                'quantity',
+                'weight',
+            ]);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 
     public static function generateCode()

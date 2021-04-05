@@ -9,8 +9,6 @@ class VerificationCode extends Model
 {
     use HasFactory;
 
-    protected $casts = ['code' => 'string'];
-
     protected $guarded = [];
 
     public $timestamps = false;
@@ -19,13 +17,6 @@ class VerificationCode extends Model
         'register' => 1,
         'login' => 2,
     ];
-
-    protected static function booted()
-    {
-        static::saving(function ($vcode) {
-            $vcode->updated_at = now();
-        });
-    }
 
     public function scopeHasPhone($query, $phone)
     {
@@ -88,6 +79,21 @@ class VerificationCode extends Model
             ->hasCode($data['code'])
             ->first();
         if (!$vcode || now()->diffInHours($vcode->updated_at) > 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public function isCodeValid($phone, $code)
+    {
+        $verificationCode = self::where('phone', $phone)
+            ->where('code', $code)
+            ->latest()
+            ->first();
+        if (
+            empty($verificationCode) ||
+            now()->diffInMinutes($verificationCode->created_at) > 60
+        ) {
             return false;
         }
         return true;

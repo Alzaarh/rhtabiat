@@ -14,7 +14,8 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        collect([Admin::ADMIN, Admin::ACCOUNTANT, Admin::WRITER, Admin::DISCOUNT_GENERATOR])
-            ->each(fn ($role) => Admin::factory(2)->create(['role' => $role]));
+        collect(Admin::ROLES)->each(fn ($role) => Admin::factory(2)->create([
+            'role' => $role,
+        ]));
     }
 }

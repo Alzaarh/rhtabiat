@@ -29,13 +29,20 @@ class Admin extends Authenticatable implements JWTSubject
 
     /**
      * Value of the role column.
-     * 
+     *
      * @var int
      */
-    const ADMIN = 1;
-    const ACCOUNTANT = 2;
-    const WRITER = 3;
-    const DISCOUNT_GENERATOR = 4;
+    const ROLES = [
+        'admin' => 1,
+        'accountant' => 2,
+        'writer' => 3,
+        'discount_generator' => 4,
+    ];
+    
+    // const ADMIN = 1;
+    // const ACCOUNTANT = 2;
+    // const WRITER = 3;
+    // const DISCOUNT_GENERATOR = 4;
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -64,16 +71,7 @@ class Admin extends Authenticatable implements JWTSubject
      */
     public function getRoleNameAttribute(): string
     {
-        switch ($this->role) {
-            case self::ADMIN:
-                return 'admin';
-            case self::ACCOUNTANT:
-                return 'accountant';
-            case self::WRITER:
-                return 'writer';
-            case self::DISCOUNT_GENERATOR:
-                return 'discount_generator';
-        }
+        return array_search($this->role, self::ROLES);
     }
 
     /**
@@ -104,6 +102,6 @@ class Admin extends Authenticatable implements JWTSubject
      */
     public function isAdmin(): bool
     {
-        return $this->role === self::ADMIN;
+        return $this->role === self::ROLES['admin'];
     }
 }

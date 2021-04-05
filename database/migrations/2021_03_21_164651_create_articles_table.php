@@ -12,9 +12,10 @@ class CreateArticlesTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('thumbnail')->nullable();
+            $table->string('image')->nullable();
             $table->mediumText('body');
             $table->json('meta')->nullable();
+            $table->boolean('is_verified')->default(false);
             $table->foreignId('article_category_id')->constrained()->onDelete('cascade');
             $table->foreignId('admin_id')->constrained()->onDelete('cascade');
             $table->timestamps();
