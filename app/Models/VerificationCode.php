@@ -83,19 +83,4 @@ class VerificationCode extends Model
         }
         return true;
     }
-
-    public function isCodeValid($phone, $code)
-    {
-        $verificationCode = self::where('phone', $phone)
-            ->where('code', $code)
-            ->latest()
-            ->first();
-        if (
-            empty($verificationCode) ||
-            now()->diffInMinutes($verificationCode->created_at) > 60
-        ) {
-            return false;
-        }
-        return true;
-    }
 }

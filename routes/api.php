@@ -169,4 +169,7 @@ Route::namespace('User')->group(function () {
     Route::prefix('users')->group(function () {
         Route::post('/', 'UserController@store');
     });
+    Route::prefix('carts')->group(function () {
+        Route::post('items', 'CartItemController@store');
+    });
 });

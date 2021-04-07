@@ -3,22 +3,35 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\User;
 use App\Models\VerificationCode;
+use App\Services\UserService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    public function store(VerificationCode $verificationCode)
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    public function store()
     {
         request()->validate([
-            'phone' => 'required|exists:verification_codes',
+            'phone' => 'required|unique:users',
             'code' => 'required',
         ]);
-        if (!$verificationCode->isCodeValid(request()->phone, request()->code)) {
-            throw ValidationException::withMessages(['phone' => 'Invalid phone']);
-        }
-        $user = User::create(['phone' => request()->phone]);
-        return response()->json(['data' => ['tokne' => auth('user')->login($user)]], 201);
+
+        $user = $this->userService->handleUserRegister();
+
+        return response()->json([
+            'data' => [
+                'token' => auth('user')->login($user),
+            ]
+        ], 201);
     }
 }

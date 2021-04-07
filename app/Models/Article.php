@@ -26,9 +26,11 @@ class Article extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope('latest', function (Builder $builder) {
-            $builder->latest('updated_at');
-        });
+        static::addGlobalScope(
+            'latest',
+            fn (Builder $builder) =>
+            $builder->latest('updated_at')
+        );
         
         static::deleting(
             fn ($article) =>

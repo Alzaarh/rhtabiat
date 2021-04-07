@@ -11,9 +11,6 @@ class ArticleController extends Controller
     public function index()
     {
         $query = Article::query();
-        if (request()->has('latest')) {
-            $query->latest();
-        }
         if (request()->has('article_category_id')) {
             $query->where('article_category_id', request()->article_category_id);
         }
