@@ -57,6 +57,15 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('comment', function ($id) {
             return \App\Models\Comment::withoutGlobalScopes()->findOrFail($id);
         });
+
+        Route::bind(
+            'cartProduct',
+            fn ($id) => request()->user()
+                ->cart
+                ->products()
+                ->where('product_items.id', $id)
+                ->firstOrFail()
+        );
     }
 
     /**

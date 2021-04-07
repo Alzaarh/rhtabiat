@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartProduct;
 use App\Http\Resources\ProductItemResource;
+use App\Models\ProductItem;
 
 class CartItemController extends Controller
 {
@@ -30,5 +31,21 @@ class CartItemController extends Controller
         return ProductItemResource::collection(
             request()->user()->cart->products->load('product')
         );
+    }
+
+    public function update(ProductItem $cartProduct)
+    {
+        request()->validate(['quantity' => 'required|min:1']);
+
+        request()
+            ->user()
+            ->cart
+            ->products()
+            ->updateExistingPivot(
+                $cartProduct->id,
+                ['quantity' => request()->quantity]
+            );
+        
+        return response()->json(['message' => 'Success']);
     }
 }

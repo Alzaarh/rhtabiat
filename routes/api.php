@@ -170,9 +170,11 @@ Route::namespace('User')->group(function () {
         Route::post('/', 'UserController@store');
     });
     Route::prefix('carts')->group(function () {
-        Route::post('items', 'CartItemController@store')
+        Route::post('products', 'CartItemController@store')
             ->middleware('auth:user');
-        Route::get('items', 'CartItemController@index')
+        Route::get('products', 'CartItemController@index')
+            ->middleware('auth:user');
+        Route::patch('products/{cartProduct}', 'CartItemController@update')
             ->middleware('auth:user');
     });
 });
