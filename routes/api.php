@@ -176,5 +176,7 @@ Route::namespace('User')->group(function () {
             ->middleware('auth:user');
         Route::patch('products/{cartProduct}', 'CartItemController@update')
             ->middleware('auth:user');
+        Route::delete('products/{cartProduct}', 'CartItemController@destroy')
+            ->middleware('auth:user');
     });
 });

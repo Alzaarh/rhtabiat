@@ -48,4 +48,15 @@ class CartItemController extends Controller
         
         return response()->json(['message' => 'Success']);
     }
+
+    public function destroy(ProductItem $cartProduct)
+    {
+        request()
+            ->user()
+            ->cart
+            ->products()
+            ->detach($cartProduct->id);
+        
+        return response()->json(['message' => 'Success']);
+    }
 }
