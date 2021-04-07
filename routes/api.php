@@ -170,6 +170,7 @@ Route::namespace('User')->group(function () {
         Route::post('/', 'UserController@store');
     });
     Route::prefix('carts')->group(function () {
-        Route::post('items', 'CartItemController@store');
+        Route::post('items', 'CartItemController@store')
+            ->middleware('auth:user');
     });
 });

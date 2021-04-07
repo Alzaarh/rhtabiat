@@ -13,7 +13,7 @@ use App\Traits\Imageable;
 
 class Article extends Model
 {
-    use HasFactory, Searchable, Sluggable, Imageable;
+    use HasFactory, Sluggable, Imageable;
 
     protected $fillable = [
         'title',

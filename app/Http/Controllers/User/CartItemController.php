@@ -3,11 +3,24 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCartProduct;
 
 class CartItemController extends Controller
 {
-    public function store()
+    public function store(StoreCartProduct $request)
     {
+        $cartProducts = [];
+        foreach ($request->products as $product) {
+            $cartProducts[$product['id']] = [
+                'quantity' => $product['quantity'],
+            ];
+        }
+        
+        request()->user()
+            ->cart
+            ->Products()
+            ->attach($cartProducts);
+
+        return response()->json(['message' => 'Success'], 201);
     }
 }

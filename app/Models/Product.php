@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use HasFactory, Searchable, HasImage;
+    use HasFactory, HasImage;
 
     protected $fillable = [
         'name',
