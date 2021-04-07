@@ -172,5 +172,7 @@ Route::namespace('User')->group(function () {
     Route::prefix('carts')->group(function () {
         Route::post('items', 'CartItemController@store')
             ->middleware('auth:user');
+        Route::get('items', 'CartItemController@index')
+            ->middleware('auth:user');
     });
 });

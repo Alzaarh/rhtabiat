@@ -17,8 +17,17 @@ class ProductItemResource extends JsonResource
         return [
             'id' => $this->id,
             'weight' => $this->weight,
+            'container' => $this->getContainerFarsi(),
             'price' => $this->price,
             'quantity' => $this->quantity,
+            'cart_quantity' => $this->whenPivotLoaded(
+                'cart_product_item',
+                fn () => $this->pivot->quantity
+            ),
+            'product' => $this->whenLoaded(
+                'product',
+                new ProductResource($this->product)
+            ),
         ];
     }
 }

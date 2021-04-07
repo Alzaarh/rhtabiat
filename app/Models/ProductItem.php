@@ -23,19 +23,8 @@ class ProductItem extends Model
      */
     public $timestamps = false;
 
-    /**
-     * value of the container column.
-     *
-     * @var int
-     */
-    public const ZINK_CONTAINER = 1;
-
-    /**
-     * value of the container column.
-     *
-     * @var int
-     */
-    public const PLASTIC_CONTAINER = 2;
+    const ZINK_CONTAINER = 1;
+    const PLASTIC_CONTAINER = 2;
 
     /**
      * Set the correct container value
@@ -58,5 +47,15 @@ class ProductItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getContainerFarsi()
+    {
+        if (empty($this->container)) {
+            return null;
+        }
+        return $this->container === self::ZINK_CONTAINER
+        ? 'روحی'
+        : 'پلاستیکی';
     }
 }

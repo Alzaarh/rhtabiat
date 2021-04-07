@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartProduct;
+use App\Http\Resources\ProductItemResource;
 
 class CartItemController extends Controller
 {
@@ -22,5 +23,12 @@ class CartItemController extends Controller
             ->attach($cartProducts);
 
         return response()->json(['message' => 'Success'], 201);
+    }
+
+    public function index()
+    {
+        return ProductItemResource::collection(
+            request()->user()->cart->products->load('product')
+        );
     }
 }
