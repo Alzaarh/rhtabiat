@@ -8,7 +8,7 @@ use App\Services\OrderService;
 
 class OrderController extends Controller
 {
-    private $orderService;
+    protected $orderService;
 
     public function __construct(OrderService $orderService)
     {
@@ -17,7 +17,13 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        $this->orderService->handleNewOrder($request);
+        if (auth('user')->check() && empty($request->address_id)) {
+            return response()->json([
+                'message' => 'Address_id must be present.'
+            ], 400);
+        }
+        
+        $this->orderService->handleNewOrder($request->validated());
         return response()->json(['message' => 'Success'], 201);
     }
 }

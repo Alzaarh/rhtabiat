@@ -16,9 +16,6 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize()
     {
-        if (request()->has('address_id') && !auth('user')->check()) {
-            return false;
-        }
         return true;
     }
 
@@ -32,10 +29,16 @@ class StoreOrderRequest extends FormRequest
         return [
             'address_id' => [
                 function ($attribute, $value, $fail) {
-                    if (Address::where('id', $value)
-                        ->where('user_id', auth('user')->user()->id)
-                        ->doesntExist()) {
-                        $fail('Invalid' . $attribute);
+                    if (!auth('user')->check()) {
+                        $fail("You can not use {$attribute} right now.");
+                    } else {
+                        if (
+                            Address::where('id', $value)
+                                ->where('user_id', auth('user')->user()->id)
+                                ->doesntExist()
+                        ) {
+                            $fail($attribute . ' does not exist.');
+                        }
                     }
                 },
             ],
@@ -47,10 +50,9 @@ class StoreOrderRequest extends FormRequest
             'city' => 'required_without:address_id|max:255',
             'zipcode' => 'required_without:address_id|digits:10',
             'address' => 'required_without:address_id|max:2000',
-            'items' => 'required_without:cart_id|array',
-            'items.*.id' => 'required|exists:product_items,id',
-            'items.*.quantity' => 'required|integer',
-            'payment_method' => ['required', Rule::in(Order::PAYMENT_METHODS)],
+            'products' => 'required_without:address_id|array',
+            'products.*.id' => 'required|exists:product_items,id',
+            'products.*.quantity' => 'required|integer|min:1',
         ];
     }
 }

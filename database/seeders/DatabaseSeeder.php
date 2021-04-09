@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             ProductItemSeeder::class,
             ArticleCategorySeeder::class,
+            ProvinceSeeder::class,
+            CitySeeder::class,
         ]);
         Article::factory(50)->hasComments(10)->create();
         Order::factory()

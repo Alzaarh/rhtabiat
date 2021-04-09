@@ -9,10 +9,10 @@ use App\Models\Address;
 
 class OrderService
 {
-    public function handleNewOrder($request)
+    public function handleNewOrder($data)
     {
-        DB::transaction(function () use ($request) {
-            $address = Address::create($request->all());
+        DB::transaction(function () use ($data) {
+            $address = $this->handleOrderAddress($data);
             $orderCost = $this->calculateOrderCost($request->items);
             if ($orderCost >= 200000) {
                 $deliveryCost = 0;
@@ -99,5 +99,12 @@ class OrderService
             }
         );
         return $formattedItems;
+    }
+
+    protected function handleOrderAddress(array $data) : Address
+    {
+        return filled($data['address_id'])
+            ? Address::find($data['address_id'])
+            : Address::create($data);
     }
 }
