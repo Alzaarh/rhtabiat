@@ -157,6 +157,8 @@ Route::namespace('Blog')->group(function () {
 });
 
 Route::namespace('User')->group(function () {
+    Route::get('provinces', 'ProvinceIndexController');
+    Route::get('cities', 'CityIndexController');
     Route::prefix('comments')->group(function () {
         Route::post('/', 'CommentController@store');
     });
