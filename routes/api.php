@@ -142,6 +142,8 @@ Route::namespace('Admin')->group(function () {
     Route::apiResource('articles', 'ArticleController')
         ->except(['index', 'show'])
         ->middleware(['auth:admin', 'role:writer']);
+    Route::apiResource('discount-codes', 'DiscountCodeController')
+        ->middleware(['auth:admin', 'role:discount_generator']);
 });
 
 Route::namespace('Blog')->group(function () {
