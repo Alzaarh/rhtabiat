@@ -184,4 +184,9 @@ Route::namespace('User')->group(function () {
         Route::delete('products/{cartProduct}', 'CartItemController@destroy')
             ->middleware('auth:user');
     });
+
+    Route::prefix('user-details')->group(function () {
+        Route::put('/', 'UserDetailController@update')
+            ->middleware('auth:user');
+    });
 });
