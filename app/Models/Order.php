@@ -31,6 +31,13 @@ class Order extends Model
         'zarinpal' => 1,
     ];
 
+    /**
+     * If province_id is equal to this, order is within province.
+     *
+     * @var int
+     */
+    const WHITHIN_PROVINCE = 11;
+
     public function getTotalPriceAttribute()
     {
         return $this->products->reduce(function ($carry, $item) {

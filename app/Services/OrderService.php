@@ -32,13 +32,11 @@ class OrderService
         });
     }
 
-    private function calculateDeliveryCost(string $state, int $totalWeight): int
+    public function calcDeliveryCost(int $provinceId, int $totalWeight): int
     {
-        if ($state === 'خراسان رضوی') {
-            $totalWeight *= 9800;
-        } else {
-            $totalWeight *= 14000;
-        }
+        $provinceId === Order::WHITHIN_PROVINCE
+            ? $totalWeight *= 9800
+            : $totalWeight *= 14000;
         return ($totalWeight + 2500) * 1.1;
     }
 

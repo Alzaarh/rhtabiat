@@ -164,6 +164,7 @@ Route::namespace('User')->group(function () {
     });
     Route::prefix('orders')->group(function () {
         Route::post('/', 'OrderController@store');
+        Route::get('delivery-costs', 'OrderCalculateDeliveryCostController');
     });
     Route::prefix('verification-codes')->group(function () {
         Route::post('/', 'VerificationCodeController@store');
