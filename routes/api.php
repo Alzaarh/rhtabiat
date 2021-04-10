@@ -188,5 +188,7 @@ Route::namespace('User')->group(function () {
     Route::prefix('user-details')->group(function () {
         Route::put('/', 'UserDetailController@update')
             ->middleware('auth:user');
+        Route::put('passwords', 'UserUpdatePasswordController')
+            ->middleware('auth:user');
     });
 });

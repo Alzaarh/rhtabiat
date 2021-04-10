@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -78,5 +79,19 @@ class User extends Authenticatable implements JWTSubject
             $this->save();
             $this->detail()->save(new UserDetail($data));
         });
+    }
+
+    public function canStorePassword()
+    {
+        return (empty($this->detail) || empty($this->detail->password));
+    }
+
+    public function canUpdatePassword($oldPassword)
+    {
+        return
+            $this->canStorePassword() ||
+            !Hash::check($oldPassword, $this->detail->password)
+                ? false
+                : true;
     }
 }
