@@ -17,6 +17,7 @@ class CreateOrderProductItemTable extends Migration
             $table->foreignId('order_id')->constrained();
             $table->foreignId('product_item_id')->constrained();
             $table->integer('price');
+            $table->integer('off');
             $table->integer('quantity');
             $table->integer('weight');
             $table->primary(['order_id', 'product_item_id']);

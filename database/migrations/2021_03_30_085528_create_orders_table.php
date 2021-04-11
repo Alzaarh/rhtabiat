@@ -12,7 +12,6 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('address_id')->constrained();
             $table->integer('status');
-            $table->integer('payment_method');
             $table->string('code')->unique();
             $table->integer('delivery_cost');
             $table->timestamps();

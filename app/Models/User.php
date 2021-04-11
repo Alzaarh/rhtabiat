@@ -94,4 +94,9 @@ class User extends Authenticatable implements JWTSubject
                 ? false
                 : true;
     }
+
+    public function isCartEmpty() : bool
+    {
+        return $this->cart->products()->count() === 0;
+    }
 }

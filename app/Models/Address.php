@@ -15,8 +15,8 @@ class Address extends Model
         'company',
         'mobile',
         'phone',
-        'state',
-        'city',
+        'province_id',
+        'city_id',
         'zipcode',
         'address',
     ];

@@ -51,6 +51,8 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (HttpException $e) {
             switch ($e->getStatusCode()) {
+                case 400:
+                    return response()->json(['message' => 'Bad request'], 400);
                 case 401:
                     return jsonResponse(['message' => 'Login first'], 401);
                 case 403:

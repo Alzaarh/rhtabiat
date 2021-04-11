@@ -3,9 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Address;
-use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -27,29 +25,15 @@ class StoreOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'address_id' => [
-                function ($attribute, $value, $fail) {
-                    if (!auth('user')->check()) {
-                        $fail("You can not use {$attribute} right now.");
-                    } else {
-                        if (
-                            Address::where('id', $value)
-                                ->where('user_id', auth('user')->user()->id)
-                                ->doesntExist()
-                        ) {
-                            $fail($attribute . ' does not exist.');
-                        }
-                    }
-                },
-            ],
-            'name' => 'required_without:address_id|max:255',
-            'company' => 'max:255',
-            'mobile' => 'required_without:address_id|digits:11',
-            'phone' => 'digits:11',
-            'state' => 'required_without:address_id|max:255',
-            'city' => 'required_without:address_id|max:255',
-            'zipcode' => 'required_without:address_id|digits:10',
-            'address' => 'required_without:address_id|max:2000',
+            'address' => 'required_without:address_id',
+            'address.name' => 'required|max:255',
+            'address.company' => 'max:255',
+            'address.mobile' => 'required|digits:11',
+            'address.phone' => 'digits:11',
+            'address.province_id' => 'required|exists:provinces,id',
+            'address.city_id' => 'required|exists:cities,id',
+            'address.zipcode' => 'required|digits:10',
+            'address.address' => 'required|max:2000',
             'products' => 'required_without:address_id|array',
             'products.*.id' => 'required|exists:product_items,id',
             'products.*.quantity' => 'required|integer|min:1',

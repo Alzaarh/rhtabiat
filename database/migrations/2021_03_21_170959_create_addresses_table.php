@@ -15,8 +15,8 @@ class CreateAddressesTable extends Migration
             $table->string('company')->nullable();
             $table->char('mobile', 11);
             $table->char('phone', 11)->nullable();
-            $table->string('state');
-            $table->string('city');
+            $table->string('province_id');
+            $table->string('city_id');
             $table->char('zipcode', 10);
             $table->string('address', 1000);
             $table->softDeletes();

@@ -4,7 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Address;
+use App\Models\Order;
+use App\Models\ProductItem;
 use App\Services\OrderService;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -17,13 +21,77 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        if (auth('user')->check() && empty($request->address_id)) {
-            return response()->json([
-                'message' => 'Address_id must be present.'
-            ], 400);
+        abort_if(
+            $request->filled('address_id') &&
+            auth('user')->check() &&
+            $request->user()
+                ->addresses()
+                ->where('id', $request->address_id)
+                ->doesntExist(),
+            400
+        );
+        
+        $items = ProductItem::find(array_column($request->products, 'id'))
+            ->load('product');
+        foreach ($request->products as $product) {
+            abort_if(
+                $items
+                    ->firstWhere('id', $product['id'])
+                    ->quantity < $product['quantity'],
+                400
+            );
         }
         
-        $this->orderService->handleNewOrder($request->validated());
-        return response()->json(['message' => 'Success'], 201);
+        DB::transaction(function () use ($request, $items) {
+            $orderProductsPrice = 0;
+            $orderProductsWeight = 0;
+            $orderProducts = [];
+
+            foreach ($request->products as $product) {
+                $item = $items->firstWhere('id', $product['id']);
+
+                $orderProductsPrice +=
+                    $item->price * (100 - $item->product->off) / 100
+                    * $product['quantity'];
+
+                $orderProductsWeight += $item->weight * $product['quantity'];
+
+                $orderProducts[$item->id] = [
+                    'price' => $item->price,
+                    'quantity' => $product['quantity'],
+                    'off' => $item->product->off,
+                    'weight' => $item->weight,
+                ];
+            }
+            
+            $orderDeliveryCost = $orderProductsPrice >= 200000
+                ? 0
+                : $this->orderService->calcDeliveryCost(
+                    $request->input('address.province_id'),
+                    $orderProductsWeight
+                );
+            
+            $order = Order::create([
+                'address_id' => $request->address_id
+                    ? Address::find($request->address_id)
+                    : Address::create([
+                        'name' => $request->input('address.name'),
+                        'company' => $request->input('address.company'),
+                        'mobile' => $request->input('address.mobile'),
+                        'phone' => $request->input('address.phone'),
+                        'province_id' => $request->input('address.province_id'),
+                        'city_id' => $request->input('address.city_id'),
+                        'zipcode' => $request->input('address.zipcode'),
+                        'address' => $request->input('address.address'),
+                    ])->id,
+                'status' => Order::STATUS_LIST['not_paid'],
+                'code' => Order::generateCode(),
+                'delivery_cost' => $orderDeliveryCost,
+                ]);
+
+            $order->products()->attach($orderProducts);
+        });
+
+        return response()->json(['message' => 'Order created'], 201);
     }
 }

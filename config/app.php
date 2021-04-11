@@ -14,6 +14,10 @@ return [
 
     'domain' => env('APP_DOMAIN', '127.0.0.1'),
 
+    'sms_uname' => env('SMS_USERNAME'),
+
+    'sms_pass' => env('SMS_PASSWORD'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Port

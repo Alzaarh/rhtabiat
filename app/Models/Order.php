@@ -55,12 +55,13 @@ class Order extends Model
         return self::STATUS_LIST_FA[$this->status - 1];
     }
 
-    public function items()
+    public function products()
     {
-        return $this->belongsToMany(ProductItem::class, 'order_product_item')
+        return $this
+            ->belongsToMany(ProductItem::class, 'order_product_item')
             ->withPivot([
-                'product_id',
                 'price',
+                'off',
                 'quantity',
                 'weight',
             ]);
