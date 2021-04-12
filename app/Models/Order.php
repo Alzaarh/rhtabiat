@@ -40,14 +40,15 @@ class Order extends Model
 
     public function getTotalPriceAttribute()
     {
-        return $this->products->reduce(function ($carry, $item) {
-            return ($item->pivot->price * $item->pivot->quantity) + $carry;
-        }, 0);
-    }
-
-    public function getCreatedAtAttribute($value)
-    {
-        return Carbon::create($value)->toDateTimeString();
+        return $this
+            ->products
+            ->reduce(
+                fn ($carry, $product) =>
+                    ($product->pivot->price *
+                    ((100 - $product->pivot->off) / 100) *
+                    $product->pivot->quantity) + $carry,
+                0
+            );
     }
 
     public function getStatusFaAttribute()

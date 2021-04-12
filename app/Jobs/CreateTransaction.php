@@ -36,7 +36,7 @@ class CreateTransaction implements ShouldQueue
     {
         $data = [
             'MerchantID' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-            'Amount' => 1000,
+            'Amount' => $this->order->total_price,
             'CallbackURL' => 'http://172.173.154.134:8000/api/transactions/verify',
             'Description' => 'test',
         ];
@@ -59,7 +59,7 @@ class CreateTransaction implements ShouldQueue
         if (empty($result['errors']) && $result['Status'] == 100) {
             Transaction::create([
                 'order_id' => $this->order->id,
-                'amount' => 1000,
+                'amount' => $this->order->total_price,
                 'authority' => $result['Authority'],
             ]);
         }
