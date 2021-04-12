@@ -20,7 +20,7 @@ class CreateDiscountCodesTable extends Migration
             $table->integer('min')->nullable();
             $table->integer('percent')->nullable();
             $table->integer('value')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('expires_at');
             $table->timestamp('used_at')->nullable();

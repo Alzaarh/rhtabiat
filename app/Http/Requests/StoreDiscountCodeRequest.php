@@ -28,6 +28,9 @@ class StoreDiscountCodeRequest extends FormRequest
             'min' => 'integer|min:1',
             'percent' => 'required_without:value|between:1, 100',
             'value' => 'integer|min:1',
+            'users' => 'array',
+            'users.*' => 'required|exists:users,id',
+            'expires_at' => 'required|date_format:Y-m-d',
         ];
     }
 }
