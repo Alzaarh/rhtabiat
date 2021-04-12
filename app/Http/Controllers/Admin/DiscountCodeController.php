@@ -4,15 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDiscountCodeRequest;
-use App\Models\DiscountCode;
-use Illuminate\Http\Request;
+use App\Services\DiscountCodeService;
 
 class DiscountCodeController extends Controller
 {
+    protected $discountCodeService;
+
+    public function __construct(DiscountCodeService $discountCodeService)
+    {
+        $this->discountCodeService = $discountCodeService;
+    }
+    
     public function store(StoreDiscountCodeRequest $request)
     {
-        return response()->json([
-            'data' => DiscountCode::create($request->validated()),
-        ], 201);
+        $this->discountCodeService->handleNewBatch($request->validated());
+
+        return response()->json(['message' => 'Created'], 201);
     }
 }

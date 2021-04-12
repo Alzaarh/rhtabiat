@@ -31,6 +31,7 @@ class StoreDiscountCodeRequest extends FormRequest
             'users' => 'array',
             'users.*' => 'required|exists:users,id',
             'expires_at' => 'required|date_format:Y-m-d',
+            'count' => 'required_without:users|integer|min:1',
         ];
     }
 }
