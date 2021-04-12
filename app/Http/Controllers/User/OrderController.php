@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\CreateTransaction;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\ProductItem;
@@ -90,8 +91,13 @@ class OrderController extends Controller
                 ]);
 
             $order->products()->attach($orderProducts);
+
+            CreateTransaction::dispatchSync($order);
         });
 
-        return response()->json(['message' => 'Order created'], 201);
+        return response()->json([
+            'message' => 'Order created',
+            'authority' => request()->authority,
+        ], 201);
     }
 }
