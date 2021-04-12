@@ -13,7 +13,7 @@ class VerificationCode extends Model
 
     public $timestamps = false;
 
-    public const USAGES = [
+    const USAGES = [
         'register' => 1,
         'login' => 2,
     ];
@@ -38,44 +38,10 @@ class VerificationCode extends Model
         return $query->where('code', $code);
     }
 
-    public function newRegister($data)
-    {
-        return self::updateOrCreate(
-            ['phone' => $data['phone']],
-            array_merge($data, [
-                'usage' => self::USAGES['register'],
-                'code' => rand(10000, 99999),
-            ])
-        );
-    }
-
     public function verifyRegister($data)
     {
         $vcode = self::hasPhone($data['phone'])
             ->isRegister()
-            ->hasCode($data['code'])
-            ->first();
-        if (!$vcode || now()->diffInHours($vcode->updated_at) > 1) {
-            return false;
-        }
-        return true;
-    }
-
-    public function newLogin($data)
-    {
-        return self::updateOrCreate(
-            ['phone' => $data['phone']],
-            array_merge($data, [
-                'usage' => self::USAGES['login'],
-                'code' => rand(10000, 99999),
-            ])
-        );
-    }
-
-    public function verifyLogin($data)
-    {
-        $vcode = self::hasPhone($data['phone'])
-            ->isLogin()
             ->hasCode($data['code'])
             ->first();
         if (!$vcode || now()->diffInHours($vcode->updated_at) > 1) {

@@ -13,15 +13,16 @@ class UserService
     public function handleUserRegister() : User
     {
         $code = VerificationCode::where('phone', request()->phone)
-            ->where('code', request()->code)
             ->latest()
             ->first();
 
-        if (empty($code) || now()->diffInMinutes($code->created_at) > 60) {
-            throw ValidationException::withMessages([
-                'phone' => 'Invalid phone',
-            ]);
-        }
+        abort_if(
+            empty($code) ||
+            $code->usage !== VerificationCode::USAGES['register'] ||
+            $code->code !== request()->code ||
+            now()->diffInMinutes($code->created_at) > 60,
+            400
+        );
         
         return DB::transaction(function () {
             $user = User::create(['phone' => request()->phone]);

@@ -26,12 +26,10 @@ class UserController extends Controller
             'code' => 'required',
         ]);
 
-        $user = $this->userService->handleUserRegister();
-
-        return response()->json([
-            'data' => [
-                'token' => auth('user')->login($user),
-            ]
+        return response()->json(['data' => [
+            'token' => auth('user')->login(
+                $this->userService->handleUserRegister()
+            )],
         ], 201);
     }
 }

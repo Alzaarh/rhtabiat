@@ -169,7 +169,8 @@ Route::namespace('User')->group(function () {
         Route::get('delivery-costs', 'OrderCalculateDeliveryCostController');
     });
     Route::prefix('verification-codes')->group(function () {
-        Route::post('/', 'VerificationCodeController@store');
+        Route::post('/', 'VerificationCodeController@store')
+            ->middleware('throttle:1,1');
     });
     Route::prefix('users')->group(function () {
         Route::post('/', 'UserController@store');
