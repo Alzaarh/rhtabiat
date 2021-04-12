@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,16 +23,6 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-
-    public function getCreatedAtAttribute($value)
-    {
-        return Carbon::create($value)->toDateTimeString();
-    }
-
-    public function getUpdatedAtAttribute($value)
-    {
-        return Carbon::create($value)->toDateTimeString();
     }
 
     public function addresses()

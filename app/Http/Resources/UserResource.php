@@ -9,11 +9,10 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            // 'id' => $this->id,
             'phone' => $this->phone,
-            'detail' => $this->detail,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'detail' => new UserDetailResource($this->detail),
+            'created_at' => $this->created_at,
+            'updated _at' => $this->updated_at,
         ];
     }
 }

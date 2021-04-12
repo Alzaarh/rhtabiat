@@ -93,9 +93,9 @@ Route::patch('/admins/comments/{comment}', 'CommentController@update');
 // });
 
 // // User dashboard
-Route::get('/users/self', 'UserController@getSelf');
-Route::put('/users/self', 'UserController@updateSelf');
-Route::apiResource('/users/addresses', 'AddressController');
+// Route::get('/users/self', 'UserController@getSelf');
+// Route::put('/users/self', 'UserController@updateSelf');
+// Route::apiResource('/users/addresses', 'AddressController');
 // Route::apiResource('/users/orders', OrderController::class);
 
 // // Cart
@@ -173,6 +173,7 @@ Route::namespace('User')->group(function () {
             ->middleware('throttle:1,1');
     });
     Route::prefix('users')->group(function () {
+        Route::get('self', 'UserGetSelf')->middleware('auth:user');
         Route::post('/', 'UserController@store');
     });
     Route::prefix('carts')->group(function () {
