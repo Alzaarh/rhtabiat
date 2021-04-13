@@ -9,8 +9,13 @@ Route::namespace('Shop')->group(function () {
     });
     Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
+        Route::get('best-sellings', 'IndexBestSellingProduct');
         Route::get('{product:slug}', 'ProductController@show')
             ->name('products.show');
+    });
+
+    Route::prefix('banners')->group(function () {
+        Route::get('/', 'BannerController@index');
     });
 });
 
@@ -87,4 +92,8 @@ Route::namespace('User')->group(function () {
 
     Route::apiResource('addresses', 'AddressController')
         ->middleware('auth:user');
+
+    Route::prefix('transactions')->group(function () {
+        Route::post('/', 'TransactionController@store');
+    });
 });

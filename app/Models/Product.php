@@ -68,11 +68,6 @@ class Product extends Model
         return $query->whereNotNull('off');
     }
 
-    public function features()
-    {
-        return $this->hasMany(ProductFeature::class);
-    }
-
     public function category()
     {
         return $this->belongsTo(ProductCategory::class);
@@ -96,6 +91,11 @@ class Product extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_product_item')->withPivot('quantity');
     }
 
     public function hasContainer(): bool

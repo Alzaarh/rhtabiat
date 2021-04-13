@@ -2,42 +2,30 @@
 
 namespace App\Models;
 
+use App\Traits\Imageable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Banner extends Model
 {
-    use HasFactory;
+    use HasFactory, Imageable;
 
     public $timestamps = false;
 
     protected $guarded = [];
 
-    protected $casts = ['is_active' => 'boolean'];
+    const LOCATIONS = [
+        'hero' => 1,
+        'home_top_big' => 2,
+        'home_top_small' => 3,
+        'home_below' => 4,
+        'home_mob_slider' => 5,
+        'home_mob_small' => 6,
+    ];
 
-    protected static function booted()
+    public function getLocationAttribute($location)
     {
-        static::updating(function (self $banner) {
-            Storage::delete($banner->getRawOriginal('image'));
-        });
-        static::deleting(function (self $banner) {
-            Storage::delete($banner->getRawOriginal('image'));
-        });
-    } 
-
-    public function getImageAttribute($value)
-    {
-        return storage() . $value;
-    }
-
-    public function scopeIsActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function getActive()
-    {
-        return self::isActive()->first();
+        return array_search($location, self::LOCATIONS);
     }
 }
