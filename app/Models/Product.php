@@ -65,7 +65,7 @@ class Product extends Model
 
     public function scopeHasDiscount($query)
     {
-        return $query->whereNotNull('off');
+        return $query->where('off', '>', 0);
     }
 
     public function category()
@@ -73,21 +73,11 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class);
     }
 
-    /**
-     * Get the items of the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function items()
     {
         return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
     }
 
-    /**
-     * Get the comments of the product.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
@@ -115,22 +105,8 @@ class Product extends Model
         return $this->items->where('container', ProductItem::PLASTIC_CONTAINER);
     }
 
-    /**
-     * Check if product has more than one items
-     *
-     * @return bool
-     */
     private function hasMultipleItems(): bool
     {
         return $this->items()->count() > 1;
-    }
-
-    public function getBestSelling($count = 10)
-    {
-        return self::selectRaw('products.*, sum(order_product.quantity) as total')
-            ->join('product_features', 'products.id', '=', 'product_features.product_id')
-            ->join('order_product', 'order_product.product_feature_id', '=', 'product_features.id')
-            ->groupBy('products.id')->orderBy('total', 'desc')->take($count)
-            ->get();
     }
 }

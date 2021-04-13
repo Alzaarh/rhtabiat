@@ -10,6 +10,7 @@ Route::namespace('Shop')->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
         Route::get('best-sellings', 'IndexBestSellingProduct');
+        Route::get('specials', 'IndexSpecialProduct');
         Route::get('{product:slug}', 'ProductController@show')
             ->name('products.show');
     });
