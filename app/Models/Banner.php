@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\Imageable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Banner extends Model
 {
-    use HasFactory, Imageable;
+    use HasFactory;
 
     public $timestamps = false;
 

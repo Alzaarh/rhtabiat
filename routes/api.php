@@ -41,6 +41,10 @@ Route::namespace('Admin')->group(function () {
         ->middleware(['auth:admin', 'role:writer']);
     Route::apiResource('discount-codes', 'DiscountCodeController')
         ->middleware(['auth:admin', 'role:discount_generator']);
+
+    Route::prefix('banners')->group(function () {
+        Route::post('/', 'BannerController@store')->middleware(['auth:admin', 'role:admin']);
+    });
 });
 
 Route::namespace('Blog')->group(function () {
