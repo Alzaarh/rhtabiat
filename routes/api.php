@@ -17,6 +17,7 @@ Route::namespace('Shop')->group(function () {
 
     Route::prefix('banners')->group(function () {
         Route::get('/', 'BannerController@index');
+        Route::get('locations', 'IndexBannerLocation');
     });
 });
 
