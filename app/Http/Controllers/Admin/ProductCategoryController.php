@@ -6,36 +6,38 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Resources\ProductCategoryResource;
 use App\Models\ProductCategory;
-use App\Services\ProductCategoryService;
+use Illuminate\Support\Facades\Storage;
 
 class ProductCategoryController extends Controller
 {
-    /**
-     * Instance of ProductCategoryService.
-     * 
-     * @var ProductCategoryService
-     */
-    private ProductCategoryService $productCategoryService;
-
-    public function __construct(ProductCategoryService $productCategoryService)
-    {
-        $this->productCategoryService = $productCategoryService;
-    }
-
     public function store(StoreProductCategoryRequest $request)
     {
-        return new ProductCategoryResource($this->productCategoryService->create($request));
+        $data = $request->validated();
+
+        $data['image'] = $request->image->store('images');
+
+        return new ProductCategoryResource(ProductCategory::create($data));
     }
 
     public function update(StoreProductCategoryRequest $request, ProductCategory $productCategory)
     {
-        $this->productCategoryService->update($request, $productCategory);
+        $data = $request->validated();
+
+        $data['image'] = $request->image->store('images');
+        
+        Storage::delete($productCategory->image);
+        
+        $productCategory->update($data);
+
         return new ProductCategoryResource($productCategory);
     }
 
     public function destroy(ProductCategory $productCategory)
     {
+        Storage::delete($productCategory->image);
+
         $productCategory->delete();
-        return response()->json(['message' => 'Success']);
+
+        return response()->json(['message' => 'Category deleted']);
     }
 }

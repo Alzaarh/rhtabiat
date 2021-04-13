@@ -32,7 +32,7 @@ class StoreProductCategoryRequest extends FormRequest
                 Rule::unique('product_categories')->ignore($this->route('product_category')),
             ],
             'image' => 'required|image|max:5120',
-            'parent_id' => 'nullable|integer|exists:product_categories,id',
+            'parent_id' => 'nullable|exists:product_categories,id',
         ];
     }
 }
