@@ -44,7 +44,10 @@ Route::namespace('Admin')->group(function () {
         ->middleware(['auth:admin', 'role:discount_generator']);
 
     Route::prefix('banners')->group(function () {
-        Route::post('/', 'BannerController@store')->middleware(['auth:admin', 'role:admin']);
+        Route::middleware(['auth:admin', 'role:admin'])->group(function () {
+            Route::post('/', 'BannerController@store');
+            Route::delete('/{banner}', 'BannerController@destroy');
+        });
     });
 });
 
