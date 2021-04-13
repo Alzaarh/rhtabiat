@@ -31,10 +31,10 @@ class StoreCartProduct extends FormRequest
                 function ($attribute, $value, $fail) {
                     if (
                         request()->user()
-                        ->cart
-                        ->products()
-                        ->where('product_item_id', $value)
-                        ->exists()
+                            ->cart
+                            ->products()
+                            ->where('product_item_id', $value)
+                            ->exists()
                     ) {
                         $fail($attribute . ' is invalid');
                     }

@@ -16,9 +16,7 @@ class CreateCartProductItemTable extends Migration
         Schema::create('cart_product_item', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cart_id')->constrained();
-            $table->foreignId('product_item_id')
-                ->constrained()
-                ->onDelete('cascade');
+            $table->foreignId('product_item_id')->constrained()->onDelete('cascade');
             $table->integer('quantity');
         });
     }

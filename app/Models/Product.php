@@ -98,19 +98,21 @@ class Product extends Model
         return $this->morphMany(Comment::class, 'commentable');
     }
 
-    public static function getFeatured($count = self::COUNT)
-    {
-        return self::hasDiscount()->take($count)->get();
-    }
-
-    /**
-     * Check if the product has container.
-     *
-     * @return bool
-     */
     public function hasContainer(): bool
     {
-        return $this->items->contains(fn ($item) => filled($item->container));
+        return $this->items->contains(
+            fn ($item) => filled($item->container)
+        );
+    }
+
+    public function getZinkItems()
+    {
+        return $this->items->where('container', ProductItem::ZINK_CONTAINER);
+    }
+
+    public function getPlasticItems()
+    {
+        return $this->items->where('container', ProductItem::PLASTIC_CONTAINER);
     }
 
     /**

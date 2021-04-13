@@ -9,18 +9,10 @@ class ProductItem extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = ['weight', 'price', 'quantity', 'container'];
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
+    protected $touches = ['carts'];
+
     public $timestamps = false;
 
     const ZINK_CONTAINER = 1;
@@ -35,8 +27,8 @@ class ProductItem extends Model
     public function setContainerAttribute(string $container): void
     {
         $container === 'zink'
-            ? $this->attributes['container'] = self::ZINK_CONTAINER
-            : $this->attributes['container'] = self::PLASTIC_CONTAINER;
+        ? $this->attributes['container'] = self::ZINK_CONTAINER
+        : $this->attributes['container'] = self::PLASTIC_CONTAINER;
     }
 
     /**
@@ -47,6 +39,11 @@ class ProductItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class);
     }
 
     public function getContainerFarsi()

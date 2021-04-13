@@ -15,7 +15,7 @@ class AddressResource extends JsonResource
             'company' => $this->company,
             'mobile' => $this->mobile,
             'phone' => $this->phone,
-            'state' => $this->state,
+            'province' => $this->province,
             'city' => $this->city,
             'zipcode' => $this->zipcode,
         ];

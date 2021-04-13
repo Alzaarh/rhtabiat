@@ -10,18 +10,19 @@ class Address extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'company',
-        'mobile',
-        'phone',
-        'province_id',
-        'city_id',
-        'zipcode',
-        'address',
-    ];
+    protected $guarded = [];
 
     public $timestamps = false;
+
+    public function getProvinceAttribute()
+    {
+        return Province::find($this->province_id)->name;
+    }
+
+    public function getCityAttribute()
+    {
+        return City::find($this->city_id)->name;
+    }
 
     public function resolveRouteBinding($value, $field = null)
     {

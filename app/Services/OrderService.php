@@ -2,58 +2,67 @@
 
 namespace App\Services;
 
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\ProductItem;
 use Illuminate\Support\Facades\DB;
-use App\Models\Address;
 
 class OrderService
 {
-    public function handleNewOrder($orderData) : void
+    public function handleNewOrder($orderData): Order
     {
-        DB::transaction(function () use ($orderData) {
-            $address = $this->handleOrderAddress($orderData);
+        if (auth('user')->check()) {
+            return $this->createForUser($orderData);
+        }
+    }
 
-            dd(collect($orderData->get('products'))->get(0));
-            $orderProducts = collect($orderData->get('products'));
-            $productItems = ProductItem::with('product')
-                ->whereIn('id', $orderProducts->pluck('id'))
-                ->get();
-            
-            $orderProducts->each(function ($orderProduct) use ($productItems) {
-                $orderProduct->put('price', $productItems->first(function ($productItem) use ($orderProduct) {
-                    return $productItem->id === $orderProduct->get('id');
-                })->price);
-                $orderProduct->put('off', $productItems->first(function ($productItem) use ($orderProduct) {
-                    return $productItem->id === $orderProduct->get('id');
-                })->product->off);
-            });
+    private function createForUser(array $orderData): Order
+    {
+        $this->validateForUser();
 
-            dd($orderProducts);
-            $orderCost = $this->calcOrderCost($data);
-            if ($orderCost >= 200000) {
-                $deliveryCost = 0;
-            } else {
-                $deliveryCost = $this->calcDeliveryCost(
-                    $address->province_id,
-                    $this->calculateOrderWeight($request->items)
-                );
-            }
-            $order = $address->orders()->save(new Order([
+        $orderProducts = [];
+        $cart = request()->user()->cart;
+
+        $cart->products->each(function ($item) use (&$orderProducts) {
+            $orderProducts[$item->id] = [
+                'price' => $item->price,
+                'quantity' => $item->pivot->quantity,
+                'off' => $item->product->off,
+                'weight' => $item->weight,
+            ];
+        });
+
+        return DB::transaction(function () use ($orderData, $orderProducts, $cart) {
+            $order = request()->user()->orders()->save(new Order([
+                'address_id' => $orderData['address_id'],
                 'status' => Order::STATUS_LIST['not_paid'],
-                'payment_method' => $request->payment_method,
                 'code' => Order::generateCode(),
-                'delivery_cost' => $deliveryCost,
+                'delivery_cost' => $this->calcDeliveryCost(
+                    $cart->total_price,
+                    Address::find($orderData['address_id'])->province_id,
+                    $cart->total_weight
+                ),
             ]));
-            $order->items()->attach($this->getItems($request->items));
+
+            $order->products()->attach($orderProducts);
+
+            return $order;
         });
     }
 
-    protected function handleOrderAddress($orderData) : Address
+    private function validateForUser(): void
+    {
+        abort_if(request()->user()->isCartEmpty(), 400);
+
+        request()->user()->cart->products->load('product')->each(fn ($item) =>
+            abort_if($item->pivot->quantity > $item->quantity, 400));
+    }
+
+    protected function handleOrderAddress($orderData): Address
     {
         return $orderData->has('address_id')
-            ? Address::find($orderData->get('address_id'))
-            : Address::create($orderData->all());
+        ? Address::find($orderData->get('address_id'))
+        : Address::create($orderData->all());
     }
 
     protected function getOrderProducts($orderData)
@@ -87,29 +96,31 @@ class OrderService
         }
     }
 
-    public function calcDeliveryCost(int $provinceId, int $totalWeight): int
+    public function calcDeliveryCost(int $price, int $province, int $weight): int
     {
-        $provinceId === Order::WHITHIN_PROVINCE
-            ? $totalWeight *= 9800
-            : $totalWeight *= 14000;
-        return ($totalWeight + 2500) * 1.1;
+        if ($price >= 200000) {
+            return 0;
+        }
+
+        $weight = $province === Order::WHITHIN_PROVINCE ? $weight * 9800 : $weight * 14000;
+        return ($weight + 2500) * 1.1;
     }
 
-    protected function calcOrderCost(array $data) : int
+    protected function calcOrderCost(array $data): int
     {
         if (filled($data['address_id'])) {
             $products = request()->user()->cart->products;
 
             return $products->reduce(function ($carry, $productItem) {
                 return $carry + $productItem->price *
-                    ((100 - $productItem->product->off) / 100) *
-                    $productItem->pivot->quantity;
+                ((100 - $productItem->product->off) / 100) *
+                $productItem->pivot->quantity;
             }, 0);
         } else {
             $products = ProductItem::with('product')
                 ->whereIn('id', array_column($data['items'], 'id'))
                 ->get();
-            
+
             return $products->reduce(
                 function ($carry, $productItem) use ($data) {
                     $index = array_search(
@@ -128,8 +139,8 @@ class OrderService
     protected function calcOrderWeight(array $items)
     {
         $productItemCollection = ProductItem::with('product')
-                ->whereIn('id', array_column($items, 'id'))
-                ->get();
+            ->whereIn('id', array_column($items, 'id'))
+            ->get();
         return $productItemCollection->reduce(
             function ($carry, $productItem) use ($items) {
                 $index = array_search(
@@ -145,8 +156,8 @@ class OrderService
     private function getItems(array $items)
     {
         $productItemCollection = ProductItem::with('product')
-                ->whereIn('id', array_column($items, 'id'))
-                ->get();
+            ->whereIn('id', array_column($items, 'id'))
+            ->get();
         $formattedItems = [];
         $productItemCollection->each(
             function ($productItem) use ($items, $formattedItems) {
@@ -159,16 +170,9 @@ class OrderService
                     'weight' => $productItem->weight,
                     'quantity' => $items[$index]['quantity'],
                     'product_id' => $productItem->product->id,
-                    ]]);
+                ]]);
             }
         );
         return $formattedItems;
-    }
-
-    protected function calcProductPrice($item, $qty)
-    {
-        return $productItem->price *
-        ((100 - $productItem->product->off) / 100) *
-        $items[$index]['quantity'];
     }
 }

@@ -24,6 +24,19 @@ class StoreOrderRequest extends FormRequest
      */
     public function rules()
     {
+        if (auth('user')->check()) {
+            return [
+                'address_id' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if (!request()->user()->hasAddress($value)) {
+                            $fail("{$attribute} is invalid.");
+                        }
+                    }
+                ]
+            ];
+        }
+
         return [
             'address' => 'required_without:address_id',
             'address.name' => 'required|max:255',

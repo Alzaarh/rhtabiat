@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function orders()
     {
-        return $this->hasManyThrough(Order::class, Address::class);
+        return $this->hasMany(Order::class);
     }
 
     public function cart()
@@ -87,5 +87,10 @@ class User extends Authenticatable implements JWTSubject
     public function isCartEmpty() : bool
     {
         return $this->cart->products()->count() === 0;
+    }
+
+    public function hasAddress($id) : bool
+    {
+        return $this->addresses()->where('id', $id)->exists();
     }
 }

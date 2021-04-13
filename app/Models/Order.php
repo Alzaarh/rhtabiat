@@ -75,7 +75,8 @@ class Order extends Model
 
     public static function generateCode()
     {
-        return Str::of('#')->append(self::latest()->value('id') ?? 0)
+        return Str::of('#')
+            ->append(self::count())
             ->append('-')
             ->append(Str::random(10));
     }

@@ -14,14 +14,14 @@ class SaveAddressRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|max:255',
             'company' => 'string|max:255',
-            'mobile' => ['required', 'string', validPhone()],
-            'phone' => 'string|digits:11',
-            'state' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'zipcode' => 'required|string|digits:10',
-            'address' => 'required|string|max:1000',
+            'mobile' => 'required|digits:11',
+            'phone' => 'digits:11',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id' => 'required|exists:cities,id',
+            'zipcode' => 'required|digits:10',
+            'address' => 'required|max:1000',
         ];
     }
 }

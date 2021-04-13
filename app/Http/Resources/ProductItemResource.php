@@ -26,7 +26,7 @@ class ProductItemResource extends JsonResource
             ),
             'product' => $this->whenLoaded(
                 'product',
-                new ProductResource($this->product)
+                new IndexProductResource($this->product)
             ),
         ];
     }

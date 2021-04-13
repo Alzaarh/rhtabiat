@@ -23,7 +23,7 @@ class CartItemController extends Controller
             ->Products()
             ->attach($cartProducts);
 
-        return response()->json(['message' => 'Success'], 201);
+        return response()->json(['message' => 'Added to cart'], 201);
     }
 
     public function index()

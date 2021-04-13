@@ -23,8 +23,14 @@ class ProductResource extends JsonResource
             'image' => $this->image,
             'short_desc' => $this->short_desc,
             'price' => $this->when(filled($this->price), $this->price),
-            'min_price' => $this->when(filled($this->min_price), $this->min_price),
-            'max_price' => $this->when(filled($this->max_price), $this->max_price),
+            'min_price' => $this->when(
+                filled($this->min_price),
+                $this->min_price
+            ),
+            'max_price' => $this->when(
+                filled($this->max_price),
+                $this->max_price
+            ),
             'off' => $this->off,
             'avg_score' => $this->avg_score,
             'category' => $this->category,
