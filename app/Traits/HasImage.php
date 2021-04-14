@@ -7,30 +7,20 @@ use Illuminate\Support\Facades\Storage;
 
 trait HasImage
 {
-    public function getImageAttribute($image)
+    public function getImageAttribute($imagePath): ?string
     {
-        return config('app.domain') . ':' . config('app.port') . '/storage/' . $image;
+        return empty($imagePath) ? null : '/' . $imagePath;
     }
 
-    /**
-     * Store the image on disk.
-     *
-     * @param UploadedFile $image
-     * @return string
-     */
-    public function storeImage(UploadedFile $image): string
+    public function handleImageUpload(UploadedFile $image = null): void
     {
-        return $image->store('images');
-    }
-
-    /**
-     * Delete model's image.
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return void
-     */
-    static function deleteImage(\Illuminate\Database\Eloquent\Model $model): void
-    {
-        Storage::delete($model->getRawOriginal('image'));
+        if (filled($image)) {
+            if (filled($this->image)) {
+                Storage::delete($this->getRawOriginal('image'));
+            }
+            $this->image = $image->store('images');
+        } else {
+            $this->image = null;
+        }
     }
 }

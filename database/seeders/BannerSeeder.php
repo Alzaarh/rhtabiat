@@ -15,7 +15,7 @@ class BannerSeeder extends Seeder
     public function run()
     {
         foreach (Banner::LOCATIONS as $location) {
-            Banner::create(['image' => 'banner.jpg', 'location' => $location]);
+            Banner::create(['image' => 'images/banner.jpg', 'location' => $location]);
         }
     }
 }

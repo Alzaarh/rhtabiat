@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
 use App\Traits\Sluggable;
-use App\Traits\Imageable;
+use App\Traits\HasImage;
 
 class Article extends Model
 {
-    use HasFactory, Sluggable, Imageable;
+    use HasFactory, Sluggable, HasImage;
 
     protected $fillable = [
         'title',
@@ -31,7 +31,7 @@ class Article extends Model
             fn (Builder $builder) =>
             $builder->latest('updated_at')
         );
-        
+
         static::deleting(
             fn ($article) =>
             Storage::delete($article->getRawOriginal('image'))
