@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Message;
 use App\Models\Order;
+use App\Models\ProductCategory;
 use App\Models\ProductItem;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -21,16 +22,18 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            ProductCategorySeeder::class,
+        ]);
+        $this->call([
             BannerSeeder::class,
             AdminSeeder::class,
-            ProductCategorySeeder::class,
             ProductSeeder::class,
             ProductItemSeeder::class,
             ArticleCategorySeeder::class,
             ProvinceSeeder::class,
             CitySeeder::class,
         ]);
-        Article::factory(50)->hasComments(10)->create();
+        // Article::factory(50)->hasComments(10)->create();
         $orders = Order::factory()
             ->count(100)
             ->for(Address::factory())

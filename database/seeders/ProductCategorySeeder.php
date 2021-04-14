@@ -14,7 +14,20 @@ class ProductCategorySeeder extends Seeder
      */
     public function run()
     {
-        ProductCategory::factory(5)->create();
-        ProductCategory::factory(2)->hasChildren(2)->create();
+        ProductCategory::create([
+            'name' => 'روغن حیوانی',
+            'slug' => 'روغن-حیوانی',
+            'image' => 'images/product-category.jpg',
+        ]);
+        ProductCategory::create([
+            'name' => 'کره حیوانی',
+            'slug' => 'کره-حیوانی',
+            'image' => 'images/product-category.jpg',
+        ]);
+        ProductCategory::create([
+            'name' => 'متفرقه',
+            'slug' => 'متفرقه',
+            'image' => 'images/product-category.jpg',
+        ]);
     }
 }
