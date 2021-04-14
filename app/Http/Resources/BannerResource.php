@@ -10,15 +10,8 @@ class BannerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'image' => $this->image,
-            'linkText' => $this->link_text,
-            'linkDest' => $this->link_dest,
-            'isActive' => $this->when(
-                auth('admin')->check() && $request->user()->isAdmin(), 
-                $this->is_active
-            ),
+            'image' => url("storage/{$this->image}"),
+            'location' => $this->location,
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Banner;
+use DB;
 use Illuminate\Database\Seeder;
 
 class BannerSeeder extends Seeder
@@ -14,8 +15,55 @@ class BannerSeeder extends Seeder
      */
     public function run()
     {
-        foreach (Banner::LOCATIONS as $location) {
-            Banner::create(['image' => 'images/banner.jpg', 'location' => $location]);
-        }
+        DB::table('banners')->insert([
+            [
+                'image' => 'images/hero.png',
+                'location' => Banner::LOCATIONS['hero'],
+            ],
+            [
+                'image' => 'images/banner-1.png',
+                'location' => Banner::LOCATIONS['home_top_big'],
+            ],
+            [
+                'image' => 'images/banner-2.png',
+                'location' => Banner::LOCATIONS['home_top_small'],
+            ],
+            [
+                'image' => 'images/banner-3.png',
+                'location' => Banner::LOCATIONS['home_top_small'],
+            ],
+            [
+                'image' => 'images/banner-4.png',
+                'location' => Banner::LOCATIONS['home_below'],
+            ],
+            [
+                'image' => 'images/banner-1.png',
+                'location' => Banner::LOCATIONS['home_below'],
+            ],
+            [
+                'image' => 'images/banner-1.png',
+                'location' => Banner::LOCATIONS['home_mob_slider'],
+            ],
+            [
+                'image' => 'images/banner-2.png',
+                'location' => Banner::LOCATIONS['home_mob_slider'],
+            ],
+            [
+                'image' => 'images/banner-3.png',
+                'location' => Banner::LOCATIONS['home_mob_slider'],
+            ],
+            [
+                'image' => 'images/banner-4.png',
+                'location' => Banner::LOCATIONS['home_mob_slider'],
+            ],
+            [
+                'image' => 'images/banner-1.png',
+                'location' => Banner::LOCATIONS['home_mob_small'],
+            ],
+            [
+                'image' => 'images/banner-2.png',
+                'location' => Banner::LOCATIONS['home_mob_small'],
+            ],
+        ]);
     }
 }
