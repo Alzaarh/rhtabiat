@@ -18,7 +18,7 @@ class ProductCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'image' => $this->image,
+            'image' => url("storage/{$this->image}"),
             'parent_id' => $this->parent_id,
             'children' => self::collection($this->children),
             'products' => IndexProductResource::collection(
