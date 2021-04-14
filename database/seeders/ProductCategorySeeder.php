@@ -17,17 +17,17 @@ class ProductCategorySeeder extends Seeder
         ProductCategory::create([
             'name' => 'روغن حیوانی',
             'slug' => 'روغن-حیوانی',
-            'image' => 'images/product-category.jpg',
+            'image' => 'images/oil.png',
         ]);
         ProductCategory::create([
             'name' => 'کره حیوانی',
             'slug' => 'کره-حیوانی',
-            'image' => 'images/product-category.jpg',
+            'image' => 'images/butter.png',
         ]);
         ProductCategory::create([
             'name' => 'متفرقه',
             'slug' => 'متفرقه',
-            'image' => 'images/product-category.jpg',
+            'image' => 'images/honey.png',
         ]);
     }
 }
