@@ -17,7 +17,9 @@ class Banner extends Model
         'home_mob_slider' => 5,
         'home_mob_small' => 6,
     ];
+
     public $timestamps = false;
+
     protected $guarded = [];
 
     public function getLocationAttribute($location)

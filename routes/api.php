@@ -9,7 +9,7 @@ Route::namespace('Shop')->group(function () {
     });
     Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
-        Route::get('best-sellings', 'IndexBestSellingProduct');
+        Route::get('best-selling', 'IndexBestSellingProduct');
         Route::get('specials', 'IndexSpecialProduct');
         Route::get('{product:slug}', 'ProductController@show')
             ->name('products.show');
@@ -25,12 +25,13 @@ Route::namespace('Admin')->group(function () {
     Route::prefix('admins')->group(function () {
         Route::post('auth/login', 'AdminLoginController');
     });
+
     Route::apiResource('product-categories', 'ProductCategoryController')
         ->except(['index', 'show'])
         ->middleware(['auth:admin', 'role:admin']);
-    Route::apiResource('products', 'ProductController')
-        ->except(['index', 'show'])
-        ->middleware(['auth:admin', 'role:admin']);
+
+    Route::apiResource('products', 'ProductController')->except(['index', 'show'])->middleware(['auth:admin', 'role:admin']);
+
     Route::apiResource('article-categories', 'ArticleCategoryController')
         ->except(['index', 'show'])
         ->middleware(['auth:admin', 'role:admin']);

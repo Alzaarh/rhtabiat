@@ -3,8 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\ArticleCategory;
-use App\Models\Comment;
+use Illuminate\Support\Facades\DB;
 
 class ArticleCategorySeeder extends Seeder
 {
@@ -15,6 +14,22 @@ class ArticleCategorySeeder extends Seeder
      */
     public function run()
     {
-        ArticleCategory::factory(10)->create();
+        DB::table('article_categories')->insert([
+            'name' => 'متفرقه',
+            'slug' => 'متفرقه',
+        ]);
+
+        if (config('app.env') === 'local') {
+            DB::table('article_categories')->insert([
+                [
+                    'name' => 'گیاهی',
+                    'slug' => 'گیاهی',
+                ],
+                [
+                    'name' => 'طبیعی',
+                    'slug' => 'طبیعی',
+                ],
+            ]);
+        }
     }
 }

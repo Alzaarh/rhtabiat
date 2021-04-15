@@ -2,8 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Product;
+use App\Models\ProductCategory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
 {
@@ -21,14 +22,18 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->unique()->sentence(3);
         return [
-            'name' => $name,
-            'slug' => $name,
-            'short_desc' => $this->faker->sentence(15),
-            'desc' => $this->faker->text(1000),
-            'image' => 'images/product.jpg',
+            'name' => $this->faker->randomElement(['روغن گوسفندی', 'عسل', 'کشک', 'شیر', 'ماست', 'کره گوسفندی']),
+            'slug' => $this->faker->unique()->word,
+            'short_desc' => \Faker\Factory::create('fa_IR')->realText(100),
+            'desc' => \Faker\Factory::create('fa_IR')->realText(1000),
+            'meta_tags' => json_encode([
+                'description' => $this->faker->realText(),
+                'keywords' => $this->faker->sentence(10),
+            ]),
+            'image' => $this->faker->randomElement(['images/product-1.png', 'images/product-2.png']),
             'off' => rand(1, 100) > 50 ? rand(5, 50) : 0,
+            'category_id' => ProductCategory::inRandomOrder()->value('id'),
         ];
     }
 }

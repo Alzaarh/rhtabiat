@@ -6,16 +6,10 @@ use App\Models\Product;
 use App\Models\ProductItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductService
 {
-    private Product $product;
-
-    public function __construct(Product $product)
-    {
-        $this->product = $product;
-    }
-
     public function orderBy($query, string $criteria)
     {
         if ($criteria === 'lowest_price') {
@@ -48,27 +42,24 @@ class ProductService
         return $filteredProductCollection ?? $productCollection;
     }
 
-    public function create(Request $request): Product
+    public function create(array $data): Product
     {
-        return DB::transaction(function () use ($request) {
-            $data = $request->validated();
-            $data['image'] = $this->product->storeImage($request->image);
-            $product = $this->product->create($data);
+        return DB::transaction(function () use ($data) {
+            $data['image'] = request()->image->store('images');
+            $product = Product::create($data);
             $product->items()->createMany($data['items']);
             return $product;
         });
     }
 
-    public function update(Request $request, Product $product): Product
+    public function update(array $data, Product $product): Product
     {
-        return DB::transaction(function () use ($request, $product) {
-            $data = $request->validated();
-            $data['image'] = $this->product->storeImage($request->image);
+        Storage::delete($product->image);
+        return DB::transaction(function () use ($data, $product) {
+            $data['image'] = request()->image->store('images');
             $product->update($data);
             collect($data['items'])->each(function ($item) use ($product) {
-                empty($item['id'])
-                    ? $product->items()->create($item)
-                    : ProductItem::find($item['id'])->update($item);
+                empty($item['id']) ? $product->items()->create($item) : ProductItem::find($item['id'])->update($item);
             });
             return $product;
         });

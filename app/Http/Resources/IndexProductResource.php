@@ -18,7 +18,7 @@ class IndexProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'image' => $this->image,
+            'image' => url('storage/' . $this->image),
             'price' => $this->when(filled($this->price), $this->price),
             'min_price' => $this->when(
                 filled($this->min_price),

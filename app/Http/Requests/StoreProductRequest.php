@@ -39,20 +39,21 @@ class StoreProductRequest extends FormRequest
             'off' => 'integer|between:0,99',
             'has_container' => 'required|boolean',
             'items' => 'required|array',
-            'items.*.id' => [function ($attribute, $value, $fail) {
-                if (
-                    request()->has('product') &&
-                    ProductItem::where('id', $value)
-                    ->where('product_id', request()->product->id)
-                    ->doesntExist()
-                ) {
-                    $fail('Invalid ' . $attribute);
-                }
-            }],
+            'items.*.id' => [
+                function ($attribute, $value, $fail) {
+                    if (request()->has('product') && ProductItem::where('id', $value)->where('product_id', request()->product->id)->doesntExist()) {
+                        $fail('Invalid ' . $attribute);
+                    }
+                },
+            ],
             'items.*.weight' => 'required|numeric',
             'items.*.price' => 'required|integer|min:0',
             'items.*.quantity' => 'required|integer|min:0',
-            'items.*.container' => 'required_if:has_container,1|prohibited_if:has_container,0|in:zink,plastic',
+            'items.*.container' => [
+                'required_if:has_container,1',
+                'prohibited_if:has_container,0',
+                Rule::in([ProductItem::ZINK_CONTAINER, ProductItem::PLASTIC_CONTAINER]),
+            ],
         ];
     }
 }

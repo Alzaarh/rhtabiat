@@ -7,43 +7,25 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Instance of ProductService class.
-     *
-     * @var ProductService
-     */
-    private ProductService $productService;
+    protected $productService;
 
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  StoreProductRequest  $request
-     * @return \Illuminate\Http\Resources\Json\JsonResource
-     */
     public function store(StoreProductRequest $request)
     {
-        return new ProductResource($this->productService->create($request));
+        $this->productService->create($request->validated());
+        return response()->json(['message' => 'Product created'], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  StoreProductRequest $request
-     * @param  Product $Product
-     * @return \Illuminate\Http\Resources\Json\JsonResource
-     */
     public function update(StoreProductRequest $request, Product $product)
     {
-        $this->productService->update($request, $product);
+        $this->productService->update($request->validated(), $product);
         return new ProductResource($product);
     }
 

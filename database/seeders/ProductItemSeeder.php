@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Product;
 use App\Models\ProductItem;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ProductItemSeeder extends Seeder
 {
@@ -16,14 +17,21 @@ class ProductItemSeeder extends Seeder
     public function run()
     {
         $products = Product::all();
-        $products->slice(0, 4)->each(fn ($product) => ProductItem::factory(1)->for($product)->create());
-        $products->slice(3, 4)->each(fn ($product) => ProductItem::factory(3)->for($product)->create());
-        $products->slice(7)->each(fn ($product) => ProductItem::factory(4)->for($product)->create([
-            'container' => 'zink',
-        ]));
-
-        $products->slice(7)->each(fn ($product) => ProductItem::factory(4)->for($product)->create([
-            'container' => 'plastic',
-        ]));
+        $products
+            ->slice(0, 5)
+            ->each(fn ($product) => ProductItem::factory()->for($product)->create());
+        $products
+            ->slice(5, 5)
+            ->each(fn ($product) => ProductItem::factory()->count(5)->for($product)->create());
+        $products
+            ->slice(10)
+            ->each(fn ($product) => ProductItem::factory()->count(8)->for($product)->create([
+                'container' => ProductItem::ZINK_CONTAINER,
+            ]));
+        $products
+            ->slice(10)
+            ->each(fn ($product) => ProductItem::factory()->count(7)->for($product)->create([
+                'container' => ProductItem::PLASTIC_CONTAINER,
+            ]));
     }
 }

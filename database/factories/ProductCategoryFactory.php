@@ -21,10 +21,9 @@ class ProductCategoryFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->unique()->sentence(3);
         return [
-            'name' => $name,
-            'slug' => $name,
+            'name' => $this->faker->randomElement(['روغن حیوانی', 'کره حیوانی', 'روغن گیاهی', 'لبنیات', 'غلات']),
+            'slug' => $this->faker->word,
             'image' => 'images/product-category.jpg',
         ];
     }
