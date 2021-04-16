@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'resource.created' => '.:resource با مفقیت ایجاد شد',
+    'resource.created' => '.:resource با موفقیت ایجاد شد',
 ];
