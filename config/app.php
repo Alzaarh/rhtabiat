@@ -2,16 +2,6 @@
 
 return [
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Domain
-    |--------------------------------------------------------------------------
-    |
-    | This value is the domain of your application.
-    |
-     */
-
     'domain' => env('APP_DOMAIN', '127.0.0.1'),
 
     'sms_uname' => env('SMS_USERNAME'),

@@ -2,7 +2,7 @@
 
 function storage()
 {
-    return config('app.domain') . 'storage/';
+    return config('app.domain').'storage/';
 }
 
 function validPhone()
@@ -31,7 +31,6 @@ function sendSMS(string $to, string $pattern, array $data)
     $user = config('app.sms_uname');
     $pass = config('app.sms_pass');
     $from = '+983000505';
-    $to = $to;
     $pattern_code = $pattern;
     $input_data = $data;
 

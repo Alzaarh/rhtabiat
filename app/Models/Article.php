@@ -11,6 +11,41 @@ use Laravel\Scout\Searchable;
 use App\Traits\Sluggable;
 use App\Traits\HasImage;
 
+/**
+ * App\Models\Article
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $slug
+ * @property string|null $image
+ * @property string $body
+ * @property mixed|null $meta
+ * @property int $is_verified
+ * @property int $article_category_id
+ * @property int $admin_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Admin $author
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
+ * @property-read int|null $comments_count
+ * @property-read mixed $thumbnail
+ * @method static \Database\Factories\ArticleFactory factory(...$parameters)
+ * @method static Builder|Article newModelQuery()
+ * @method static Builder|Article newQuery()
+ * @method static Builder|Article query()
+ * @method static Builder|Article whereAdminId($value)
+ * @method static Builder|Article whereArticleCategoryId($value)
+ * @method static Builder|Article whereBody($value)
+ * @method static Builder|Article whereCreatedAt($value)
+ * @method static Builder|Article whereId($value)
+ * @method static Builder|Article whereImage($value)
+ * @method static Builder|Article whereIsVerified($value)
+ * @method static Builder|Article whereMeta($value)
+ * @method static Builder|Article whereSlug($value)
+ * @method static Builder|Article whereTitle($value)
+ * @method static Builder|Article whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Article extends Model
 {
     use HasFactory, Sluggable, HasImage;

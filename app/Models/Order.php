@@ -6,6 +6,35 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * App\Models\Order
+ *
+ * @property int $id
+ * @property int $address_id
+ * @property int|null $user_id
+ * @property int $status
+ * @property string $code
+ * @property int $delivery_cost
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Address $address
+ * @property-read mixed $total_price
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductItem[] $products
+ * @property-read int|null $products_count
+ * @method static \Database\Factories\OrderFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereAddressId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereDeliveryCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Order extends Model
 {
     use HasFactory;

@@ -119,6 +119,7 @@ Route::namespace('User')->group(
             function () {
                 Route::get('self', 'UserGetSelf')->middleware('auth:user');
                 Route::post('/', 'UserController@store');
+                Route::post('login', 'LoginUser');
             }
         );
         Route::prefix('carts')->group(

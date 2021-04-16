@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
-use App\Http\Resources\ProductCategoryResource;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +17,7 @@ class ProductCategoryController extends Controller
 
         ProductCategory::create($data);
 
-        return response()->json(['message' => __('messages.resource.created', ['resource' => 'دسته بندی'])]);
+        return response()->json(['message' => __('messages.resource.created', ['resource' => 'دسته بندی'])], 201);
     }
 
     public function update(StoreProductCategoryRequest $request, ProductCategory $productCategory)
@@ -31,7 +30,7 @@ class ProductCategoryController extends Controller
 
         $productCategory->update($data);
 
-        return new ProductCategoryResource($productCategory);
+        return response()->json(['message' => __('messages.resource.updated', ['resource' => 'دسته بندی'])]);
     }
 
     public function destroy(ProductCategory $productCategory)
@@ -40,6 +39,6 @@ class ProductCategoryController extends Controller
 
         $productCategory->delete();
 
-        return response()->json(['message' => 'Category deleted']);
+        return response()->json(['message' => __('messages.resource.deleted', ['resource' => 'دسته بندی'])]);
     }
 }

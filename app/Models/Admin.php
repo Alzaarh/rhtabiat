@@ -8,6 +8,29 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * App\Models\Admin
+ *
+ * @property int $id
+ * @property string $username
+ * @property string $password
+ * @property int $role
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Article[] $articles
+ * @property-read int|null $articles_count
+ * @property-read string $role_name
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @method static \Database\Factories\AdminFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin hasRole($role)
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Admin whereUsername($value)
+ * @mixin \Eloquent
+ */
 class Admin extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;

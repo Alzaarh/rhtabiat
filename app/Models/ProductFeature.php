@@ -5,6 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\ProductFeature
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read int|null $orders_count
+ * @property-read \App\Models\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductFeature lightest()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductFeature newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductFeature newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductFeature plastic()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductFeature query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductFeature zink()
+ * @mixin \Eloquent
+ */
 class ProductFeature extends Model
 {
     use HasFactory;
