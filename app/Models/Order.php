@@ -13,22 +13,18 @@ class Order extends Model
 
     protected $guarded = [];
 
-    const STATUS_LIST = [
+    public const STATUS_LIST = [
         'not_paid' => 1,
         'being_processed' => 2,
         'in_post_office' => 3,
         'delivered' => 4,
     ];
 
-    private const STATUS_LIST_FA = [
-        'در انتظار پرداخت',
-        'در حال پردازش',
-        'تحویل به شرکت پست',
-        'تحویل به مشتری',
-    ];
-
-    const PAYMENT_METHODS = [
-        'zarinpal' => 1,
+    public const STATUS_LIST_FA = [
+        'در انتظار پرداخت' => 1,
+        'در حال پردازش' => 2,
+        'تحویل به شرکت پست' => 3,
+        'تحویل به مشتری' => 4,
     ];
 
     /**
@@ -49,11 +45,6 @@ class Order extends Model
                     $product->pivot->quantity) + $carry,
                 0
             );
-    }
-
-    public function getStatusFaAttribute()
-    {
-        return self::STATUS_LIST_FA[$this->status - 1];
     }
 
     public function products()
