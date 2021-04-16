@@ -25,16 +25,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
-
-    public function detail()
-    {
-        return $this->hasOne(UserDetail::class);
-    }
-
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -48,49 +38,59 @@ class User extends Authenticatable implements JWTSubject
     public function updateSelf($data)
     {
         $this->detail()->exists() ?
-        $this->updateExistingDetail($data) : $this->createNewDetail($data);
+            $this->updateExistingDetail($data) : $this->createNewDetail($data);
+    }
+
+    public function detail()
+    {
+        return $this->hasOne(UserDetail::class);
     }
 
     private function updateExistingDetail($data)
     {
-        DB::transaction(function () use ($data) {
-            $this->phone = $data['phone'];
-            $this->save();
-            $data['password'] = $data['new_password'] ?? $data['password'];
-            $this->detail->update($data);
-        });
+        DB::transaction(
+            function () use ($data) {
+                $this->phone = $data['phone'];
+                $this->save();
+                $data['password'] = $data['new_password'] ?? $data['password'];
+                $this->detail->update($data);
+            }
+        );
     }
 
     private function createNewDetail($data)
     {
-        DB::transaction(function () use ($data) {
-            $this->phone = $data['phone'];
-            $this->save();
-            $this->detail()->save(new UserDetail($data));
-        });
+        DB::transaction(
+            function () use ($data) {
+                $this->phone = $data['phone'];
+                $this->save();
+                $this->detail()->save(new UserDetail($data));
+            }
+        );
     }
 
-    public function canStorePassword()
+    public function canUpdatePassword(string $oldPassword): bool
     {
-        return (empty($this->detail) || empty($this->detail->password));
+        return !($this->canStorePassword() || !Hash::check($oldPassword, $this->detail->password));
     }
 
-    public function canUpdatePassword($oldPassword)
+    public function canStorePassword(): bool
     {
-        return
-            $this->canStorePassword() ||
-            !Hash::check($oldPassword, $this->detail->password)
-                ? false
-                : true;
+        return empty($this->detail) || empty($this->detail->password);
     }
 
-    public function isCartEmpty() : bool
+    public function isCartEmpty(): bool
     {
         return $this->cart->products()->count() === 0;
     }
 
-    public function hasAddress($id) : bool
+    public function hasAddress($id): bool
     {
         return $this->addresses()->where('id', $id)->exists();
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
     }
 }

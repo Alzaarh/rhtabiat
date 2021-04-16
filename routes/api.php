@@ -138,8 +138,7 @@ Route::namespace('User')->group(
             function () {
                 Route::put('/', 'UserDetailController@update')
                     ->middleware('auth:user');
-                Route::put('passwords', 'UserUpdatePasswordController')
-                    ->middleware('auth:user');
+                Route::put('passwords', 'UpdateUserPassword')->middleware('auth:user');
             }
         );
 
