@@ -105,7 +105,7 @@ Route::namespace('User')->group(
         );
         Route::prefix('orders')->group(
             function () {
-                Route::post('/', 'OrderController@store')->middleware('auth:user');
+                Route::post('/', 'OrderController@store');
                 Route::get('delivery-costs', 'OrderCalculateDeliveryCostController');
             }
         );
@@ -149,6 +149,7 @@ Route::namespace('User')->group(
         Route::prefix('transactions')->group(
             function () {
                 Route::post('/', 'TransactionController@store');
+                Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
             }
         );
     }

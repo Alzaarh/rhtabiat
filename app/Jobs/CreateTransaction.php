@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\Order;
 use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,9 +12,12 @@ use Illuminate\Queue\SerializesModels;
 
 class CreateTransaction implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    protected $order;
+    protected Order $order;
 
     /**
      * Create a new job instance.
@@ -37,8 +39,8 @@ class CreateTransaction implements ShouldQueue
         $data = [
             'MerchantID' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
             'Amount' => $this->order->total_price,
-            'CallbackURL' => 'http://172.173.154.134:8000/api/transactions/verify',
-            'Description' => 'test',
+            'CallbackURL' => route('transactions.verify'),
+            'Description' => config('app.name'),
         ];
 
         $jsonData = json_encode($data);
@@ -47,21 +49,26 @@ class CreateTransaction implements ShouldQueue
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($jsonData),
-        ]);
-        
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
+                'Content-Type: application/json',
+                'Content-Length: '.strlen($jsonData),
+            ]
+        );
         $result = curl_exec($ch);
         $result = json_decode($result, true, JSON_PRETTY_PRINT);
         curl_close($ch);
-        
+
         if (empty($result['errors']) && $result['Status'] == 100) {
-            Transaction::create([
-                'order_id' => $this->order->id,
-                'amount' => $this->order->total_price,
-                'authority' => $result['Authority'],
-            ]);
+            Transaction::create(
+                [
+                    'order_id' => $this->order->id,
+                    'amount' => $this->order->total_price,
+                    'authority' => $result['Authority'],
+                ]
+            );
         }
 
         request()->merge(['authority' => $result['Authority']]);
