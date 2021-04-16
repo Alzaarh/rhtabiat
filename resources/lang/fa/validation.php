@@ -29,7 +29,7 @@ return [
     'distinct' => 'The :attribute field has a duplicate value.',
     'email' => 'The :attribute must be a valid email address.',
     'ends_with' => 'The :attribute must end with one of the following: :values.',
-    'exists' => '.:attribute معتبر نیست',
+    'exists' => ':attribute معتبر نیست',
     'file' => 'The :attribute must be a file.',
     'filled' => 'The :attribute field must have a value.',
     'gt' => [
@@ -44,7 +44,7 @@ return [
         'string' => 'The :attribute must be greater than or equal :value characters.',
         'array' => 'The :attribute must have :value items or more.',
     ],
-    'image' => '.:attribute باید عکس معتبر باشد',
+    'image' => ':attribute فرمت مناسب ندارد',
     'in' => 'The selected :attribute is invalid.',
     'in_array' => 'The :attribute field does not exist in :other.',
     'integer' => 'The :attribute must be an integer.',
@@ -66,8 +66,8 @@ return [
     ],
     'max' => [
         'numeric' => 'The :attribute must not be greater than :max.',
-        'file' => 'The :attribute must not be greater than :max kilobytes.',
-        'string' => '.:attribute طول بیش از حد مجاز دارد',
+        'file' => 'سایز :attribute از حد مجاز بیشتر است',
+        'string' => 'طول :attribute از حد مجاز بیشتر است',
         'array' => 'The :attribute must not have more than :max items.',
     ],
     'mimes' => 'The :attribute must be a file of type: :values.',
@@ -85,7 +85,7 @@ return [
     'password' => 'The password is incorrect.',
     'present' => 'The :attribute field must be present.',
     'regex' => 'The :attribute format is invalid.',
-    'required' => '.:attribute نباید خالی باشد',
+    'required' => ':attribute نباید خالی باشد',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
@@ -104,7 +104,7 @@ return [
     'starts_with' => 'The :attribute must start with one of the following: :values.',
     'string' => 'The :attribute must be a string.',
     'timezone' => 'The :attribute must be a valid zone.',
-    'unique' => '.:attribute قبلا استفاده شده است',
+    'unique' => ':attribute قبلا استفاده شده است',
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
@@ -137,7 +137,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'نام',
+        'slug' => 'آدرس',
+        'image' => 'عکس',
+        'parent_id' => 'دسته بندی',
+    ],
 
 ];
 
