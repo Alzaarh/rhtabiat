@@ -16,7 +16,9 @@ class ProductCategoryController extends Controller
 
         $data['image'] = $request->image->store('images');
 
-        return new ProductCategoryResource(ProductCategory::create($data));
+        ProductCategory::create($data);
+
+        return response()->json(['message' => __('messages.resource.created', ['resource' => 'دسته بندی'])]);
     }
 
     public function update(StoreProductCategoryRequest $request, ProductCategory $productCategory)
@@ -24,9 +26,9 @@ class ProductCategoryController extends Controller
         $data = $request->validated();
 
         $data['image'] = $request->image->store('images');
-        
+
         Storage::delete($productCategory->image);
-        
+
         $productCategory->update($data);
 
         return new ProductCategoryResource($productCategory);
