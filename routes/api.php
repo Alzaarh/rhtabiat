@@ -16,7 +16,7 @@ Route::namespace('Shop')->group(
                 Route::get('best-selling', 'IndexBestSellingProduct');
                 Route::get('specials', 'IndexSpecialProduct');
                 Route::get('{product:slug}', 'ProductController@show')
-                    ->name('products.show');
+                     ->name('products.show');
             }
         );
 
@@ -38,24 +38,26 @@ Route::namespace('Admin')->group(
         );
 
         Route::apiResource('product-categories', 'ProductCategoryController')
-            ->except(['index', 'show'])
-            ->middleware(['auth:admin', 'role:admin']);
+             ->except(['index', 'show'])
+             ->middleware(['auth:admin', 'role:admin']);
 
         Route::apiResource('products', 'ProductController')->except(['index', 'show'])->middleware(
             ['auth:admin', 'role:admin']
         );
 
         Route::apiResource('article-categories', 'ArticleCategoryController')
-            ->except(['index', 'show'])
-            ->middleware(['auth:admin', 'role:admin']);
+             ->except(['index', 'show'])
+             ->middleware(['auth:admin', 'role:admin']);
         Route::apiResource('comments', 'CommentController')
-            ->except(['store', 'show'])
-            ->middleware(['auth:admin', 'role:admin']);
+             ->except(['store', 'show'])
+             ->middleware(['auth:admin', 'role:admin']);
         Route::apiResource('articles', 'ArticleController')
-            ->except(['index', 'show'])
-            ->middleware(['auth:admin', 'role:writer']);
-        Route::apiResource('discount-codes', 'DiscountCodeController')
-            ->middleware(['auth:admin', 'role:discount_generator']);
+             ->except(['index', 'show'])
+             ->middleware(['auth:admin', 'role:writer']);
+
+        Route::apiResource('discount-codes', 'DiscountCodeController')->middleware(
+            ['auth:admin', 'role:discount_generator']
+        );
 
         Route::prefix('banners')->group(
             function () {
@@ -112,7 +114,7 @@ Route::namespace('User')->group(
         Route::prefix('verification-codes')->group(
             function () {
                 Route::post('/', 'VerificationCodeController@store')
-                    ->middleware('throttle:1,1');
+                     ->middleware('throttle:1,1');
             }
         );
         Route::prefix('users')->group(
@@ -125,26 +127,26 @@ Route::namespace('User')->group(
         Route::prefix('carts')->group(
             function () {
                 Route::post('products', 'CartItemController@store')
-                    ->middleware('auth:user');
+                     ->middleware('auth:user');
                 Route::get('products', 'CartItemController@index')
-                    ->middleware('auth:user');
+                     ->middleware('auth:user');
                 Route::patch('products/{cartProduct}', 'CartItemController@update')
-                    ->middleware('auth:user');
+                     ->middleware('auth:user');
                 Route::delete('products/{cartProduct}', 'CartItemController@destroy')
-                    ->middleware('auth:user');
+                     ->middleware('auth:user');
             }
         );
 
         Route::prefix('user-details')->group(
             function () {
                 Route::put('/', 'UserDetailController@update')
-                    ->middleware('auth:user');
+                     ->middleware('auth:user');
                 Route::put('passwords', 'UpdateUserPassword')->middleware('auth:user');
             }
         );
 
         Route::apiResource('addresses', 'AddressController')
-            ->middleware('auth:user');
+             ->middleware('auth:user');
 
         Route::prefix('transactions')->group(
             function () {
