@@ -3,30 +3,39 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateTransaction;
+use App\Http\Requests\StoreTransactionRequest;
 use App\Models\Order;
 use App\Models\Transaction;
+use App\Services\TransactionService;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
-    public function store()
+    protected TransactionService $transactionService;
+
+    public function __construct(TransactionService $transactionService)
     {
-        request()->validate(['order_id' => 'required|exists:orders,id']);
+        $this->transactionService = $transactionService;
+    }
 
-        $order = Order::find(request()->order_id);
+    public function store(StoreTransactionRequest $request)
+    {
+        $order = Order::whereCode($request->order_code)->first();
 
-        $isNotPaid = $order->status !== Order::STATUS_LIST['not_paid'];
-        $hasValidTime = now()->diffInHours($order->created_at) > 24;
-        if (auth('user')->check()) {
-            abort_if($isNotPaid || $hasValidTime || $order->user_id !== request()->user()->id, 400);
-        } else {
-            abort_if($isNotPaid || $hasValidTime, 400);
+        $result = $this->transactionService->initiateWithZarinpal(
+            $order->total_price
+        );
+        if (empty($result['errors']) && $result['Status'] == 100) {
+            $order->transactions()->create([
+                    'amount' => $order->total_price,
+                    'authority' => $result['Authority'],
+                ]
+            );
         }
 
-        CreateTransaction::dispatchSync($order);
-
-        return response()->json(['data' => ['authority' => request()->authority]], 201);
+        return response()->json([
+            'data' => ['authority' => $result['Authority']],
+        ], 201);
     }
 
     public function verify()

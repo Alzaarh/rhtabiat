@@ -73,12 +73,11 @@ class Order extends Model
     public function getTotalPriceAttribute()
     {
         $productsPrice = $this->products->reduce(
-            function ($carry, $product) {
-                return $product->pivot->price * (100 - $product->pivot->off) / 100 * $product->pivot->quantity + $carry;
-            },
+            fn($carry, $product) => $product->pivot->price *
+                (100 - $product->pivot->off) / 100 *
+                $product->pivot->quantity + $carry,
             0
         );
-
         return $productsPrice + $this->delivery_cost;
     }
 
@@ -99,5 +98,10 @@ class Order extends Model
     public function address()
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
