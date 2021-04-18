@@ -34,16 +34,34 @@ use Illuminate\Support\Str;
  * @method static Builder|DiscountCode whereUserId($value)
  * @method static Builder|DiscountCode whereValue($value)
  * @mixin \Eloquent
+ * @method static Builder|DiscountCode whereValidExpiration()
+ * @method static Builder|DiscountCode notUsed()
  */
 class DiscountCode extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $guarded = [];
 
-    public $timestamps = false;
+    protected static function booted()
+    {
+        static::addGlobalScope(
+            'notExpired',
+            fn($builder) => $builder->where(
+                'expires_at',
+                '>=',
+                now()->toDateTimeString()
+            )
+        );
+    }
 
-    public function generateCode() : string
+    public function scopeNotUsed($query)
+    {
+        return $query->whereNull('used_at');
+    }
+
+    public function generateCode(): string
     {
         return Str::of(self::count())->append(Str::random(8));
     }

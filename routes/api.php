@@ -55,7 +55,7 @@ Route::namespace('Admin')->group(
              ->except(['index', 'show'])
              ->middleware(['auth:admin', 'role:writer']);
 
-        Route::apiResource('discount-codes', 'DiscountCodeController')->middleware(
+        Route::apiResource('discount-codes', 'DiscountCodeController')->except('show')->middleware(
             ['auth:admin', 'role:discount_generator']
         );
 
@@ -154,5 +154,7 @@ Route::namespace('User')->group(
                 Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
             }
         );
+
+        Route::get('discount-codes/evaluate', 'EvaluateDiscountCode');
     }
 );
