@@ -8,7 +8,7 @@ return [
     'alpha' => 'The :attribute must only contain letters.',
     'alpha_dash' => 'The :attribute must only contain letters, numbers, dashes and underscores.',
     'alpha_num' => 'The :attribute must only contain letters and numbers.',
-    'array' => 'The :attribute must be an array.',
+    'array' => ':attribute باید آرایه باشد',
     'before' => 'The :attribute must be a date before :date.',
     'before_or_equal' => 'The :attribute must be a date before or equal to :date.',
     'between' => [
@@ -23,7 +23,7 @@ return [
     'date_equals' => 'The :attribute must be a date equal to :date.',
     'date_format' => 'The :attribute does not match the format :format.',
     'different' => 'The :attribute and :other must be different.',
-    'digits' => 'The :attribute must be :digits digits.',
+    'digits' => ':attribute باید :digits رقم باشد',
     'digits_between' => 'The :attribute must be between :min and :max digits.',
     'dimensions' => 'The :attribute has invalid image dimensions.',
     'distinct' => 'The :attribute field has a duplicate value.',
@@ -73,7 +73,7 @@ return [
     'mimes' => 'The :attribute must be a file of type: :values.',
     'mimetypes' => 'The :attribute must be a file of type: :values.',
     'min' => [
-        'numeric' => 'The :attribute must be at least :min.',
+        'numeric' => ':attribute باید حداقل :min باشد',
         'file' => 'The :attribute must be at least :min kilobytes.',
         'string' => 'The :attribute must be at least :min characters.',
         'array' => 'The :attribute must have at least :min items.',
@@ -102,7 +102,7 @@ return [
         'array' => 'The :attribute must contain :size items.',
     ],
     'starts_with' => 'The :attribute must start with one of the following: :values.',
-    'string' => 'The :attribute must be a string.',
+    'string' => ':attribute باید رشته باشد',
     'timezone' => 'The :attribute must be a valid zone.',
     'unique' => ':attribute قبلا استفاده شده است',
     'uploaded' => 'The :attribute failed to upload.',
@@ -142,6 +142,11 @@ return [
         'slug' => 'آدرس',
         'image' => 'عکس',
         'parent_id' => 'دسته بندی',
+        'company' => 'نام شرکت',
+        'province_id' => 'استان',
+        'city_id' => 'شهر',
+        'zipcode' => 'کد پستی',
+        'address' => 'آدرس پستی',
     ],
 
 ];

@@ -59,12 +59,15 @@ class Order extends Model
     const WHITHIN_PROVINCE = 11;
     protected $guarded = [];
 
-    public static function generateCode()
+    protected static function booted()
     {
-        return Str::of('#')
-            ->append(self::count())
-            ->append('-')
-            ->append(Str::random(10));
+        static::creating(function ($order) {
+            $order->status = self::STATUS_LIST['not_paid'];
+            $order->code = Str::of('#')
+                              ->append(self::count())
+                              ->append('-')
+                              ->append(Str::random(10));
+        });
     }
 
     public function getTotalPriceAttribute()

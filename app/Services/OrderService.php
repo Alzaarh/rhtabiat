@@ -14,7 +14,6 @@ class OrderService
         if (auth('user')->check()) {
             return $this->createForUser($orderData);
         }
-        return $this->createForGuest($orderData);
     }
 
     private function createForUser(array $orderData): Order
@@ -68,86 +67,60 @@ class OrderService
         );
     }
 
-    public function calcDeliveryCost(int $price, int $province, int $weight): int
-    {
+    public function calcDeliveryCost(
+        int $price,
+        int $province,
+        int $weight
+    ): int {
         if ($price >= 200000) {
             return 0;
         }
 
-        $weight = $province === Order::WHITHIN_PROVINCE ? $weight * 9800 : $weight * 14000;
+        $weight = $province === Order::WHITHIN_PROVINCE
+            ? $weight * 9800
+            : $weight * 14000;
+
         return ($weight + 2500) * 1.1;
     }
 
-    private function createForGuest(array $orderData): Order
+    public function calcOrderCost(array $products): int
     {
-        $items = $this->validateForGuest($orderData['products']);
+        return array_reduce(
+            $products,
+            fn($carry, $product) => $carry + $product['price'] *
+                (100 - $product['off']) / 100 *
+                $product['quantity'],
+            0
+        );
+    }
 
+    public function calcOrderWeight(array $products): int
+    {
+        return array_reduce(
+            $products,
+            fn($carry, $product) => $carry +
+                $product['quantity'] * $product['weight'],
+            0
+        );
+    }
+
+    public function getItems(array $products): array
+    {
+        $items = ProductItem::with('product')
+                            ->find(array_column($products, 'id'));
         $orderProducts = [];
-        foreach ($orderData['products'] as $item) {
-            $productItem = $items->firstWhere('id', $item['id']);
-            $orderProducts[$item['id']] = [
-                'quantity' => $item['quantity'],
-                'price' => $productItem->price,
-                'off' => $productItem->product->off,
-                'weight' => $productItem->weight,
-                'product_id' => $productItem->product->id,
+
+        foreach ($products as $product) {
+            $item = $items->firstWhere('id', $product['id']);
+            $orderProducts[$product['id']] = [
+                'quantity' => $product['quantity'],
+                'price' => $item->price,
+                'off' => $item->product->off,
+                'weight' => $item->weight,
+                'product_id' => $item->product->id,
             ];
         }
 
-        return DB::transaction(
-            function () use ($orderData, $orderProducts) {
-                $address = Address::create($orderData['address']);
-                $order = Order::create(
-                    [
-                        'address_id' => $address->id,
-                        'status' => Order::STATUS_LIST['not_paid'],
-                        'code' => Order::generateCode(),
-                        'delivery_cost' => $this->calcDeliveryCost(
-                            $this->calcOrderCost($orderProducts),
-                            $address->province_id,
-                            $this->calcOrderWeight($orderProducts),
-                        ),
-                    ]
-                );
-
-                $order->products()->attach($orderProducts);
-
-                return $order;
-            }
-        );
-    }
-
-    private function validateForGuest(array $products)
-    {
-        $items = ProductItem::with('product')->whereIn('id', array_column($products, 'id'))->get();
-
-        $items->each(
-            function ($item) use ($products) {
-                abort_if(
-                    $products[array_search($item->id, array_column($products, 'id'))]['quantity'] > $item->quantity,
-                    400
-                );
-            }
-        );
-
-        return $items;
-    }
-
-    private function calcOrderCost(array $products): int
-    {
-        return array_reduce(
-            $products,
-            fn($carry, $product) => $carry + $product['price'] * (100 - $product['off']) / 100 * $product['quantity'],
-            0
-        );
-    }
-
-    private function calcOrderWeight(array $products): int
-    {
-        return array_reduce(
-            $products,
-            fn($carry, $product) => $carry + $product['quantity'] * $product['weight'],
-            0
-        );
+        return $orderProducts;
     }
 }
