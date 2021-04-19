@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTransactionRequest;
+use App\Jobs\NotifyViaSms;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Services\TransactionService;
@@ -38,45 +39,45 @@ class TransactionController extends Controller
         ], 201);
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function verify()
     {
         $authority = request()->query('Authority');
-        $transaction = Transaction::where('authority', $authority)->first();
+        $transaction = Transaction::whereAuthority($authority)->first();
         abort_if(empty($transaction), 400);
-        $data = [
-            'MerchantID' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-            'Authority' => $authority,
-            'Amount' => $transaction->order->total_price,
-        ];
 
-        $jsonData = json_encode($data);
-        $ch = curl_init('https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json');
-        curl_setopt($ch, CURLOPT_USERAGENT, 'ZarinPal Rest Api v4');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: '.strlen($jsonData)
-            )
+        $result = $this->transactionService->verifyWithZarinpal(
+            $authority,
+            $transaction->amount
         );
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-        $result = json_decode($result, true);
-
-        if ($result['Status'] == 101) {
-            $transaction->ref_id = $result['RefID'];
-            $transaction->order->status = Order::STATUS_LIST['being_processed'];
+        if ($result['Status'] == 100) {
+            // Remove time() from production.
+            $transaction->ref_id = $result['RefID'] . time();
+            $transaction->status = Transaction::STATUS['verified'];
             DB::transaction(function () use ($transaction) {
                 $transaction->save();
-                $transaction->order->save();
+                $transaction->order->verify();
             });
-            return response()->json(['message' => 'Transaction verified']);
+
+            NotifyViaSms::dispatch(
+                $transaction->order->address->mobile,
+                config('app.sms_patterns.order_verified'),
+                [
+                    'name' => $transaction->order->address->name,
+                    'url' => 'url',
+                    'code' => $transaction->order->code,
+                ]
+            );
+
+            return response()->json(['message' => 'تراکنش با موفقیت انجام شد']);
         }
-        return response()->json(['message' => 'Transaction failed'], 400);
+        $transaction->status = Transaction::STATUS['rejected'];
+        $transaction->save();
+
+        return response()->json([
+            'message' => 'تراکنش با موفقیت انجام نشد',
+        ], 400);
     }
 }

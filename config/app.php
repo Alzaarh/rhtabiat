@@ -10,6 +10,7 @@ return [
 
     'sms_patterns' => [
         'verification' => 'op9or1mh33',
+        'order_verified' => 'h849wp14tz',
     ],
 
     'zarinpal_key' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',

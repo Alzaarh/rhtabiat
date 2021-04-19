@@ -104,4 +104,15 @@ class Order extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function verify(): void
+    {
+
+        $this->status = Order::STATUS_LIST['being_processed'];
+        $this->products->each(function ($item) {
+            $item->quantity = $item->quantity - $item->pivot->quantity;
+            $item->save();
+        });
+        $this->save();
+    }
 }

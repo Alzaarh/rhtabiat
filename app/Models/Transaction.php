@@ -36,6 +36,12 @@ class Transaction extends Model
 
     protected $guarded = [];
 
+    public const STATUS = [
+        'not_verified' => 1,
+        'verified' => 2,
+        'rejected' => 3,
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);

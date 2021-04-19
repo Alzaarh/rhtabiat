@@ -19,7 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->foreignId('order_id')->constrained();
             $table->uuid('authority')->unique();
             $table->string('ref_id')->nullable()->unique();
-            $table->boolean('is_verified')->default(false);
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

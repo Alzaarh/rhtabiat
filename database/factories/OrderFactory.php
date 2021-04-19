@@ -14,7 +14,6 @@ class OrderFactory extends Factory
     {
         return [
             'status' => rand(1, 4),
-            'code' => Order::generateCode(),
             'address_id' => Address::inRandomOrder()->value('id'),
         ];
     }
