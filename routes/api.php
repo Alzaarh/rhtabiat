@@ -158,5 +158,7 @@ Route::namespace('User')->group(
         );
 
         Route::get('discount-codes/evaluate', 'EvaluateDiscountCode');
+
+        Route::post('messages', 'MessageController@store');
     }
 );

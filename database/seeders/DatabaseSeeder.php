@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             ProvinceSeeder::class,
             CitySeeder::class,
         ]);
-         Article::factory(50)->hasComments(10)->create();
+         Article::factory(15)->hasComments(5)->create();
         $orders = Order::factory()
             ->count(100)
             ->for(Address::factory())

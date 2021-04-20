@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SaveMessageRequest;
+use App\Http\Requests\StoreMessageRequest;
 use App\Models\Message;
 
 class MessageController extends Controller
@@ -22,7 +22,7 @@ class MessageController extends Controller
         return JsonResponse(['data' => $message]);
     }
 
-    public function store(SaveMessageRequest $request)
+    public function store(StoreMessageRequest $request)
     {
         Message::create($request->validated());
         return jsonResponse(['message' => __('messages.success')], 201);
