@@ -20,6 +20,7 @@ class CreateCommentsTable extends Migration
             $table->string('body', 2000);
             $table->integer('score');
             $table->integer('status');
+            $table->boolean('is_testimonial')->default(false);
             $table->morphs('commentable');
             $table->timestamp('created_at')->useCurrent();
         });

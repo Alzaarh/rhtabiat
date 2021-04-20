@@ -75,7 +75,7 @@ class Comment extends Model
 
     /**
      * Get the parent commentable model (product or article).
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function commentable()
@@ -86,5 +86,10 @@ class Comment extends Model
     public static function getLatest($count)
     {
         return self::latest()->take($count)->get();
+    }
+
+    public function scopeTestimonials($query)
+    {
+        return $query->whereIsTestimonial(true);
     }
 }

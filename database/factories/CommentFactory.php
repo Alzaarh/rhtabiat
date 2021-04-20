@@ -22,11 +22,12 @@ class CommentFactory extends Factory
     public function definition()
     {
         return [
-            'author_name' => $this->faker->name,
+            'author_name' => $this->faker->randomElement(['علیرضا', 'امیر', 'رضا', 'عرفان']),
             'author_email' => $this->faker->email,
-            'body' => $this->faker->realText(100),
+            'body' => \Faker\Factory::create('fa_IR')->realText(100),
             'score' => rand(0, 5),
             'status' => rand(1, 3),
+            'is_testimonial' => rand(1, 100) > 50,
         ];
     }
 }

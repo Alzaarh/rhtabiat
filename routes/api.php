@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('Shop')->group(
     function () {
+        Route::get('testimonials', 'GetTestimonials');
+
         Route::prefix('product-categories')->group(
             function () {
                 Route::get('/', 'ProductCategoryController@index');
