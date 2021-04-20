@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\HasImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
-use App\Traits\HasImage;
 use Illuminate\Support\Str;
 
 /**
@@ -52,6 +51,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|Product orderByPrice(string $dir)
  */
 class Product extends Model
 {
@@ -69,8 +69,8 @@ class Product extends Model
 
     protected static function booted()
     {
-        static::updating(fn ($product) => self::deleteImage($product));
-        static::deleting(fn ($product) => self::deleteImage($product));
+        static::updating(fn($product) => self::deleteImage($product));
+        static::deleting(fn($product) => self::deleteImage($product));
     }
 
     public function setSlugAttribute($slug)
@@ -81,6 +81,16 @@ class Product extends Model
     public function getPriceAttribute()
     {
         return !$this->hasMultipleItems() ? $this->items()->value('price') : null;
+    }
+
+    private function hasMultipleItems(): bool
+    {
+        return $this->items()->count() > 1;
+    }
+
+    public function items()
+    {
+        return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
     }
 
     public function getMinPriceAttribute()
@@ -98,14 +108,19 @@ class Product extends Model
         return $this->comments()->count() > 0 ? $this->comments()->avg('score') : 0;
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
     public function scopeWherePriceIsGreater($query, $price)
     {
-        return $query->whereHas('items', fn ($query) => $query->where('price', '>=', $price));
+        return $query->whereHas('items', fn($query) => $query->where('price', '>=', $price));
     }
 
     public function scopeWherePriceIsLess($query, $price)
     {
-        return $query->whereHas('items', fn ($query) => $query->where('price', '<=', $price));
+        return $query->whereHas('items', fn($query) => $query->where('price', '<=', $price));
     }
 
     public function scopeHasDiscount($query)
@@ -118,16 +133,6 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class);
     }
 
-    public function items()
-    {
-        return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
-    }
-
-    public function comments()
-    {
-        return $this->morphMany(Comment::class, 'commentable');
-    }
-
     public function orders()
     {
         return $this->belongsToMany(Order::class, 'order_product_item')->withPivot('quantity');
@@ -136,7 +141,7 @@ class Product extends Model
     public function hasContainer(): bool
     {
         return $this->items->contains(
-            fn ($item) => filled($item->container)
+            fn($item) => filled($item->container)
         );
     }
 
@@ -150,8 +155,13 @@ class Product extends Model
         return $this->items->where('container', ProductItem::PLASTIC_CONTAINER);
     }
 
-    private function hasMultipleItems(): bool
+    public function scopeOrderByPrice($query, string $dir)
     {
-        return $this->items()->count() > 1;
+        return $query->join(
+            'product_items',
+            'products.id',
+            '=',
+            'product_items.product_id'
+        )->orderBy('price', $dir);
     }
 }

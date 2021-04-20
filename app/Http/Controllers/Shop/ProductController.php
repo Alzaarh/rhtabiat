@@ -12,15 +12,16 @@ class ProductController extends Controller
 {
     public function index()
     {
-        request()->validate(['sort_by' => 'in:lowest_price,highest_price,latest,highest_rated']);
-
         $query = Product::query();
 
-        if (request()->has('sort_by')) {
-            $this->productService->orderBy($query, request()->query('sort_by'));
+        if (request()->sort_by === 'lowest_price') {
+            $query->orderByPrice('asc');
         }
-        if (request()->has('search')) {
-            return new ProductCollection($this->productService->handleSearch());
+        if (request()->sort_by === 'highest_price') {
+            $query->orderByPrice('desc');
+        }
+        if (request()->filled('search')) {
+            $query->where('name', 'like', '%' . request()->search . '%');
         }
         if (request()->has('min_price')) {
             $query->wherePriceIsGreater(request()->min_price);
@@ -28,7 +29,7 @@ class ProductController extends Controller
         if (request()->has('max_price')) {
             $query->wherePriceIsLess(request()->max_price);
         }
-        if (request()->has('category_id')) {
+        if (request()->filled('category_id')) {
             $query->whereCategoryId(request()->category_id);
         }
 
