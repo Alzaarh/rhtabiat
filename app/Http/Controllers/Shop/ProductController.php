@@ -28,6 +28,9 @@ class ProductController extends Controller
         if (request()->has('max_price')) {
             $query->wherePriceIsLess(request()->max_price);
         }
+        if (request()->has('category_id')) {
+            $query->whereCategoryId(request()->category_id);
+        }
 
         return IndexProductResource::collection(
             $query->paginate(request()->count)

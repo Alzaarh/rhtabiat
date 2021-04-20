@@ -81,6 +81,16 @@ class Order extends Model
         return $productsPrice + $this->delivery_cost;
     }
 
+    public function getProductsPriceAttribute()
+    {
+        return $this->products->reduce(
+            fn($carry, $product) => $product->pivot->price *
+                (100 - $product->pivot->off) / 100 *
+                $product->pivot->quantity + $carry,
+            0
+        );
+    }
+
     public function products()
     {
         return $this
@@ -103,6 +113,11 @@ class Order extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function discountCode()
+    {
+        return $this->hasOne(DiscountCode::class);
     }
 
     public function verify(): void

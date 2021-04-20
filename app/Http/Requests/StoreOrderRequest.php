@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\DiscountCode;
 use App\Models\ProductItem;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
@@ -24,7 +25,7 @@ class StoreOrderRequest extends FormRequest
      * @return array
      * @throws ValidationException
      */
-    public function rules()
+    public function rules(DiscountCode $code)
     {
         if (auth('user')->check()) {
             return [
@@ -60,6 +61,7 @@ class StoreOrderRequest extends FormRequest
             'products' => 'required|array',
             'products.*.id' => 'required|exists:product_items,id',
             'products.*.quantity' => 'required|integer|min:1',
+            'discount_code' => [$code->validate()]
         ];
     }
 

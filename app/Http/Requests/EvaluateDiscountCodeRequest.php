@@ -22,24 +22,12 @@ class EvaluateDiscountCodeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(DiscountCode $code)
     {
         return [
             'discount_code' => [
                 'required',
-                'exists:discount_codes,code',
-                function ($attribute, $value, $fail) {
-                    $code = DiscountCode::whereCode($value)->notUsed()->first();
-                    if (
-                        empty($code) ||
-                        (
-                            filled($code->user_id) &&
-                            $code->user_id !== auth('user')->id()
-                        )
-                    ) {
-                        $fail('کد تخفیف معتبر نیست');
-                    }
-                }
+                $code->validate(),
             ],
             'order_cost' => 'required|integer',
         ];

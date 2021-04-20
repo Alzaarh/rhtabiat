@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Jobs\NotifyViaSms;
 use App\Models\Order;
 use App\Models\Transaction;
+use App\Services\DiscountCodeService;
 use App\Services\TransactionService;
 use Illuminate\Support\Facades\DB;
 
@@ -14,17 +15,25 @@ class TransactionController extends Controller
 {
     protected TransactionService $transactionService;
 
-    public function __construct(TransactionService $transactionService)
-    {
+    protected DiscountCodeService $discountCodeService;
+
+    public function __construct(
+        TransactionService $transactionService,
+        DiscountCodeService $discountCodeService
+    ) {
         $this->transactionService = $transactionService;
+        $this->discountCodeService = $discountCodeService;
     }
 
     public function store(StoreTransactionRequest $request)
     {
         $order = Order::whereCode($request->order_code)->first();
-
+        $amount = $order->products_price;
+        if (filled($order->discountCode)) {
+            $amount = $this->discountCodeService->calcDiscount($order->discountCode, $amount);
+        }
         $result = $this->transactionService->initiateWithZarinpal(
-            $order->total_price
+            $amount
         );
         if (empty($result['errors']) && $result['Status'] == 100) {
             $order->transactions()->create([
@@ -54,7 +63,7 @@ class TransactionController extends Controller
         );
         if ($result['Status'] == 100) {
             // Remove time() from production.
-            $transaction->ref_id = $result['RefID'] . time();
+            $transaction->ref_id = $result['RefID'].time();
             $transaction->status = Transaction::STATUS['verified'];
             DB::transaction(function () use ($transaction) {
                 $transaction->save();

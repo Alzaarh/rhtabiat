@@ -15,6 +15,7 @@ class CreateOrdersTable extends Migration
             $table->integer('status');
             $table->string('code')->unique();
             $table->integer('delivery_cost');
+            $table->foreignId('discount_code_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

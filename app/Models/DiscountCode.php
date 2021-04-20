@@ -65,4 +65,20 @@ class DiscountCode extends Model
     {
         return Str::of(self::count())->append(Str::random(8));
     }
+
+    public function validate()
+    {
+        return function ($attribute, $value, $fail) {
+            $code = self::whereCode($value)->notUsed()->first();
+            if (
+                empty($code) ||
+                (
+                    filled($code->user_id) &&
+                    $code->user_id !== auth('user')->id()
+                )
+            ) {
+                $fail('کد تخفیف معتبر نیست');
+            }
+        };
+    }
 }
