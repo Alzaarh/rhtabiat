@@ -12,7 +12,7 @@ class MessageController extends Controller
     {
         Message::create($request->validated());
         return response()->json([
-            'message' => __('messages.resource.created', ['resource' => 'پیام'])
+            'message' => 'پیام با موفقیت ارسال شد',
         ], 201);
     }
 }

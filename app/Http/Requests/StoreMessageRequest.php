@@ -20,4 +20,11 @@ class StoreMessageRequest extends FormRequest
             'message' => 'required|max:10000',
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'phone' => 'شماره تماس',
+        ];
+    }
 }

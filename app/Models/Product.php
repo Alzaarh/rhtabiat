@@ -157,11 +157,27 @@ class Product extends Model
 
     public function scopeOrderByPrice($query, string $dir)
     {
-        return $query->join(
-            'product_items',
-            'products.id',
-            '=',
-            'product_items.product_id'
-        )->orderBy('price', $dir);
+        return $query->selectRaw('products.*')
+                     ->distinct('products.id')
+                     ->join(
+                         'product_items',
+                         'products.id',
+                         '=',
+                         'product_items.product_id'
+                     )
+                     ->orderBy('price', $dir);
+    }
+
+    public function scopeWherePrice($query, string $op, int $value)
+    {
+        return $query->selectRaw('products.*')
+                     ->distinct('products.id')
+                     ->join(
+                         'product_items',
+                         'products.id',
+                         '=',
+                         'product_items.product_id'
+                     )
+                     ->where('product_items.price', $op, $value);
     }
 }
