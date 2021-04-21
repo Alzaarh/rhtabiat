@@ -107,10 +107,14 @@ Route::namespace('User')->group(
                 Route::post('/', 'CommentController@store');
             }
         );
-        Route::prefix('orders')->group(
-            function () {
+
+        Route::prefix('orders')->group(function () {
                 Route::post('/', 'OrderController@store');
-                Route::get('delivery-costs', 'OrderCalculateDeliveryCostController');
+                Route::get(
+                    'delivery-costs',
+                    'OrderCalculateDeliveryCostController'
+                );
+                Route::get('track', 'TrackOrder');
             }
         );
         Route::prefix('verification-codes')->group(

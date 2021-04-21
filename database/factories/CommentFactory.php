@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Comment;
+use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CommentFactory extends Factory
@@ -22,11 +23,21 @@ class CommentFactory extends Factory
     public function definition()
     {
         return [
-            'author_name' => $this->faker->randomElement(['علیرضا', 'امیر', 'رضا', 'عرفان']),
+            'author_name' => $this->faker
+                ->randomElement(
+                    explode(
+                        ' ',
+                        'علیرضا امیر فرزانه سارا دانیال عرفان')
+                ),
+
             'author_email' => $this->faker->email,
-            'body' => \Faker\Factory::create('fa_IR')->realText(100),
+
+            'body' => Faker::create('fa_IR')->realText(),
+
             'score' => rand(0, 5),
+
             'status' => rand(1, 3),
+
             'is_testimonial' => rand(1, 100) > 50,
         ];
     }

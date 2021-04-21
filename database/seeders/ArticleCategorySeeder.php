@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Article;
+use App\Models\ArticleCategory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ArticleCategorySeeder extends Seeder
 {
@@ -14,22 +15,9 @@ class ArticleCategorySeeder extends Seeder
      */
     public function run()
     {
-        DB::table('article_categories')->insert([
-            'name' => 'متفرقه',
-            'slug' => 'متفرقه',
-        ]);
-
-        if (config('app.env') === 'local') {
-            DB::table('article_categories')->insert([
-                [
-                    'name' => 'گیاهی',
-                    'slug' => 'گیاهی',
-                ],
-                [
-                    'name' => 'طبیعی',
-                    'slug' => 'طبیعی',
-                ],
-            ]);
-        }
+        ArticleCategory::factory()
+                       ->has(Article::factory()->count(5))
+                       ->count(4)
+                       ->create();
     }
 }

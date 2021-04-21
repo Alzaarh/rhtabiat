@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Admin;
 use App\Models\Article;
-use App\Models\ArticleCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Factory as Faker;
 
 class ArticleFactory extends Factory
 {
@@ -13,17 +12,18 @@ class ArticleFactory extends Factory
 
     public function definition()
     {
+        $faFaker = Faker::create('fa_IR');
+
         return [
-            'title' => \Faker\Factory::create('fa_IR')->unique()->realText(30),
+            'title' => substr($faFaker->realText(), 0, 20),
+
             'image' => 'images/article.jpg',
-            'body' => $this->faker->realText(10000),
-            'meta' => collect([
-                'keywords' => ['keyword1', 'keyword2', 'keyword3', 'keyword4'],
-                'description' => $this->faker->sentence(4),
-            ])->toJson(),
+
+            'body' => $faFaker->realText(2000),
+
             'is_verified' => rand(1, 100) > 50,
-            'admin_id' => Admin::where('role', Admin::ROLES['writer'])->inRandomOrder()->value('id'),
-            'article_category_id' => ArticleCategory::inRandomOrder()->value('id'),
+
+            'admin_id' => 1,
         ];
     }
 }

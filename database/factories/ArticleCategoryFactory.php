@@ -11,10 +11,14 @@ class ArticleCategoryFactory extends Factory
 
     public function definition()
     {
-        $name = $this->faker->unique()->sentence(3);
         return [
-            'name' => $name,
-            'slug' => $name,
+            'name' => $this->faker
+                ->unique()
+                ->randomElement(
+                    explode(
+                        ' ',
+                        'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم')
+                ),
         ];
     }
 }

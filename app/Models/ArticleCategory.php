@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 /**
  * App\Models\ArticleCategory
@@ -12,7 +11,7 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $name
  * @property string $slug
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Article[] $articles
+ * @property-read \Illuminate\Database\Eloquent\Collection|Article[] $articles
  * @property-read int|null $articles_count
  * @method static \Database\Factories\ArticleCategoryFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ArticleCategory newModelQuery()
@@ -27,13 +26,15 @@ class ArticleCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug'];
-
     public $timestamps = false;
 
-    public function setSlugAttribute($slug)
+    protected $fillable = ['name', 'slug'];
+
+    protected static function booted()
     {
-        $this->attributes['slug'] = Str::slug($slug);
+        static::saving(
+            fn($article) => $article->slug = makeSlug($article->name)
+        );
     }
 
     public function articles()

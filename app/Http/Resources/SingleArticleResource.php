@@ -18,7 +18,7 @@ class SingleArticleResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => $this->image,
+            'image' => url("storage/$this->image"),
             'meta' => $this->meta,
             'body' => $this->body,
             'comments' => CommentResource::collection($this->comments),
