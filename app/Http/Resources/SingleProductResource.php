@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\ProductItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class SingleProductResource extends JsonResource
@@ -20,6 +19,8 @@ class SingleProductResource extends JsonResource
             'avg_score' => $this->avg_score,
             'desc' => $this->desc,
             'meta_tags' => $this->meta_tags,
+
+            'comments' => CommentResource::collection($this->comments),
         ];
 
         $single['items'] = !$this->hasContainer()
