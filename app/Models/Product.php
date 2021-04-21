@@ -52,6 +52,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|Product orderByPrice(string $dir)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice(string $op, int $value)
  */
 class Product extends Model
 {

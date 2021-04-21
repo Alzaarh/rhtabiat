@@ -13,24 +13,36 @@ class ProductController extends Controller
     {
         $query = Product::latest();
 
-        if (request()->sort_by === 'lowest_price') {
-            $query->orderByPrice('asc');
-        }
-        if (request()->sort_by === 'highest_price') {
-            $query->orderByPrice('desc');
-        }
-        if (request()->filled('search')) {
-            $query->where('name', 'like', '%'.request()->search.'%');
-        }
-        if (request()->filled('min_price')) {
-            $query->wherePrice('>=', request()->min_price);
-        }
-        if (request()->filled('max_price')) {
-            $query->wherePrice('<=', request()->max_price);
-        }
-        if (request()->filled('category_id')) {
-            $query->whereCategoryId(request()->category_id);
-        }
+        request()->whenFilled('sort_by', function ($sortBy) use ($query) {
+            switch ($sortBy) {
+                case 'lowest_price':
+                    $query->orderByPrice('asc');
+                    break;
+                case 'highest_price':
+                    $query->orderByPrice('desc');
+                    break;
+            }
+        });
+
+        request()->whenFilled(
+            'search',
+            fn($term) => $query->where('name', 'like', '%'.$term.'%')
+        );
+
+        request()->whenFilled(
+            'min_price',
+            fn ($price) => $query->wherePrice('>=', $price)
+        );
+
+        request()->whenFilled(
+            'max_price',
+            fn ($price) => $query->wherePrice('<=', $price)
+        );
+
+        request()->whenFilled(
+            'category_id',
+            fn ($categoryId) => $query->whereCategoryId($categoryId)
+        );
 
         return IndexProductResource::collection(
             $query->paginate(request()->count)
