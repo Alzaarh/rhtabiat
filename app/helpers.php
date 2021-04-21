@@ -45,3 +45,10 @@ function sendSMS(string $to, string $pattern, array $data)
         $input_data
     );
 }
+
+function makeSlug(string $input): string
+{
+    $string = preg_replace("/[^الف-ی0-9_\s-]/", "", $input);
+    $string = preg_replace("/[\s-]+/", " ", $string);
+    return preg_replace("/[\s_]/", "-", $string);
+}

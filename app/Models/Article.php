@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Scout\Searchable;
-use App\Traits\Sluggable;
 use App\Traits\HasImage;
 
 /**
@@ -48,7 +45,8 @@ use App\Traits\HasImage;
  */
 class Article extends Model
 {
-    use HasFactory, Sluggable, HasImage;
+    use HasFactory;
+    use HasImage;
 
     protected $fillable = [
         'title',
@@ -71,6 +69,10 @@ class Article extends Model
             fn ($article) =>
             Storage::delete($article->getRawOriginal('image'))
         );
+
+        static::saving(function ($article) {
+            $article->slug = makeSlug($article->title);
+        });
     }
 
     public function getMetaAttribute($value)

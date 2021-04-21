@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\SingleArticleResource;
 use App\Models\Article;
 
 class ArticleController extends Controller
@@ -19,6 +20,6 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        return new ArticleResource($article);
+        return new SingleArticleResource($article);
     }
 }

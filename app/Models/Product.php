@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\HasImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -56,7 +55,7 @@ use Illuminate\Support\Str;
  */
 class Product extends Model
 {
-    use HasFactory, HasImage;
+    use HasFactory;
 
     protected $fillable = [
         'name',

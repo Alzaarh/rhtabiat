@@ -10,7 +10,7 @@ class CreateArticlesTable extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->string('slug')->unique();
             $table->string('image')->nullable();
             $table->mediumText('body');

@@ -87,14 +87,14 @@ Route::namespace('Blog')->group(
                 Route::get('/', 'ArticleCategoryController@index');
             }
         );
-        Route::prefix('articles')->group(
-            function () {
-                Route::get('/', 'ArticleController@index');
-                Route::get('/{article:slug}', 'ArticleController@show')->name('articles.show');
-                Route::get('/{article:slug}/related_products', 'ArticleRelatedProductController');
-                Route::get('/{article:slug}/related_articles', 'ArticleRelatedArticleController');
-            }
-        );
+
+        Route::prefix('articles')->group(function () {
+            Route::get('/', 'ArticleController@index');
+            Route::get('/{article:slug}', 'ArticleController@show')
+                 ->name('articles.show');
+            Route::get('/{article:slug}/related_products', 'ArticleRelatedProductController');
+            Route::get('/{article:slug}/related_articles', 'ArticleRelatedArticleController');
+        });
     }
 );
 
