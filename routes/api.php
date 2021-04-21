@@ -90,10 +90,9 @@ Route::namespace('Blog')->group(
 
         Route::prefix('articles')->group(function () {
             Route::get('/', 'ArticleController@index');
-            Route::get('/{article:slug}', 'ArticleController@show')
-                 ->name('articles.show');
-            Route::get('/{article:slug}/related_products', 'ArticleRelatedProductController');
-            Route::get('/{article:slug}/related_articles', 'ArticleRelatedArticleController');
+            Route::get('/{article:slug}', 'ArticleController@show');
+            Route::get('/{article:slug}/related-products', 'GetArticleRelatedProducts');
+            Route::get('/{article:slug}/related-articles', 'ArticleRelatedArticleController');
         });
     }
 );
