@@ -14,6 +14,16 @@ Route::prefix('products')->group(function () {
     });
 });
 
+Route::namespace('User')->group(function () {
+    Route::get('provinces', 'IndexProvinces');
+    Route::get('cities', 'IndexCities');
+});
+
+Route::prefix('orders')->group(function () {
+    Route::namespace('User')->group(function () {
+        Route::get('delivery-costs', 'CalcOrderDeliveryCost');
+    });
+});
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
@@ -102,8 +112,6 @@ Route::namespace('Blog')->group(
 
 Route::namespace('User')->group(
     function () {
-        Route::get('provinces', 'ProvinceIndexController');
-        Route::get('cities', 'CityIndexController');
         Route::prefix('comments')->group(
             function () {
                 Route::post('/', 'CommentController@store');
@@ -114,7 +122,7 @@ Route::namespace('User')->group(
             Route::post('/', 'OrderController@store');
             Route::get(
                 'delivery-costs',
-                'OrderCalculateDeliveryCostController'
+                'CalcOrderDeliveryCost'
             );
             Route::get('track', 'TrackOrder');
         }

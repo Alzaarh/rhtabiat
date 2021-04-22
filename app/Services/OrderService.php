@@ -67,19 +67,13 @@ class OrderService
         );
     }
 
-    public function calcDeliveryCost(
-        int $price,
-        int $province,
-        int $weight
-    ): int {
+    public function calcDeliveryCost(int $price, int $province, int $weight): int
+    {
         if ($price >= 200000) {
             return 0;
         }
 
-        $weight = $province === Order::WHITHIN_PROVINCE
-            ? $weight * 9800
-            : $weight * 14000;
-
+        $weight = $province === Order::WHITHIN_PROVINCE ? $weight * 9800 : $weight * 14000;
         return ($weight + 2500) * 1.1;
     }
 

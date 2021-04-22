@@ -14,7 +14,7 @@ class ProductSeeder extends Seeder
             ->get()
             ->each(fn($category) => Product::factory()
                 ->for($category, 'category')
-                ->count(50)
+                ->count(10)
                 ->create());
     }
 }
