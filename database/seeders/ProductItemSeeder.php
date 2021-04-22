@@ -20,7 +20,7 @@ class ProductItemSeeder extends Seeder
 
         $products->slice(30)
             ->each(fn($product) => ProductItem::factory()->count(8)->for($product)->create([
-                'container' => ProductItem::ZINK_CONTAINER,
+                'container' => ProductItem::ZINC_CONTAINER,
             ]));
 
         $products->slice(30)

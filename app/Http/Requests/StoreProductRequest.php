@@ -52,7 +52,7 @@ class StoreProductRequest extends FormRequest
             'items.*.container' => [
                 'required_if:has_container,1',
                 'prohibited_if:has_container,0',
-                Rule::in([ProductItem::ZINK_CONTAINER, ProductItem::PLASTIC_CONTAINER]),
+                Rule::in([ProductItem::ZINC_CONTAINER, ProductItem::PLASTIC_CONTAINER]),
             ],
         ];
     }

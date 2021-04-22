@@ -21,6 +21,9 @@ class ProductController extends Controller
                 case 'highest_price':
                     $query->orderByPrice('desc');
                     break;
+                case 'highest_rated':
+                    $query->orderByScore();
+                    break;
             }
         });
 
@@ -51,6 +54,8 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        $product->load(['category.parent', 'comments']);
+
         return new SingleProductResource($product);
     }
 }

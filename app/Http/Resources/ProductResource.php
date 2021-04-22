@@ -42,7 +42,7 @@ class ProductResource extends JsonResource
                         $this->mergeWhen($this->hasContainer(), function () {
                             return [
                                 'zink' => ProductItemResource::collection(
-                                    $this->items->where('container', ProductItem::ZINK_CONTAINER)
+                                    $this->items->where('container', ProductItem::ZINC_CONTAINER)
                                 ),
                                 'plastic' => ProductItemResource::collection(
                                     $this->items->where('container', ProductItem::PLASTIC_CONTAINER)

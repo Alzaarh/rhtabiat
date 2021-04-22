@@ -54,6 +54,7 @@ use Spatie\Sluggable\SlugOptions;
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|Product orderByPrice(string $dir)
  * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice(string $op, int $value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product orderByScore()
  */
 class Product extends Model
 {
@@ -81,11 +82,6 @@ class Product extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
-    }
-
-    public function setSlugAttribute($slug)
-    {
-        $this->attributes['slug'] = Str::slug($slug);
     }
 
     public function getPriceAttribute()
@@ -150,14 +146,12 @@ class Product extends Model
 
     public function hasContainer(): bool
     {
-        return $this->items->contains(
-            fn($item) => filled($item->container)
-        );
+        return $this->items->contains(fn($item) => filled($item->container));
     }
 
-    public function getZinkItems()
+    public function getZincItems()
     {
-        return $this->items->where('container', ProductItem::ZINK_CONTAINER);
+        return $this->items->where('container', ProductItem::ZINC_CONTAINER);
     }
 
     public function getPlasticItems()
@@ -176,6 +170,21 @@ class Product extends Model
                 'product_items.product_id'
             )
             ->orderBy('price', $dir);
+    }
+
+    public function scopeOrderByScore($query)
+    {
+        return $query->selectRaw('products.*, avg(score) as avg_score')
+            ->distinct('products.id')
+            ->join(
+                'comments',
+                'products.id',
+                '=',
+                'commentable_id'
+            )
+            ->where('commentable_type', self::class)
+            ->groupBy('commentable_id')
+            ->orderBy('avg_score', 'desc');
     }
 
     public function scopeWherePrice($query, string $op, int $value)

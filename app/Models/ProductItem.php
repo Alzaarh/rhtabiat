@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $quantity
  * @property int|null $container
  * @property int $product_id
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cart[] $carts
+ * @property-read \Illuminate\Database\Eloquent\Collection|Cart[] $carts
  * @property-read int|null $carts_count
- * @property-read \App\Models\Product $product
+ * @property-read Product $product
  * @method static \Database\Factories\ProductItemFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ProductItem newQuery()
@@ -39,27 +39,10 @@ class ProductItem extends Model
 
     public $timestamps = false;
 
-    const ZINK_CONTAINER = 1;
-    const PLASTIC_CONTAINER = 2;
+    public const ZINC_CONTAINER = 1;
 
-    /**
-     * Set the correct container value
-     *
-     * @param string $container
-     * @return void
-     */
-    public function setContainerAttribute(string $container): void
-    {
-        $container === 'zink'
-        ? $this->attributes['container'] = self::ZINK_CONTAINER
-        : $this->attributes['container'] = self::PLASTIC_CONTAINER;
-    }
+    public const PLASTIC_CONTAINER = 2;
 
-    /**
-     * Get the product that owns the item
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -68,15 +51,5 @@ class ProductItem extends Model
     public function carts()
     {
         return $this->belongsToMany(Cart::class);
-    }
-
-    public function getContainerFarsi()
-    {
-        if (empty($this->container)) {
-            return null;
-        }
-        return $this->container === self::ZINK_CONTAINER
-        ? 'روحی'
-        : 'پلاستیکی';
     }
 }
