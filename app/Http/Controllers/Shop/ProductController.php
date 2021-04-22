@@ -54,7 +54,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['category.parent', 'comments']);
+        $product->load(['category.parent', 'comments', 'items']);
 
         return new SingleProductResource($product);
     }

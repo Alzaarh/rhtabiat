@@ -10,7 +10,7 @@ class ProductCategoryController extends Controller
 {
     public function index()
     {
-        return ProductCategoryResource::collection(ProductCategory::with('products')->get());
+        return ProductCategoryResource::collection(ProductCategory::with(['products', 'children'])->get());
     }
 
     public function show(ProductCategory $productCategory)

@@ -22,12 +22,15 @@ class ProductCategoryResource extends JsonResource
 
             'parent' => new self($this->whenLoaded('parent')),
 
+            'parent_id' => $this->parent_id,
+
             'children' => self::collection($this->whenLoaded('children')),
 
             'products' => IndexProductResource::collection(
                 $this->whenLoaded('products')
             ),
             'created_at' => $this->created_at,
+
             'updated_at' => $this->updated_at,
         ];
     }
