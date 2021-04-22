@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\HasPersianDate;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 /**
@@ -39,6 +40,7 @@ use Illuminate\Support\Str;
 class Comment extends Model
 {
     use HasFactory;
+    use HasPersianDate;
 
     protected $fillable = [
         'author_name',
@@ -48,11 +50,11 @@ class Comment extends Model
         'status',
     ];
 
-    const NOT_VERIFIED = 1;
-    const VERIFIED = 2;
-    const REJECTED = 3;
+    public const NOT_VERIFIED = 1;
 
-    protected $guarded = [];
+    public const VERIFIED = 2;
+
+    public const REJECTED = 3;
 
     public $timestamps = false;
 
@@ -73,11 +75,6 @@ class Comment extends Model
         return Str::of($this->commentable_type)->explode('\\')->last();
     }
 
-    /**
-     * Get the parent commentable model (product or article).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
-     */
     public function commentable()
     {
         return $this->morphTo();

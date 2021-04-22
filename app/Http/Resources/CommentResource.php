@@ -28,6 +28,7 @@ class CommentResource extends JsonResource
             'resource_id' => $this->commentable_id,
             'resource_type' => $this->resource_type,
             'created_at' => $this->created_at,
+            'created_at_fa' => $this->created_at_fa,
         ];
     }
 }
