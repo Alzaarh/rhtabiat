@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|ProductCategory[] $children
  * @property-read int|null $children_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
+ * @property-read \Illuminate\Database\Eloquent\Collection|Product[] $products
  * @property-read int|null $products_count
  * @method static \Database\Factories\ProductCategoryFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductCategory newModelQuery()
@@ -37,6 +37,11 @@ class ProductCategory extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::saving(fn($category) => $category->slug = makeSlug($category->name));
+    }
 
     public function children()
     {

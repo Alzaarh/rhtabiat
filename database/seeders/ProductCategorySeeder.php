@@ -7,14 +7,15 @@ use Illuminate\Database\Seeder;
 
 class ProductCategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        ProductCategory::factory()->count(4)->create();
-        ProductCategory::factory()->count(2)->hasChildren(2)->create();
+        ProductCategory::factory()
+            ->count(4)
+            ->create();
+
+        ProductCategory::factory()
+            ->count(4)
+            ->has(ProductCategory::factory()->count(2), 'children')
+            ->create();
     }
 }

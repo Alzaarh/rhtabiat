@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Pishran\LaravelPersianSlug\HasPersianSlug;
+use Spatie\Sluggable\SlugOptions;
 
 /**
  * App\Models\Product
@@ -56,6 +58,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     use HasFactory;
+    use HasPersianSlug;
 
     protected $fillable = [
         'name',
@@ -71,6 +74,13 @@ class Product extends Model
     {
         static::updating(fn($product) => self::deleteImage($product));
         static::deleting(fn($product) => self::deleteImage($product));
+    }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
     }
 
     public function setSlugAttribute($slug)
@@ -158,26 +168,26 @@ class Product extends Model
     public function scopeOrderByPrice($query, string $dir)
     {
         return $query->selectRaw('products.*')
-                     ->distinct('products.id')
-                     ->join(
-                         'product_items',
-                         'products.id',
-                         '=',
-                         'product_items.product_id'
-                     )
-                     ->orderBy('price', $dir);
+            ->distinct('products.id')
+            ->join(
+                'product_items',
+                'products.id',
+                '=',
+                'product_items.product_id'
+            )
+            ->orderBy('price', $dir);
     }
 
     public function scopeWherePrice($query, string $op, int $value)
     {
         return $query->selectRaw('products.*')
-                     ->distinct('products.id')
-                     ->join(
-                         'product_items',
-                         'products.id',
-                         '=',
-                         'product_items.product_id'
-                     )
-                     ->where('product_items.price', $op, $value);
+            ->distinct('products.id')
+            ->join(
+                'product_items',
+                'products.id',
+                '=',
+                'product_items.product_id'
+            )
+            ->where('product_items.price', $op, $value);
     }
 }

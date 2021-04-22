@@ -16,8 +16,8 @@ class ArticleCategorySeeder extends Seeder
     public function run()
     {
         ArticleCategory::factory()
-                       ->has(Article::factory()->count(5))
-                       ->count(4)
-                       ->create();
+            ->has(Article::factory()->count(10))
+            ->count(5)
+            ->create();
     }
 }
