@@ -22,7 +22,7 @@ class ProductItemResource extends JsonResource
 
             'cart_quantity' => $this->whenPivotLoaded('cart_product_item', fn() => $this->pivot->quantity),
 
-            'product' => new IndexProductResource($this->whenLoaded('product')),
+            'product' => new IndexProduct($this->whenLoaded('product')),
         ];
     }
 }

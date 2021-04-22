@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\IndexProductResource;
+use App\Http\Resources\IndexProduct;
 use App\Http\Resources\SingleProductResource;
 use App\Models\Product;
 
@@ -47,7 +47,7 @@ class ProductController extends Controller
             fn ($categoryId) => $query->whereCategoryId($categoryId)
         );
 
-        return IndexProductResource::collection(
+        return IndexProduct::collection(
             $query->paginate(request()->count)
         );
     }

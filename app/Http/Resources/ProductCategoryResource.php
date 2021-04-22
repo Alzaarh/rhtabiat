@@ -26,7 +26,7 @@ class ProductCategoryResource extends JsonResource
 
             'children' => self::collection($this->whenLoaded('children')),
 
-            'products' => IndexProductResource::collection(
+            'products' => IndexProduct::collection(
                 $this->whenLoaded('products')
             ),
             'created_at' => $this->created_at,

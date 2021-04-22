@@ -7,6 +7,7 @@ Route::prefix('products')->group(function () {
         Route::get('/', 'ProductController@index');
         Route::get('best-selling', 'IndexBestSellingProduct');
         Route::get('specials', 'IndexSpecialProduct');
+        Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
         Route::get('{product:slug}', 'ProductController@show');
 
         Route::get('items/{item}', 'GetProductItem');
@@ -21,15 +22,6 @@ Route::namespace('Shop')->group(
             function () {
                 Route::get('/', 'ProductCategoryController@index');
                 Route::get('/{productCategory:slug}', 'ProductCategoryController@show');
-            }
-        );
-        Route::prefix('products')->group(
-            function () {
-                Route::get('/', 'ProductController@index');
-                Route::get('best-selling', 'IndexBestSellingProduct');
-                Route::get('specials', 'IndexSpecialProduct');
-                Route::get('{product:slug}', 'ProductController@show')
-                    ->name('products.show');
             }
         );
 

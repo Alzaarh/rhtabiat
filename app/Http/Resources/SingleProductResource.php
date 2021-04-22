@@ -29,6 +29,6 @@ class SingleProductResource extends JsonResource
             'plastic' => $this->getPlasticItems()->all(),
         ];
 
-        return array_merge((new IndexProductResource($this))->toArray($request), $single);
+        return array_merge((new IndexProduct($this))->toArray($request), $single);
     }
 }

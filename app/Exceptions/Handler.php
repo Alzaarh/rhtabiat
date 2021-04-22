@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (NotFoundHttpException $e) {
-            return jsonResponse(['message' => __('messages.notFound')], 404);
+            return response()->json(['message' => 'هیچ چیزی اینجا نیست'], 404);
         });
 
         $this->renderable(function (HttpException $e) {

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Pishran\LaravelPersianSlug\HasPersianSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -161,15 +160,10 @@ class Product extends Model
 
     public function scopeOrderByPrice($query, string $dir)
     {
-        return $query->selectRaw('products.*')
+        return $query->selectRaw('products.*, price * (100-off) / 100 as p')
             ->distinct('products.id')
-            ->join(
-                'product_items',
-                'products.id',
-                '=',
-                'product_items.product_id'
-            )
-            ->orderBy('price', $dir);
+            ->join('product_items', 'products.id', '=', 'product_id')
+            ->orderBy('p', $dir);
     }
 
     public function scopeOrderByScore($query)
@@ -198,5 +192,20 @@ class Product extends Model
                 'product_items.product_id'
             )
             ->where('product_items.price', $op, $value);
+    }
+
+    public function scopeWhereCategoryId($query, $id)
+    {
+        return $query->where('category_id', $id)
+            ->orWhereHas(
+                'category.parent',
+                fn($query) => $query->whereId($id)
+            );
+    }
+
+    public function getSimilar()
+    {
+        return $this->whereCategoryId($this->category_id)
+            ->get();
     }
 }

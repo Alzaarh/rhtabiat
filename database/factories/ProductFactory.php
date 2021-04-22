@@ -12,7 +12,7 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'name' => \Faker::word().' '. rand(1, 1000),
+            'name' => \Faker::word().' '. rand(1, 10000),
 
             'short_desc' => $this->faker->realText(500),
 
