@@ -18,22 +18,26 @@ class StoreComment extends FormRequest
             'resource_type' => 'required|in:Article,Product',
             'resource_id' => [
                 'required',
-                function ($attr, $value, $fail) {
+                function ($attr, $value) {
+                    $resource = null;
                     if ($this->resource_type === 'Article') {
-                        $resource = Article::find($value);
+                        $resource = Article::findorFail($value);
+                    } elseif ($this->resource_type === 'Product') {
+                        $resource = Product::findOrFail($value);
                     }
-
-                    if ($this->resource_type === 'Product') {
-                        $resource = Product::find($value);
-                    }
-
-                    if (empty($resource)) {
-                        $fail('شناسه مورد نظر یافت نشد');
-                    } else {
-                        $this->merge(['resource' => $resource]);
-                    }
+                    $this->merge(['resource' => $resource]);
                 },
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'author_name' => 'نام',
+            'author_email' => 'ایمیل',
+            'score' => 'امتیاز',
+            'body' => 'نظر',
         ];
     }
 }

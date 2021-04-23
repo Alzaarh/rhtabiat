@@ -57,6 +57,12 @@ class Handler extends ExceptionHandler
                     return jsonResponse(['message' => 'Login first'], 401);
                 case 403:
                     return jsonResponse(['message' => 'Forbidden'], 403);
+
+                case 429:
+                    return response()->json(['message' => 'لطفا یک دقیقه دیگر امتحان کنید'], 429);
+
+                default:
+                    return response()->json(['message' => 'خطایی رخ داده است'], 500);
             }
         });
     }

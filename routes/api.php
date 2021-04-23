@@ -26,8 +26,8 @@ Route::prefix('orders')->group(function () {
 });
 
 Route::prefix('comments')->group(function () {
-    Route::name('User')->group(function () {
-        Route::post('/', 'CommentController@store');
+    Route::namespace('User')->group(function () {
+        Route::post('/', 'CommentController@store')->middleware('throttle:1,60');
     });
 });
 
