@@ -32,10 +32,16 @@ Route::prefix('comments')->group(function () {
 
     Route::namespace('Admin')->group(function () {
         Route::middleware(['auth:admin', 'role:admin'])->group(function () {
-           Route::get('/', 'CommentController@index');
-           Route::patch('{comment}/status', 'UpdateCommentStatus');
-           Route::delete('{comment}', 'CommentController@destroy');
+            Route::get('/', 'CommentController@index');
+            Route::patch('{comment}/status', 'UpdateCommentStatus');
+            Route::delete('{comment}', 'CommentController@destroy');
         });
+    });
+});
+
+Route::prefix('logs')->group(function () {
+    Route::namespace('User')->group(function () {
+        Route::post('/', 'LogController@store');
     });
 });
 

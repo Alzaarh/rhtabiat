@@ -16,6 +16,7 @@ class CreateOrdersTable extends Migration
             $table->string('code')->unique();
             $table->integer('delivery_cost');
             $table->foreignId('discount_code_id')->nullable()->constrained();
+            $table->ipAddress('visitor');
             $table->timestamps();
         });
     }
