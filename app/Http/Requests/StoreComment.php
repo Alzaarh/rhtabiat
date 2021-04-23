@@ -6,7 +6,7 @@ use App\Models\Article;
 use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCommentRequest extends FormRequest
+class StoreComment extends FormRequest
 {
     public function rules()
     {
