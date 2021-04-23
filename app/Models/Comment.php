@@ -6,7 +6,6 @@ use App\Traits\HasPersianDate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 /**
  * App\Models\Comment
@@ -36,12 +35,26 @@ use Illuminate\Support\Str;
  * @method static Builder|Comment whereScore($value)
  * @method static Builder|Comment whereStatus($value)
  * @mixin \Eloquent
+ * @property int $is_testimonial
+ * @property-read string $created_at_fa
+ * @property-read string $status_fa
+ * @method static Builder|Comment testimonials()
+ * @method static Builder|Comment whereIsTestimonial($value)
  */
 class Comment extends Model
 {
     use HasFactory;
     use HasPersianDate;
 
+    public const NOT_VERIFIED = 1;
+    public const VERIFIED = 2;
+    public const REJECTED = 3;
+    protected const STATUS_FA = [
+        1 => 'در انتظار تایید',
+        2 => 'تایید شده',
+        3 => 'رد شده',
+    ];
+    public $timestamps = false;
     protected $fillable = [
         'author_name',
         'author_email',
@@ -50,29 +63,30 @@ class Comment extends Model
         'status',
     ];
 
-    public const NOT_VERIFIED = 1;
-
-    public const VERIFIED = 2;
-
-    public const REJECTED = 3;
-
-    public $timestamps = false;
+    public static function getLatest($count)
+    {
+        return self::latest()->take($count)->get();
+    }
 
     protected static function booted()
     {
         static::addGlobalScope('verified', function (Builder $builder) {
             $builder->where('status', self::VERIFIED);
         });
+
+        static::creating(function ($comment) {
+            $comment->status ??= self::NOT_VERIFIED;
+        });
     }
 
-    public function setStatusAttribute($status)
+    public function getResourceTypeAttribute(): string
     {
-        $this->attributes['status'] = $status ?? self::NOT_VERIFIED;
+        return explode('\\', $this->commentable_type)[2];
     }
 
-    public function getResourceTypeAttribute()
+    public function getStatusFaAttribute(): string
     {
-        return Str::of($this->commentable_type)->explode('\\')->last();
+        return self::STATUS_FA[$this->status];
     }
 
     public function commentable()
@@ -80,13 +94,20 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    public static function getLatest($count)
-    {
-        return self::latest()->take($count)->get();
-    }
-
     public function scopeTestimonials($query)
     {
         return $query->whereIsTestimonial(true);
+    }
+
+    public function verify(): void
+    {
+        $this->status = self::VERIFIED;
+        $this->save();
+    }
+
+    public function reject(): void
+    {
+        $this->status = self::REJECTED;
+        $this->save();
     }
 }

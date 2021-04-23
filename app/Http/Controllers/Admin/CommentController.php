@@ -12,22 +12,19 @@ class CommentController extends Controller
     {
         return CommentResource::collection(
             Comment::withoutGlobalScope('verified')
-                ->latest()
-                ->paginate(request()->count)
+                ->latest()->paginate()
         );
     }
 
-    public function update(Comment $comment)
-    {
-        request()->validate(['status' => 'required|in:1,2,3']);
-        $comment->status = request()->status;
-        $comment->save();
-        return new CommentResource($comment);
-    }
-
+    /**
+     * @throws \Exception
+     */
     public function destroy(Comment $comment)
     {
         $comment->delete();
-        return response()->json(['message' => 'Success']);
+
+        return response()->json([
+            'message' => __('messages.resource.destroy', ['resource' => 'کامنت']),
+        ]);
     }
 }

@@ -29,6 +29,14 @@ Route::prefix('comments')->group(function () {
     Route::namespace('User')->group(function () {
         Route::post('/', 'CommentController@store')->middleware('throttle:1,60');
     });
+
+    Route::namespace('Admin')->group(function () {
+        Route::middleware(['auth:admin', 'role:admin'])->group(function () {
+           Route::get('/', 'CommentController@index');
+           Route::patch('{comment}/status', 'UpdateCommentStatus');
+           Route::delete('{comment}', 'CommentController@destroy');
+        });
+    });
 });
 
 Route::namespace('Shop')->group(
@@ -70,9 +78,7 @@ Route::namespace('Admin')->group(
         Route::apiResource('article-categories', 'ArticleCategoryController')
             ->except(['index', 'show'])
             ->middleware(['auth:admin', 'role:admin']);
-        Route::apiResource('comments', 'CommentController')
-            ->except(['store', 'show'])
-            ->middleware(['auth:admin', 'role:admin']);
+
         Route::apiResource('articles', 'ArticleController')
             ->except(['index', 'show'])
             ->middleware(['auth:admin', 'role:writer']);
