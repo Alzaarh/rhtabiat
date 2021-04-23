@@ -47,12 +47,9 @@ class DiscountCode extends Model
     protected static function booted()
     {
         static::addGlobalScope(
-            'notExpired',
-            fn($builder) => $builder->where(
-                'expires_at',
-                '>=',
-                now()->toDateTimeString()
-            )
+            'valid',
+            fn($b) => $b->where('expires_at', '>=', now()->toDateTimeString())
+                ->whereNull('used_at')
         );
     }
 
@@ -80,5 +77,13 @@ class DiscountCode extends Model
                 $fail('کد تخفیف معتبر نیست');
             }
         };
+    }
+
+    public function isValid(): bool
+    {
+        if (filled($this->user_id) && $this->user_id !== auth('user')->id()) {
+            return false;
+        }
+        return true;
     }
 }

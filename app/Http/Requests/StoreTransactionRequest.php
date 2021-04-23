@@ -32,7 +32,7 @@ class StoreTransactionRequest extends FormRequest
                     if (empty($order)) {
                         $fail('کد سفارش معتبر نیست');
                     }
-                    if ($order->status !== Order::STATUS_LIST['not_paid']) {
+                    if ($order->status !== Order::STATUS['not_paid']) {
                         $fail('سفارش پرداخت شده است');
                     }
                     if (now()->diffInHours($order->created_at) > 24) {

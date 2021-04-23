@@ -39,7 +39,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    public const STATUS_LIST = [
+    public const STATUS = [
         'not_paid' => 1,
         'being_processed' => 2,
         'in_post_office' => 3,
@@ -51,22 +51,17 @@ class Order extends Model
         'تحویل به شرکت پست' => 3,
         'تحویل به مشتری' => 4,
     ];
-    /**
-     * If province_id is equal to this, order is within province.
-     *
-     * @var int
-     */
-    const WHITHIN_PROVINCE = 11;
+    public const WITHIN_PROVINCE = 11;
     protected $guarded = [];
 
     protected static function booted()
     {
         static::creating(function ($order) {
-            $order->status = self::STATUS_LIST['not_paid'];
+            $order->status = self::STATUS['not_paid'];
             $order->code = Str::of('#')
-                              ->append(self::count())
-                              ->append('-')
-                              ->append(Str::random(10));
+                ->append(self::count(), '-', Str::random(10));
+            $order->visitor = request()->ip();
+            $order->user_id = auth('user')->id();
         });
     }
 
@@ -91,18 +86,10 @@ class Order extends Model
         );
     }
 
-    public function products()
+    public function items()
     {
-        return $this
-            ->belongsToMany(ProductItem::class, 'order_product_item')
-            ->withPivot(
-                [
-                    'price',
-                    'off',
-                    'quantity',
-                    'weight',
-                ]
-            );
+        return $this->belongsToMany(ProductItem::class)
+            ->withPivot('price', 'off', 'quantity', 'weight');
     }
 
     public function address()
@@ -122,8 +109,7 @@ class Order extends Model
 
     public function verify(): void
     {
-
-        $this->status = Order::STATUS_LIST['being_processed'];
+        $this->status = Order::STATUS['being_processed'];
         $this->products->each(function ($item) {
             $item->quantity = $item->quantity - $item->pivot->quantity;
             $item->save();

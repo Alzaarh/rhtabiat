@@ -45,6 +45,14 @@ Route::prefix('logs')->group(function () {
     });
 });
 
+Route::prefix('orders')->group(function () {
+    Route::namespace('User')->group(function () {
+        Route::post('/', 'OrderController@store');
+        Route::get('delivery-cost', 'CalcOrderDeliveryCost');
+        Route::get('track', 'TrackOrder');
+    });
+});
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
@@ -130,15 +138,6 @@ Route::namespace('Blog')->group(
 );
 
 Route::namespace('User')->group(function () {
-    Route::prefix('orders')->group(function () {
-        Route::post('/', 'OrderController@store');
-        Route::get(
-            'delivery-costs',
-            'CalcOrderDeliveryCost'
-        );
-        Route::get('track', 'TrackOrder');
-    }
-    );
     Route::prefix('verification-codes')->group(
         function () {
             Route::post('/', 'VerificationCodeController@store')

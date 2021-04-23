@@ -5,64 +5,67 @@ namespace App\Http\Requests;
 use App\Models\DiscountCode;
 use App\Models\ProductItem;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\ValidationException;
 
 class StoreOrderRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     * @throws ValidationException
-     */
-    public function rules(DiscountCode $code)
+    public function rules()
     {
         if (auth('user')->check()) {
+            $user = request()->user();
+            if (!$user->cart->validate()) {
+                abort(400);
+            }
             return [
-                'address_id' => [
+                'address' => [
                     'required',
-                    function ($attribute, $value, $fail) {
-                        if (!request()->user()->hasAddress($value)) {
-                            $fail("{$attribute} is invalid.");
+                    function ($attr, $value, $fail) use ($user) {
+                        if ($user->addresses()->whereId($value)->doesntExist()) {
+                            $fail();
                         }
                     }
-                ]
+                ],
+                'discount_code' => [
+                    'exists:discount_codes,code',
+                    function ($attr, $value, $fail) {
+                        if (!DiscountCode::whereCode($value)->first()->isValid()) {
+                            $fail();
+                        }
+                    },
+                ],
+            ];
+        } else {
+            return [
+                'name' => 'required|string|max:255',
+                'company' => 'string|max:255',
+                'mobile' => 'required|digits:11',
+                'phone' => 'digits:11',
+                'province_id' => 'required|exists:provinces,id',
+                'city_id' => 'required|exists:cities,id',
+                'zipcode' => 'required|digits:10',
+                'address' => 'required|max:2000',
+                'products' => [
+                    'required',
+                    'array',
+                    function ($attr, $value, $fail) {
+                        foreach ($value as $i) {
+                            $item = ProductItem::find($i['id']);
+                            if (empty($item) || $item->quantity < $i['quantity']) {
+                                $fail();
+                            }
+                        }
+                    },
+                ],
+                'discount_code' => [
+                    'bail',
+                    'exists:discount_codes,code',
+                    function ($attr, $value, $fail) {
+                        if (!DiscountCode::whereCode($value)->first()->isValid()) {
+                            $fail();
+                        }
+                    },
+                ],
             ];
         }
-
-        foreach (request()->products as $product) {
-            $item = ProductItem::find($product['id']);
-            if (empty($item) || $item->quantity < $product['quantity']) {
-                throw ValidationException::withMessages([
-                    'products' => 'تعداد محصول معتبر نیست',
-                ]);
-            }
-        }
-
-        return [
-            'name' => 'required|string|max:255',
-            'company' => 'string|max:255',
-            'mobile' => 'required|digits:11',
-            'phone' => 'digits:11',
-            'province_id' => 'required|exists:provinces,id',
-            'city_id' => 'required|exists:cities,id',
-            'zipcode' => 'required|digits:10',
-            'address' => 'required|max:2000',
-            'products' => 'required|array',
-            'products.*.id' => 'required|exists:product_items,id',
-            'products.*.quantity' => 'required|integer|min:1',
-            'discount_code' => [$code->validate()]
-        ];
     }
 
     public function attributes()
@@ -71,9 +74,14 @@ class StoreOrderRequest extends FormRequest
             'name' => 'نام تحویل گیرنده',
             'mobile' => 'شماره همراه',
             'phone' => 'شماره تلفن ثابت',
-            'products' => 'محصولات',
-            'products.*.id' => 'شناسه محصول',
-            'products.*.quantity' => 'تعداد محصول',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'province_id' => $this->province,
+            'city_id' => $this->city,
+        ]);
     }
 }
