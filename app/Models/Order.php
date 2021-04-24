@@ -34,6 +34,17 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @mixin \Eloquent
+ * @property int|null $discount_code_id
+ * @property string $visitor
+ * @property-read \App\Models\DiscountCode|null $discountCode
+ * @property-read mixed $products_price
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductItem[] $items
+ * @property-read int|null $items_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
+ * @property-read int|null $transactions_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Order paid()
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereDiscountCodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereVisitor($value)
  */
 class Order extends Model
 {
@@ -45,11 +56,11 @@ class Order extends Model
         'in_post_office' => 3,
         'delivered' => 4,
     ];
-    public const STATUS_LIST_FA = [
-        'در انتظار پرداخت' => 1,
-        'در حال پردازش' => 2,
-        'تحویل به شرکت پست' => 3,
-        'تحویل به مشتری' => 4,
+    public const STATUS_FA = [
+        1 => 'در انتظار پرداخت',
+        2 => 'در حال پردازش',
+        3 => 'تحویل به شرکت پست',
+        4 => 'تحویل به مشتری',
     ];
     public const WITHIN_PROVINCE = 11;
     protected $guarded = [];
@@ -67,7 +78,7 @@ class Order extends Model
 
     public function getTotalPriceAttribute()
     {
-        $productsPrice = $this->products->reduce(
+        $productsPrice = $this->items->reduce(
             fn($carry, $product) => $product->pivot->price *
                 (100 - $product->pivot->off) / 100 *
                 $product->pivot->quantity + $carry,
@@ -84,6 +95,11 @@ class Order extends Model
                 $product->pivot->quantity + $carry,
             0
         );
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('status', '!=', static::STATUS['not_paid']);
     }
 
     public function items()

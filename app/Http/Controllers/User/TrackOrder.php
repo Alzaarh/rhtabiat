@@ -3,19 +3,17 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TrackOrder as Request;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use Illuminate\Http\Request;
 
 class TrackOrder extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        request()->validate(['order_code' => 'required|string|exist:orders,code']);
+        $order = Order::whereCode($request->order_code)
+            ->first();
 
-        $order = Order::find(request()->order_code);
-
-        switch ($order->status) {
-//            case Order::STATUS_LIST['']
-        }
+        return new OrderResource($order);
     }
 }

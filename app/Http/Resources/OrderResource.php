@@ -13,7 +13,7 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'total_price' => $this->total_price,
-            'status' => array_search($this->status, Order::STATUS_LIST_FA),
+            'status_fa' => Order::STATUS_FA[$this->status],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

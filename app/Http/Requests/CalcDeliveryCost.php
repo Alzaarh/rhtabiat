@@ -14,13 +14,4 @@ class CalcDeliveryCost extends FormRequest
             'price' => 'required|numeric|min:0'
         ];
     }
-
-    public function attributes()
-    {
-        return [
-            'province' => 'استان',
-            'weight' => 'وزن کل',
-            'price' => 'قیمت کل',
-        ];
-    }
 }
