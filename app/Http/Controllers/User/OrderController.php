@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\StoreOrder;
 use App\Jobs\EmptyCart;
 use App\Services\OrderService;
 
@@ -19,7 +19,7 @@ class OrderController extends Controller
     /**
      * @throws \Throwable
      */
-    public function store(StoreOrderRequest $request)
+    public function store(StoreOrder $request)
     {
         $order = $this->service->createOrder($request);
 

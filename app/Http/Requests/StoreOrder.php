@@ -3,10 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Models\DiscountCode;
+use App\Models\Product;
 use App\Models\ProductItem;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreOrderRequest extends FormRequest
+class StoreOrder extends FormRequest
 {
     public function rules()
     {
@@ -59,8 +60,19 @@ class StoreOrderRequest extends FormRequest
                     'bail',
                     'exists:discount_codes,code',
                     function ($attr, $value, $fail) {
-                        if (!DiscountCode::whereCode($value)->first()->isValid()) {
+                        $code = DiscountCode::whereCode($value)->first();
+                        if (!$code->isValid()) {
                             $fail();
+                        }
+                        if (filled($code->min)) {
+                            $price = 0;
+                            foreach ($this->products as $i) {
+                                $item = ProductItem::find($i);
+                                $price += $item->price * (100 - $item->product->off) / 100 * $i['quantity'];
+                            }
+                            if ($code->min > $price) {
+                                $fail();
+                            }
                         }
                     },
                 ],

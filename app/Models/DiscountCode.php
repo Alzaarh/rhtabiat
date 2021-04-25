@@ -86,4 +86,13 @@ class DiscountCode extends Model
         }
         return true;
     }
+
+    public function calc(int $price): int
+    {
+        $off = filled($this->value) ? $this->value : $price * (100 - $this->percent) / 100;
+        if (filled($this->max) && $this->max < $off) {
+            $off = $this->max;
+        }
+        return $off;
+    }
 }

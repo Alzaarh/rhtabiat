@@ -76,15 +76,17 @@ class Order extends Model
         });
     }
 
-    public function getTotalPriceAttribute()
+    public function getPriceAttribute(): int
     {
-        $productsPrice = $this->items->reduce(
-            fn($carry, $product) => $product->pivot->price *
-                (100 - $product->pivot->off) / 100 *
-                $product->pivot->quantity + $carry,
+        $off = 0;
+        $price = $this->items->reduce(
+            fn($carry, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $carry,
             0
         );
-        return $productsPrice + $this->delivery_cost;
+        if (filled($this->discountCode)) {
+            $off = $this->discountCode->calc($price);
+        }
+        return $price - $off + $this->delivery_cost;
     }
 
     public function getProductsPriceAttribute()
@@ -120,7 +122,7 @@ class Order extends Model
 
     public function discountCode()
     {
-        return $this->hasOne(DiscountCode::class);
+        return $this->belongsTo(DiscountCode::class);
     }
 
     public function verify(): void

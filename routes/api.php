@@ -51,6 +51,10 @@ Route::prefix('orders')->group(function () {
         Route::get('delivery-cost', 'CalcOrderDeliveryCost');
         Route::get('track', 'TrackOrder');
     });
+
+    Route::namespace('Admin')->group(function () {
+        Route::get('/', 'OrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
+    });
 });
 
 Route::namespace('Shop')->group(
@@ -109,12 +113,6 @@ Route::namespace('Admin')->group(
                         Route::delete('/{banner}', 'BannerController@destroy');
                     }
                 );
-            }
-        );
-
-        Route::prefix('admins/orders')->group(
-            function () {
-                Route::get('/', 'OrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
             }
         );
     }
