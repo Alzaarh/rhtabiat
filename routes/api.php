@@ -8,9 +8,9 @@ Route::prefix('products')->group(function () {
         Route::get('best-selling', 'IndexBestSellingProduct');
         Route::get('specials', 'IndexSpecialProduct');
         Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
+        Route::get('items', 'GetProductItems');
         Route::get('{product:slug}', 'ProductController@show');
 
-        Route::get('items/{item}', 'GetProductItem');
     });
 });
 
