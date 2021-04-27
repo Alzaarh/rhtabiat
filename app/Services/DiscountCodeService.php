@@ -15,7 +15,7 @@ class DiscountCodeService
         }
 
         if (filled($code->percent)) {
-            $off = $orderCost * (100 - $code->percent) / 100;
+            $off = $orderCost * $code->percent / 100;
         }
         if (filled($code->value) && $code->value > $off) {
             $off = $code->value;
