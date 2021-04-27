@@ -34,20 +34,31 @@ class StoreOrder extends FormRequest
                     },
                 ],
             ];
-//        } else {
-////            $rules = Address::RULES;
-////            $rules['products'] = [
-////                'required',
-////                'array',
-////                function ($attr, $value, $fail) {
-////                    foreach ($value as $i) {
-////                        $item = ProductItem::find($i['id']);
-////                        if (empty($item) || $item->quantity < $i['quantity']) {
-////                            $fail();
-////                        }
-////                    }
-////                },
-////            ];
+        } else {
+            array_merge(Address::RULES, [
+                'products' => ['required', 'array'],
+                'products.*.id' => 'required|exists:product_items',
+                'products.*.quantity' => [
+                    'required',
+                    'integer',
+                    'min:1',
+                    function ($attr, $qty, $fail) {
+
+                    }
+                ],
+            ]);
+            $rules['products'] = [
+                'required',
+                'array',
+                function ($attr, $value, $fail) {
+                    foreach ($value as $i) {
+                        $item = ProductItem::find($i['id']);
+                        if (empty($item) || $item->quantity < $i['quantity']) {
+                            $fail('تعداد محصول وارد شده بیش از حد مجاز است');
+                        }
+                    }
+                },
+            ];
 ////            'discount_code' => [
 ////                'bail',
 ////                'exists:discount_codes,code',

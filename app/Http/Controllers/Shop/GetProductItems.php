@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductItemResource;
 use App\Models\ProductItem;
+use DB;
 
 class GetProductItems extends Controller
 {
@@ -15,9 +16,12 @@ class GetProductItems extends Controller
             'products.*' => 'required|exists:product_items,id',
         ]);
 
+        $idArray = implode(',', request()->products);
         return ProductItemResource::collection(
             ProductItem::with('product')
-                ->find(request()->products)
+                ->whereIn('id', request()->products)
+                ->orderByRaw(DB::raw("FIELD(id, $idArray)"))
+                ->get()
         );
     }
 }

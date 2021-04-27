@@ -42,7 +42,7 @@ Route::prefix('logs')->group(function () {
 
 Route::prefix('orders')->group(function () {
     Route::namespace('User')->group(function () {
-        Route::post('/', 'OrderController@store');
+        Route::post('guests', 'OrderController@store');
         Route::get('delivery-cost', 'CalcOrderDeliveryCost');
         Route::get('track', 'TrackOrder');
     });

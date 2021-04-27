@@ -11,17 +11,11 @@ class ProductItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-
             'weight' => $this->weight,
-
-            'container' => (empty($this->container) ? null : $this->container === ProductItem::ZINC_CONTAINER) ? 'روحی' : 'پلاستیکی',
-
+            'container' => $this->container_fa,
             'price' => $this->price,
-
             'quantity' => $this->quantity,
-
             'cart_quantity' => $this->whenPivotLoaded('cart_product_item', fn() => $this->pivot->quantity),
-
             'product' => new IndexProduct($this->whenLoaded('product')),
         ];
     }

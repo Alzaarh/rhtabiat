@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    public function createForGuest()
+    {
+        $this->validateForGuest();
+    }
+
+    protected function validateForGuest()
+    {
+        request()->validate([
+            ''
+        ]);
+    }
     /**
      * @throws \Throwable
      */

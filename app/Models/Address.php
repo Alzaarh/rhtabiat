@@ -50,14 +50,13 @@ class Address extends Model
     use SoftDeletes;
 
     public const RULES = [
-        'name' => 'required|string|max:255',
-        'company' => 'string|max:255',
-        'mobile' => 'required|digits:11',
-        'phone' => 'digits:11',
-        'province_id' => 'required|exists:provinces,id',
-        'city_id' => 'required|exists:cities,id',
-        'zipcode' => 'required|digits:10',
-        'address' => 'required|max:2000',
+        'name' => ['required'],
+        'mobile' => ['required', 'digits:11'],
+        'phone' => ['digits:11'],
+        'province_id' => ['required', 'exists:provinces,id'],
+        'city_id' => ['required', 'exists:cities,id'],
+        'zipcode' => ['required', 'digits:10'],
+        'address' => ['required'],
     ];
 
     protected $fillable = [
