@@ -17,11 +17,11 @@ class BannerSeeder extends Seeder
     {
         DB::table('banners')->insert([
             [
-                'image' => 'images/hero.png',
+                'image' => 'images/hero.jpg',
                 'location' => Banner::LOCATIONS['hero'],
             ],
             [
-                'image' => 'images/banner-1.png',
+                'image' => 'images/banner-1.jpg',
                 'location' => Banner::LOCATIONS['home_top_big'],
             ],
             [

@@ -19,11 +19,6 @@ Route::namespace('User')->group(function () {
     Route::get('cities', 'IndexCities');
 });
 
-Route::prefix('orders')->group(function () {
-    Route::namespace('User')->group(function () {
-        Route::get('delivery-costs', 'CalcOrderDeliveryCost');
-    });
-});
 
 Route::prefix('comments')->group(function () {
     Route::namespace('User')->group(function () {
