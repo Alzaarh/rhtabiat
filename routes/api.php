@@ -43,7 +43,7 @@ Route::prefix('logs')->group(function () {
 Route::prefix('orders')->group(function () {
     Route::namespace('User')->group(function () {
         Route::post('guests', 'GuestOrderController@store');
-        Route::get('delivery-cost', 'CalcOrderDeliveryCost');
+        Route::get('delivery-cost', 'GetOrderDeliveryCostFormula');
         Route::get('track', 'TrackOrder');
     });
 
