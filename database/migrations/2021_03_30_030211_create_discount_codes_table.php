@@ -21,6 +21,7 @@ class CreateDiscountCodesTable extends Migration
             $table->integer('percent')->nullable();
             $table->integer('value')->nullable();
             $table->foreignId('user_id')->nullable()->constrained();
+            $table->boolean('is_suspended')->default(false);
             $table->timestamp('created_at')->useCurrent();
             $table->date('expires_at');
             $table->timestamp('used_at')->nullable();

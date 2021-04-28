@@ -13,7 +13,18 @@ return [
         'order_verified' => 'h849wp14tz',
     ],
 
-    'zarinpal_key' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    'zarinpal' => [
+
+        'key' => env('ZARINPAL_KEY', 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),
+
+        'callback_url' => env('ZARINPAL_CALLBACK_URL', '127.0.0.1'),
+
+        'redirect_url' => env('ZARINPAL_REDIRECT_URL', 'https://sandbox.zarinpal.com/pg/StartPay/'),
+
+        'initiate_url' => env('ZARINPAL_INITIATE_URL', 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json'),
+
+    ],
+
 
     /*
     |--------------------------------------------------------------------------

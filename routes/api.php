@@ -42,13 +42,13 @@ Route::prefix('logs')->group(function () {
 
 Route::prefix('orders')->group(function () {
     Route::namespace('User')->group(function () {
-        Route::post('guests', 'OrderController@store');
+        Route::post('guests', 'GuestOrderController@store');
         Route::get('delivery-cost', 'CalcOrderDeliveryCost');
         Route::get('track', 'TrackOrder');
     });
 
     Route::namespace('Admin')->group(function () {
-        Route::get('/', 'OrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
+        Route::get('/', 'GuestOrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
     });
 });
 

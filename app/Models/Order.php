@@ -63,26 +63,25 @@ class Order extends Model
         4 => 'تحویل به مشتری',
     ];
     public const WITHIN_PROVINCE = 11;
+    public const DELIVERY_THRESHOLD = 350000;
     protected $guarded = [];
 
     protected static function booted()
     {
-        static::creating(function ($order) {
-            $order->status = self::STATUS['not_paid'];
-            $order->code = Str::of('#')
-                ->append(self::count(), '-', Str::random(10));
-            $order->visitor = request()->ip();
-            $order->user_id = auth('user')->id();
-        });
+        static::creating(
+            function ($order) {
+                $order->status = static::STATUS['not_paid'];
+                $order->code = Str::of('#')
+                    ->append(static::count(), '-', Str::random(10));
+                $order->visitor = request()->ip();
+            }
+        );
     }
 
     public function getPriceAttribute(): int
     {
         $off = 0;
-        $price = $this->items->reduce(
-            fn($carry, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $carry,
-            0
-        );
+        $price = $this->items->reduce(fn($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
         if (filled($this->discountCode)) {
             $off = $this->discountCode->calc($price);
         }
@@ -125,13 +124,20 @@ class Order extends Model
         return $this->belongsTo(DiscountCode::class);
     }
 
+    public function guestDetail()
+    {
+        return $this->hasOne(GuestOrder::class, 'order_id');
+    }
+
     public function verify(): void
     {
         $this->status = Order::STATUS['being_processed'];
-        $this->products->each(function ($item) {
-            $item->quantity = $item->quantity - $item->pivot->quantity;
-            $item->save();
-        });
+        $this->products->each(
+            function ($item) {
+                $item->quantity = $item->quantity - $item->pivot->quantity;
+                $item->save();
+            }
+        );
         $this->save();
     }
 }

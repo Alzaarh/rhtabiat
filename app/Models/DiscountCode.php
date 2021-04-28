@@ -48,8 +48,9 @@ class DiscountCode extends Model
     {
         static::addGlobalScope(
             'valid',
-            fn($b) => $b->where('expires_at', '>=', now()->toDateTimeString())
+            fn($b) => $b->where('expires_at', '>=', now()->toDateString())
                 ->whereNull('used_at')
+                ->where('is_suspended', false)
         );
     }
 

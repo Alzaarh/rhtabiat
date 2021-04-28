@@ -49,16 +49,6 @@ class Address extends Model
     use HasFactory;
     use SoftDeletes;
 
-    public const RULES = [
-        'name' => ['required'],
-        'mobile' => ['required', 'digits:11'],
-        'phone' => ['digits:11'],
-        'province_id' => ['required', 'exists:provinces,id'],
-        'city_id' => ['required', 'exists:cities,id'],
-        'zipcode' => ['required', 'digits:10'],
-        'address' => ['required'],
-    ];
-
     protected $fillable = [
         'name',
         'company',
