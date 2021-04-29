@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $is_verified
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Order $order
+ * @property-read Order $order
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction query()
@@ -45,5 +45,18 @@ class Transaction extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function verify(string $refId): void
+    {
+        $this->ref_id = $refId . time();
+        $this->status = static::STATUS['verified'];
+        $this->save();
+    }
+
+    public function reject(): void
+    {
+        $this->status = static::STATUS['rejected'];
+        $this->save();
     }
 }

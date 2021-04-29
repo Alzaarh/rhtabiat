@@ -23,8 +23,11 @@ return [
 
         'initiate_url' => env('ZARINPAL_INITIATE_URL', 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json'),
 
+        'verify_url' => env('ZARINPAL_VERIFY_URL', 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json'),
+
     ],
 
+    'track_url' => env('TRACK_URL', 'https://rhtabiat.ir/track'),
 
     /*
     |--------------------------------------------------------------------------

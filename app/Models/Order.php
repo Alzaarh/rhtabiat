@@ -17,9 +17,9 @@ use Illuminate\Support\Str;
  * @property int $delivery_cost
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Address $address
+ * @property-read Address $address
  * @property-read mixed $total_price
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductItem[] $products
+ * @property-read \Illuminate\Database\Eloquent\Collection|ProductItem[] $products
  * @property-read int|null $products_count
  * @method static \Database\Factories\OrderFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Order newModelQuery()
@@ -36,11 +36,11 @@ use Illuminate\Support\Str;
  * @mixin \Eloquent
  * @property int|null $discount_code_id
  * @property string $visitor
- * @property-read \App\Models\DiscountCode|null $discountCode
+ * @property-read DiscountCode|null $discountCode
  * @property-read mixed $products_price
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductItem[] $items
+ * @property-read \Illuminate\Database\Eloquent\Collection|ProductItem[] $items
  * @property-read int|null $items_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
+ * @property-read \Illuminate\Database\Eloquent\Collection|Transaction[] $transactions
  * @property-read int|null $transactions_count
  * @method static \Illuminate\Database\Eloquent\Builder|Order paid()
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereDiscountCodeId($value)
@@ -132,12 +132,16 @@ class Order extends Model
     public function verify(): void
     {
         $this->status = Order::STATUS['being_processed'];
-        $this->products->each(
-            function ($item) {
-                $item->quantity = $item->quantity - $item->pivot->quantity;
-                $item->save();
-            }
-        );
+        $this->items->each(function ($item) {
+            $item->quantity -= $item->pivot->quantity;
+            $item->save();
+        });
         $this->save();
+
+        if ($this->discountCode) {
+            $this->discountCode->is_suspended = false;
+            $this->discountCode->used_at = now();
+            $this->discountCode->save();
+        }
     }
 }

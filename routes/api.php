@@ -44,6 +44,7 @@ Route::prefix('orders')->group(function () {
     Route::namespace('User')->group(function () {
         Route::post('guests', 'GuestOrderController@store');
         Route::get('delivery-cost', 'GetOrderDeliveryCostFormula');
+        Route::put('verify', 'VerifyOrder');
         Route::get('track', 'TrackOrder');
     });
 
