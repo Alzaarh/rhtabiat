@@ -22,14 +22,13 @@ class StoreGuestOrderRequest extends FormRequest
             'products.*.id' => ['required', 'exists:product_items'],
             'products.*.quantity' => ['required', 'integer', 'min:1'],
             'discount_code' => [
-                'exists:discount_codes,code',
                 function ($attr, $value, $fail) {
                     $code = DiscountCode::where('code', $value)
                         ->whereNull('used_at')
                         ->whereNull('user_id')
                         ->first();
-                    if (empty($code)) {
-                        $fail('کد تخفیف معتبر نیست');
+                    if (!$code) {
+                        return $fail('کد تخفیف معتبر نیست');
                     }
                     $price = array_reduce(
                         $this->products,

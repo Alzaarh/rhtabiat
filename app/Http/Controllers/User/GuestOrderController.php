@@ -54,8 +54,11 @@ class GuestOrderController extends Controller
                 ),
                 'discount_code_id' => filled($request->discount_code) ? $request->discount_code->id : null,
             ]);
-            $request->discount_code->is_suspended = true;
-            $request->discount_code->save();
+            if ($request->discount_code) {
+                $code = $request->discount_code;
+                $code->is_suspended = true;
+                $code->save();
+            }
             $order->guestDetail()->create($request->validated());
             $order->items()->attach($orderItems);
             $result = $this->initiateWithZarinpal->handle($order->price);
