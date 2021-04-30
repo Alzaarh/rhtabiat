@@ -42,4 +42,11 @@ class StoreGuestOrderRequest extends FormRequest
             ]
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'mobile' => 'شماره همراه',
+        ];
+    }
 }

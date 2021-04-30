@@ -71,8 +71,7 @@ class Order extends Model
         static::creating(
             function ($order) {
                 $order->status = static::STATUS['not_paid'];
-                $order->code = Str::of('#')
-                    ->append(static::count(), '-', Str::random(10));
+                $order->code = static::count() . rand(10000, 99999);
                 $order->visitor = request()->ip();
             }
         );
@@ -82,10 +81,11 @@ class Order extends Model
     {
         $off = 0;
         $price = $this->items->reduce(fn($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
+        $priceWithoutOff = $this->items->reduce(fn($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
         if (filled($this->discountCode)) {
             $off = $this->discountCode->calc($price);
         }
-        return $price - $off + $this->delivery_cost;
+        return $price - ($priceWithoutOff - $off) + $this->delivery_cost;
     }
 
     public function getProductsPriceAttribute()

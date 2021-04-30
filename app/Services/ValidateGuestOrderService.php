@@ -17,6 +17,7 @@ class ValidateGuestOrderService
         $productItems->each(
             function ($productItem, $index) use (&$orderItems, $items) {
                 $quantity = $items[$index]['quantity'];
+                echo $quantity;
                 if ($productItem->quantity < $quantity) {
                     throw ValidationException::withMessages([
                         'products' => [
