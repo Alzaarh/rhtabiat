@@ -39,7 +39,9 @@ class VerifyOrder extends Controller
             );
             return response()->json([
                 'message' => 'تراکنش با موفقیت انجام شد',
-                'code' => 1,
+                'data' => [
+                    'code' => 1,
+                ],
             ]);
         }
 
@@ -48,7 +50,9 @@ class VerifyOrder extends Controller
         });
         return response()->json([
             'message' => 'تراکنش با موفقیت انجام نشد',
-            'code' => 0,
+            'data' => [
+                'code' => 0,
+            ],
         ]);
     }
 }
