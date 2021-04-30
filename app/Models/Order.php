@@ -83,9 +83,9 @@ class Order extends Model
         $price = $this->items->reduce(fn($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
         $priceWithoutOff = $this->items->reduce(fn($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
         if (filled($this->discountCode)) {
-            $off = $this->discountCode->calc($price);
+            $off = $this->discountCode->calc($priceWithoutOff);
         }
-        return $price - ($priceWithoutOff - $off) + $this->delivery_cost;
+        return $price - $off + $this->delivery_cost;
     }
 
     public function getProductsPriceAttribute()
