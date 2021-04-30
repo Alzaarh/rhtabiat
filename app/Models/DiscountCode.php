@@ -50,7 +50,6 @@ class DiscountCode extends Model
             'valid',
             fn($b) => $b->where('expires_at', '>=', now()->toDateString())
                 ->whereNull('used_at')
-                ->where('is_suspended', false)
         );
     }
 
