@@ -58,5 +58,9 @@ class Transaction extends Model
     {
         $this->status = static::STATUS['rejected'];
         $this->save();
+        if ($this->order->discountCode) {
+            $this->order->discountCode->is_suspended = false;
+            $this->order->save();
+        }
     }
 }

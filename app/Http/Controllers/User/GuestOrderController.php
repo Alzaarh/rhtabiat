@@ -73,7 +73,9 @@ class GuestOrderController extends Controller
 
         return response()->json([
             'message' => __('messages.order.store'),
-            'redirect_url' => config('app.zarinpal.redirect_url') . $authority,
+            'data' => [
+                'redirect_url' => config('app.zarinpal.redirect_url') . $authority,
+            ],
         ], 201);
     }
 }

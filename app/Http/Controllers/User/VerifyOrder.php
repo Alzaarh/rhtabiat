@@ -37,10 +37,18 @@ class VerifyOrder extends Controller
                     'code' => $transaction->order->code,
                 ]
             );
-            return response()->json(['message' => 'تراکنش با موفقیت انجام شد']);
+            return response()->json([
+                'message' => 'تراکنش با موفقیت انجام شد',
+                'code' => 1,
+            ]);
         }
 
-        $transaction->reject();
-        return response()->json(['message' => 'تراکنش با موفقیت انجام نشد']);
+        DB::transaction(function () use ($transaction) {
+            $transaction->reject();
+        });
+        return response()->json([
+            'message' => 'تراکنش با موفقیت انجام نشد',
+            'code' => 0,
+        ]);
     }
 }
