@@ -14,7 +14,7 @@ class ArticleResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => $this->image,
+            'image' => url("storage/$this->image"),
             'preview' => Str::of($this->body)->substr(0, 100),
             $this->mergeWhen(Route::currentRouteName() === 'articles.show', function () {
                 return [
@@ -25,6 +25,8 @@ class ArticleResource extends JsonResource
             }),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'created_at_fat' => $this->created_at_fa,
+            'updated_at_fat' => $this->updated_at_fa,
         ];
     }
 }

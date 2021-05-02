@@ -76,6 +76,13 @@ trait HasPersianDate
         return $this->$func($createdAt);
     }
 
+    public function getUpdatedAtFaAttribute(): string
+    {
+        $updatedAt = $this->updated_at;
+        $func = 'get'.$this->type;
+        return $this->$func($updatedAt);
+    }
+
     protected function getAgo(string $value): string
     {
         $str = Jalalian::forge($value)->ago();
