@@ -53,6 +53,12 @@ Route::prefix('orders')->group(function () {
     });
 });
 
+Route::prefix('guests')->group(function () {
+    Route::namespace('User')->group(function () {
+        Route::post('/', 'CreateGuest');
+    });
+});
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');

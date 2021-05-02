@@ -19,14 +19,10 @@ class CreateGuestOrdersTable extends Migration
             $table->string('city_id');
             $table->char('zipcode', 10);
             $table->string('address', 1000);
+            $table->foreignId('guest_id')->constrained();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('guest_orders');

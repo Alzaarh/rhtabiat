@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Jobs\NotifyViaSms;
+use App\Models\Guest;
+use App\Models\Order;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +27,27 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        Guest::whereBetween('created_at', [now()->subHours(2), now()->subHour()])
+            ->whereDoesntHave('orders', function ($query) {
+                $query->where('created_at', '>=', now()->subHours(2))
+                    ->whereHas('order', function ($query) {
+                        $query->whereStatus(Order::STATUS['not_paid']);
+                    });
+            })
+            ->whereHasSentSms(false)
+            ->get()
+            ->each(function ($guest) use ($schedule) {
+                $guest->has_sent_sms = true;
+                $guest->save();
+                $schedule->job(
+                    new NotifyViaSms(
+                        $guest->phone,
+                        config('app.sms_patterns.order_waiting'),
+                        ['keyword' => 'اعتماد']
+                    )
+                )
+                ->hourly();
+            });
     }
 
     /**

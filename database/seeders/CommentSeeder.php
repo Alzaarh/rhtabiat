@@ -21,7 +21,7 @@ class CommentSeeder extends Seeder
 //                    }));
 
         Product::inRandomOrder()
-            ->take(50)
+            ->take(20)
             ->get()
             ->each(fn($product) => Comment::factory()
                 ->for($product, 'commentable')

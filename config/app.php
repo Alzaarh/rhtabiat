@@ -9,8 +9,13 @@ return [
     'sms_pass' => env('SMS_PASSWORD'),
 
     'sms_patterns' => [
+
         'verification' => 'op9or1mh33',
+
         'order_verified' => 'h849wp14tz',
+
+        'order_waiting' => '0ytde8syf7',
+
     ],
 
     'zarinpal' => [

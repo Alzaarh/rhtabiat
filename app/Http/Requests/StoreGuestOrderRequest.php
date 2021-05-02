@@ -39,7 +39,8 @@ class StoreGuestOrderRequest extends FormRequest
                     }
                     $this->merge(['discount_code' => $code]);
                 }
-            ]
+            ],
+            'guest_token' => 'required|exists:guests,token',
         ];
     }
 
