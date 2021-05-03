@@ -144,4 +144,20 @@ class Order extends Model
             $this->discountCode->save();
         }
     }
+
+    public function forGuest(): bool
+    {
+        if ($this->guestDetail) {
+            return true;
+        }
+        return false;
+    }
+
+    public function forUser(): bool
+    {
+        if ($this->address) {
+            return true;
+        }
+        return false;
+    }
 }

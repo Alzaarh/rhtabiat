@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Article;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Factory as Faker;
 
 class ArticleFactory extends Factory
 {
@@ -12,21 +11,14 @@ class ArticleFactory extends Factory
 
     public function definition()
     {
-//        $faFaker = Faker::create('fa_IR');
-
         return [
-            'title' => substr(
-                $this->faker->unique()->realText(200, 4),
-                0,
-                30
-            ),
-
-            'image' => 'images/article.jpg',
-
+            'title' => rand(1, 1000) . ' ' . \Faker::sentence() . ' ' . rand(1, 1000),
+            'image' => $this->faker->randomElement([
+                'images/article.jpg',
+                'images/article-2.jpg',
+            ]),
             'body' => $this->faker->realText(2000),
-
-            'is_verified' => rand(1, 100) > 50,
-
+            'is_verified' => true,
             'admin_id' => 1,
         ];
     }

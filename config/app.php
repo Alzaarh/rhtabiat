@@ -16,6 +16,8 @@ return [
 
         'order_waiting' => '0ytde8syf7',
 
+        'order_rejected' => '8skjs7ehc3',
+
     ],
 
     'zarinpal' => [

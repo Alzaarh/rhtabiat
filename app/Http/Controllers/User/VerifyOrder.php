@@ -16,7 +16,25 @@ class VerifyOrder extends Controller
     public function __invoke(VerifyOrderRequest $request, VerifyZarinpalService $verifyZarinpal)
     {
         $transaction = $request->transaction;
+        $phone = null;
+        $name = null;
+        if ($transaction->order->forGuest()) {
+            $phone = $transaction->order->guestDetail->mobile;
+            $name = $transaction->order->guestDetail->name;
+        } elseif ($transaction->order->forUser()) {
+            $phone = $transaction->order->address->mobile;
+            $name = $transaction->order->address->name;
+        }
         $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
+
+        if ($result['Status'] == 101) {
+            return response()->json([
+                'message' => 'تراکنش با موفقیت انجام شد',
+                'data' => [
+                    'code' => 1,
+                ],
+            ]);
+        }
 
         if ($result['Status'] == 100) {
             DB::transaction(function () use ($transaction, $result) {
@@ -24,15 +42,11 @@ class VerifyOrder extends Controller
                 $transaction->order->verify();
             });
 
-            $phone = null;
-            if ($transaction->order->guestDetail) {
-                $phone = $transaction->order->guestDetail->mobile;
-            }
             NotifyViaSms::dispatch(
                 $phone,
                 config('app.sms_patterns.order_verified'),
                 [
-                    'name' => $transaction->order->guestDetail->name,
+                    'name' => $name,
                     'url' => config('app.track_url'),
                     'code' => $transaction->order->code,
                 ]
@@ -48,6 +62,15 @@ class VerifyOrder extends Controller
         DB::transaction(function () use ($transaction) {
             $transaction->reject();
         });
+
+        NotifyViaSms::dispatch(
+            $phone,
+            config('app.sms_patterns.order_rejected'),
+            [
+                'name' => $name,
+                'admin_phone' => '05144452940',
+            ]
+        );
         return response()->json([
             'message' => 'تراکنش با موفقیت انجام نشد',
             'data' => [

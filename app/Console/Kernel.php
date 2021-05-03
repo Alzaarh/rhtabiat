@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        Guest::whereBetween('created_at', [now()->subHours(2), now()->subHour()])
+        Guest::where('created_at', '<=', now()->subHours(12))
             ->whereDoesntHave('orders', function ($query) {
                 $query->where('created_at', '>=', now()->subHours(2))
                     ->whereHas('order', function ($query) {
@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
                         ['keyword' => 'اعتماد']
                     )
                 )
-                ->hourly();
+                ->everySixHours();
             });
     }
 
