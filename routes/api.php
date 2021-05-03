@@ -55,6 +55,19 @@ Route::prefix('orders')->group(function () {
 });
 
 
+Route::namespace('Blog')->group(function () {
+    Route::prefix('article-categories')->group(function () {
+        Route::get('/', 'ArticleCategoryController@index');
+    });
+
+    Route::prefix('articles')->group(function () {
+        Route::get('/', 'ArticleController@index');
+        Route::get('/{article:slug}', 'ArticleController@show');
+        Route::get('/{article:slug}/related-products', 'GetArticleRelatedProducts');
+        Route::get('/{article:slug}/related-articles', 'ArticleRelatedArticleController');
+    });
+});
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
@@ -116,22 +129,6 @@ Route::namespace('Admin')->group(
     }
 );
 
-Route::namespace('Blog')->group(
-    function () {
-        Route::prefix('article-categories')->group(
-            function () {
-                Route::get('/', 'ArticleCategoryController@index');
-            }
-        );
-
-        Route::prefix('articles')->group(function () {
-            Route::get('/', 'ArticleController@index');
-            Route::get('/{article:slug}', 'ArticleController@show');
-            Route::get('/{article:slug}/related-products', 'GetArticleRelatedProducts');
-            Route::get('/{article:slug}/related-articles', 'ArticleRelatedArticleController');
-        });
-    }
-);
 
 Route::namespace('User')->group(function () {
     Route::prefix('verification-codes')->group(

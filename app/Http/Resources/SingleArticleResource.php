@@ -24,6 +24,8 @@ class SingleArticleResource extends JsonResource
             'comments' => CommentResource::collection($this->comments),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'created_at_fa' => $this->created_at_fa,
+            'updated_at_fa' => $this->updated_at_fa,
         ];
     }
 }

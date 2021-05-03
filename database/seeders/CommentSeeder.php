@@ -11,7 +11,8 @@ class CommentSeeder extends Seeder
 {
     public function run()
     {
-        Article::all()
+        Article::take(10)
+            ->get()
             ->each(fn($article) =>
                 Comment::factory()
                     ->for($article, 'commentable')

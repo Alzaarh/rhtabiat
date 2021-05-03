@@ -17,8 +17,8 @@ class ArticleResource extends JsonResource
             'preview' => Str::of($this->body)->substr(0, 100),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'created_at_fat' => $this->created_at_fa,
-            'updated_at_fat' => $this->updated_at_fa,
+            'created_at_fa' => $this->created_at_fa,
+            'updated_at_fa' => $this->updated_at_fa,
         ];
     }
 }
