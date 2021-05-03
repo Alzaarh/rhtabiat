@@ -14,7 +14,7 @@ return [
 
         'order_verified' => 'h849wp14tz',
 
-        'order_waiting' => '0ytde8syf7',
+        'order_created' => '0ytde8syf7',
 
         'order_rejected' => '8skjs7ehc3',
 

@@ -46,6 +46,7 @@ Route::prefix('orders')->group(function () {
         Route::get('delivery-cost', 'GetOrderDeliveryCostFormula');
         Route::put('verify', 'VerifyOrder');
         Route::get('track', 'TrackOrder');
+        Route::post('notify', 'NotifyUserForOrder');
     });
 
     Route::namespace('Admin')->group(function () {
@@ -53,11 +54,6 @@ Route::prefix('orders')->group(function () {
     });
 });
 
-Route::prefix('guests')->group(function () {
-    Route::namespace('User')->group(function () {
-        Route::post('/', 'CreateGuest');
-    });
-});
 
 Route::namespace('Shop')->group(
     function () {
