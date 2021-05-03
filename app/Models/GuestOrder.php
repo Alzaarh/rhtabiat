@@ -23,14 +23,6 @@ class GuestOrder extends Model
         'guest_id',
     ];
 
-    protected static function booted()
-    {
-        static::creating(function ($order) {
-            $order->guest_id = Guest::whereToken(request()->guest_token)
-                ->value('id');
-        });
-    }
-
     public function order()
     {
         return $this->belongsTo(Order::class);
