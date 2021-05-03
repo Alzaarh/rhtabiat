@@ -11,8 +11,6 @@ class GetArticleRelatedProducts extends Controller
 {
     public function __invoke(Article $article)
     {
-        return IndexProduct::collection(
-            Product::take(10)->get(request()->count)
-        );
+        return IndexProduct::collection(Product::take(10)->get(request()->count));
     }
 }

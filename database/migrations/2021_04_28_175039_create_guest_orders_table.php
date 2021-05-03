@@ -19,7 +19,6 @@ class CreateGuestOrdersTable extends Migration
             $table->string('city_id');
             $table->char('zipcode', 10);
             $table->string('address', 1000);
-            $table->foreignId('guest_id')->constrained();
         });
     }
 
