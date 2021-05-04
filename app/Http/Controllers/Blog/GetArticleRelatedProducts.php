@@ -11,6 +11,11 @@ class GetArticleRelatedProducts extends Controller
 {
     public function __invoke(Article $article)
     {
-        return IndexProduct::collection(Product::take(10)->get(request()->count));
+        $regex = implode('|', explode(' ', $article->title));
+        return IndexProduct::collection(
+            Product::whereRaw("name regexp '$regex'")
+                ->take(request()->query('count', 10))
+                ->get()
+        );
     }
 }
