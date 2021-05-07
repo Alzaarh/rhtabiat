@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\HasPersianDate;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -24,11 +23,9 @@ class Article extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope(
-            'latest',
-            fn (Builder $builder) =>
-            $builder->latest('updated_at')
-        );
+        static::addGlobalScope('latest', function ($builder) {
+            $builder->latest('updated_at');
+        });
 
         static::deleting(
             fn ($article) =>
@@ -48,6 +45,11 @@ class Article extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(ArticleCategory::class, 'article_category_id');
     }
 
     public function related()
