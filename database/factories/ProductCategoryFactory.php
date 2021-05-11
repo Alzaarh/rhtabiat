@@ -13,8 +13,8 @@ class ProductCategoryFactory extends Factory
     {
         return [
             'name' => \Faker::word().' '.rand(1, 50),
-
             'image' => 'images/product-category.jpg',
+            'image_mobile' => 'images/product-category.jpg',
         ];
     }
 }

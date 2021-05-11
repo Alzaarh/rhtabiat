@@ -18,6 +18,7 @@ class CreateProductCategoriesTable extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('image');
+            $table->string('image_mobile');
             $table->foreignId('parent_id')
                 ->nullable()
                 ->constrained('product_categories')

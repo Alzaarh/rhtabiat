@@ -68,6 +68,12 @@ Route::namespace('Blog')->group(function () {
     });
 });
 
+Route::prefix('product-categories')->group(function () {
+    Route::namespace('Admin')->group(function () {
+        Route::post('/', 'ProductCategoryController@store')->middleware(['auth:admin', 'role:admin']);
+    });
+});
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
@@ -95,10 +101,6 @@ Route::namespace('Admin')->group(
                 Route::post('auth/login', 'AdminLoginController');
             }
         );
-
-        Route::apiResource('product-categories', 'ProductCategoryController')
-            ->except(['index', 'show'])
-            ->middleware(['auth:admin', 'role:admin']);
 
         Route::apiResource('products', 'ProductController')->except(['index', 'show'])->middleware(
             ['auth:admin', 'role:admin']

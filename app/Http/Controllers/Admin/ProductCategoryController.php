@@ -12,12 +12,14 @@ class ProductCategoryController extends Controller
     public function store(StoreProductCategoryRequest $request)
     {
         $data = $request->validated();
-
         $data['image'] = $request->image->store('images');
+        $data['image_mobile'] = $request->image_mobile->store('images');
 
         ProductCategory::create($data);
 
-        return response()->json(['message' => __('messages.resource.created', ['resource' => 'دسته بندی'])], 201);
+        return response()->json([
+            'message' => 'دسته بندی با موفقیت ایجاد شد',
+        ], 201);
     }
 
     public function update(StoreProductCategoryRequest $request, ProductCategory $productCategory)
