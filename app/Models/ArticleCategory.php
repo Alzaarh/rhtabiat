@@ -11,10 +11,7 @@ class ArticleCategory extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'name',
-        'slug',
-    ];
+    protected $guarded = [];
 
     protected static function booted()
     {

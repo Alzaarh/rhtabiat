@@ -11,12 +11,11 @@ class ArticleCategoryController extends Controller
 {
     public function store()
     {
-        request()->validate([
-            'name' => 'required|max:255',
-            'slug' => 'required|unique:article_categories|max:255',
-        ]);
+        request()->validate(['name' => 'required|max:255|unique:article_categories']);
+
+        ArticleCategory::create(['name' => request()->name]);
         return response()->json([
-            'data' => ArticleCategory::create(request()->all()),
+            'message' => 'دسته بندی با موفقیت ایجاد شد',
         ], 201);
     }
 

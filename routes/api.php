@@ -74,6 +74,12 @@ Route::prefix('product-categories')->group(function () {
     });
 });
 
+Route::prefix('article-categories')->group(function () {
+    Route::namespace('Admin')->group(function () {
+        Route::post('/', 'ArticleCategoryController@store')->middleware(['auth:admin', 'role:admin']);
+    });
+});
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
