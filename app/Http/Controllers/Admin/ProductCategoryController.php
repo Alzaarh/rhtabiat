@@ -32,7 +32,7 @@ class ProductCategoryController extends Controller
         Storage::delete($category->image_mobile);
 
         $category->update($data);
-        return response()->json(['message' => 'دسته بندی با موفقیت به روزرسانی شد');
+        return response()->json(['message' => 'دسته بندی با موفقیت به روزرسانی شد']);
     }
 
     public function destroy(ProductCategory $category)
