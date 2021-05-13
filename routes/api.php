@@ -75,7 +75,7 @@ Route::prefix('product-categories')->group(function () {
     });
 
     Route::namespace('Shop')->group(function () {
-        Route::get('/', 'ProductCategoryControllre@index');
+        Route::get('/', 'ProductCategoryController@index');
     });
 });
 
