@@ -22,17 +22,17 @@ class ProductCategoryController extends Controller
         ], 201);
     }
 
-    public function update(StoreProductCategoryRequest $request, ProductCategory $productCategory)
+    public function update(StoreProductCategoryRequest $request, ProductCategory $category)
     {
         $data = $request->validated();
-
         $data['image'] = $request->image->store('images');
+        $data['image_mobile'] = $request->image_mobile->store('images');
 
-        Storage::delete($productCategory->image);
+        Storage::delete($category->image);
+        Storage::delete($category->image_mobile);
 
-        $productCategory->update($data);
-
-        return response()->json(['message' => __('messages.resource.updated', ['resource' => 'دسته بندی'])]);
+        $category->update($data);
+        return response()->json(['message' => 'دسته بندی با موفقیت به روزرسانی شد');
     }
 
     public function destroy(ProductCategory $category)
