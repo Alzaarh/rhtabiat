@@ -71,6 +71,7 @@ Route::namespace('Blog')->group(function () {
 Route::prefix('product-categories')->group(function () {
     Route::namespace('Admin')->group(function () {
         Route::post('/', 'ProductCategoryController@store')->middleware(['auth:admin', 'role:admin']);
+        Route::put('{category}', 'ProductCategoryController@update')->middleware(['auth:admin', 'role:admin']);
         Route::delete('{category}', 'ProductCategoryController@destroy')->middleware(['auth:admin', 'role:admin']);
     });
 
