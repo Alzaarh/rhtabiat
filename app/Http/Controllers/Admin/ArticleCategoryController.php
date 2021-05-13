@@ -19,23 +19,21 @@ class ArticleCategoryController extends Controller
         ], 201);
     }
 
-    public function update(ArticleCategory $articleCategory)
+    public function update(ArticleCategory $category)
     {
-        request()->validate([
-            'name' => 'required|max:255',
-            'slug' => [
-                'required',
-                Rule::unique('article_categories')->ignore($articleCategory),
-                'max:255',
-            ],
-        ]);
-        $articleCategory->update(request()->all());
-        return response()->json(['data' => $articleCategory]);
+        request()->validate(['name' => [
+            'required',
+            'max:255',
+            Rule::unique('article_categories')->ignore($category)
+        ]]);
+
+        $category->update(['name' => request()->name]);
+        return response()->json(['message' => 'دسته بندی با موفقیت به روزرسانی شد']);
     }
 
     public function destroy(ArticleCategory $category)
     {
-        $articleCategory->delete();
+        $category->delete();
         return response()->json(['message' => 'دسته بندی با موفقیت حذف شد']);
     }
 }
