@@ -73,6 +73,10 @@ Route::prefix('product-categories')->group(function () {
         Route::post('/', 'ProductCategoryController@store')->middleware(['auth:admin', 'role:admin']);
         Route::delete('{category}', 'ProductCategoryController@destroy')->middleware(['auth:admin', 'role:admin']);
     });
+
+    Route::namespace('Shop')->group(function () {
+        Route::get('/', 'ProductCategoryControllre@index');
+    });
 });
 
 Route::prefix('article-categories')->group(function () {
