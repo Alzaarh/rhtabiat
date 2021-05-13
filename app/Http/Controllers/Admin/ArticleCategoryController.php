@@ -33,9 +33,9 @@ class ArticleCategoryController extends Controller
         return response()->json(['data' => $articleCategory]);
     }
 
-    public function destroy(ArticleCategory $articleCategory)
+    public function destroy(ArticleCategory $category)
     {
         $articleCategory->delete();
-        return response()->json(['message' => 'Success']);
+        return response()->json(['message' => 'دسته بندی با موفقیت حذف شد']);
     }
 }

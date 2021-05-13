@@ -35,12 +35,12 @@ class ProductCategoryController extends Controller
         return response()->json(['message' => __('messages.resource.updated', ['resource' => 'دسته بندی'])]);
     }
 
-    public function destroy(ProductCategory $productCategory)
+    public function destroy(ProductCategory $category)
     {
-        Storage::delete($productCategory->image);
+        Storage::delete($category->image);
+        Storage::delete($category->image_mobile);
 
-        $productCategory->delete();
-
-        return response()->json(['message' => __('messages.resource.deleted', ['resource' => 'دسته بندی'])]);
+        $category->delete();
+        return response()->json(['message' => 'دسته بندی با موفقیت حذف شد']);
     }
 }
