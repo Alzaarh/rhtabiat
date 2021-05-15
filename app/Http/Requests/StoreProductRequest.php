@@ -8,30 +8,10 @@ use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-            'name' => 'required|max:255',
-            'slug' => [
-                'required',
-                'max:255',
-                Rule::unique('products')->ignore(request()->product),
-            ],
+            'name' => 'required|max:255|unique:products',
             'category_id' => 'required|exists:product_categories,id',
             'short_desc' => 'required|max:2000',
             'desc' => 'required',

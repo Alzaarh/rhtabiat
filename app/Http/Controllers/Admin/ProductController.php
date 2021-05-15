@@ -20,24 +20,18 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $this->productService->create($request->validated());
-        return response()->json(['message' => 'Product created'], 201);
+        return response()->json(['message' => 'محصول با موفقیت ایجاد شد'], 201);
     }
 
     public function update(StoreProductRequest $request, Product $product)
     {
         $this->productService->update($request->validated(), $product);
-        return new ProductResource($product);
+        return response()->json(['message' => 'محصول با موفقیت به روزرسانی شد']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Product $product
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Product $product)
     {
         $product->delete();
-        return response()->json(['message' => 'Success']);
+        return response()->json(['message' => 'محصول با موفقیت جذف شد']);
     }
 }
