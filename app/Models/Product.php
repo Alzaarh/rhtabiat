@@ -63,6 +63,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'slug',
+        'meta_tags',
         'off',
         'image',
         'short_desc',
@@ -86,6 +87,11 @@ class Product extends Model
     public function getPriceAttribute()
     {
         return !$this->hasMultipleItems() ? $this->items()->value('price') : null;
+    }
+
+    public function getMetaTagsAttribute($value)
+    {
+        return json_decode($value);
     }
 
     private function hasMultipleItems(): bool

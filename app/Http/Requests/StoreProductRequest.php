@@ -16,6 +16,7 @@ class StoreProductRequest extends FormRequest
             'short_desc' => 'required|max:2000',
             'desc' => 'required',
             'image' => 'required|image|max:5120',
+            'meta_tags' => 'string',
             'off' => 'integer|between:0,99',
             'has_container' => 'required|boolean',
             'items' => 'required|array',
