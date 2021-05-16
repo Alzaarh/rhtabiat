@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('products')->group(function () {
+    Route::namespace('Admin')->group(function () {
+        Route::post('/', 'ProductController@store')->middleware(['auth:admin', 'role:admin']);
+        Route::put('admin/{product:id}', 'ProductController@update')->middleware(['auth:admin', 'role:admin']);
+        Route::delete('admin/{product:id}', 'ProductController@destroy')->middleware(['auth:admin', 'role:admin']);
+    });
+    
     Route::namespace('Shop')->group(function () {
         Route::get('/', 'ProductController@index');
         Route::get('best-selling', 'IndexBestSellingProduct');
@@ -49,9 +55,9 @@ Route::prefix('orders')->group(function () {
         Route::post('notify', 'NotifyUserForOrder');
     });
 
-    Route::namespace('Admin')->group(function () {
-        Route::get('/', 'GuestOrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
-    });
+    // Route::namespace('Admin')->group(function () {
+    //     Route::get('/', 'GuestOrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
+    // });
 });
 
 
@@ -107,10 +113,6 @@ Route::namespace('Admin')->group(
             function () {
                 Route::post('auth/login', 'AdminLoginController');
             }
-        );
-
-        Route::apiResource('products', 'ProductController')->except(['index', 'show'])->middleware(
-            ['auth:admin', 'role:admin']
         );
 
         Route::apiResource('articles', 'ArticleController')

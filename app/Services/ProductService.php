@@ -55,12 +55,39 @@ class ProductService
     public function update(array $data, Product $product): Product
     {
         Storage::delete($product->image);
-        return DB::transaction(function () use ($data, $product) {
+
+        return DB::transaction(function () use (&$data, $product) {
             $data['image'] = request()->image->store('images');
             $product->update($data);
-            collect($data['items'])->each(function ($item) use ($product) {
-                empty($item['id']) ? $product->items()->create($item) : ProductItem::find($item['id'])->update($item);
+            $product->items->each(function ($item) use (&$data) {
+                if ($item->container) {
+                    for ($i = 0; $i < count($data['items']); $i++) {
+                        if ($data['items'][$i]['container'] == $item->container && $data['items'][$i]['weight'] == $item->weight) {
+                            $item->price = $data['items'][$i]['price'];
+                            $item->quantity = $data['items'][$i]['quantity'];
+                            $item->save();
+                            $data['items'][$i]['sw'] = true;
+                            return;
+                        }
+                    }
+                } else {
+                    for ($i = 0; $i < count($data['items']); $i++) {
+                        if (!is_set($data['items'][$i]['container']) && $data['items'][$i]['weight'] == $item->weight) {
+                            $item->price = $data['items'][$i]['price'];
+                            $item->quantity = $data['items'][$i]['quantity'];
+                            $item->save();
+                            $data['items'][$i]['sw'] = true;
+                            return;
+                        }
+                    }
+                }
+                $item->delete();
             });
+            foreach ($data['items'] as $i) {
+                if (!isset($i['sw'])) {
+                    $product->items()->create($i);
+                }
+            }
             return $product;
         });
     }

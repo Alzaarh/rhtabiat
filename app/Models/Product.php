@@ -71,12 +71,6 @@ class Product extends Model
         'category_id',
     ];
 
-    protected static function booted()
-    {
-        static::updating(fn($product) => self::deleteImage($product));
-        static::deleting(fn($product) => self::deleteImage($product));
-    }
-
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

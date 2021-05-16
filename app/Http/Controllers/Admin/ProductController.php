@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -31,6 +32,8 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        Storage::delete($product->image);
+
         $product->delete();
         return response()->json(['message' => 'محصول با موفقیت جذف شد']);
     }
