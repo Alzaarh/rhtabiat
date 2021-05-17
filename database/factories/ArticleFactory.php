@@ -17,6 +17,7 @@ class ArticleFactory extends Factory
                 'images/article.jpg',
                 'images/article-2.jpg',
             ]),
+            'short_desc' => $this->faker->realText(),
             'body' => $this->faker->realText(5000),
             'is_verified' => true,
             'admin_id' => 1,

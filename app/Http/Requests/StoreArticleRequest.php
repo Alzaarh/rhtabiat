@@ -23,6 +23,7 @@ class StoreArticleRequest extends FormRequest
                 'max:255',
                 Rule::unique('articles')->ignore($this->article),
             ],
+            'short_desc' => 'required|string|max:1000',
             'image' => 'nullable|image|max:5120',
             'body' => 'required',
             'meta' => 'nullable|json',
