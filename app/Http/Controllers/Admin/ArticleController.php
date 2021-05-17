@@ -8,6 +8,7 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
