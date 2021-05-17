@@ -14,11 +14,11 @@ class Article extends Model
 
     protected $fillable = [
         'title',
-        'slug',
         'body',
         'meta',
         'image',
         'article_category_id',
+        'is_verified',
     ];
 
     protected static function booted()

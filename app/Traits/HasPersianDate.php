@@ -7,6 +7,7 @@ use Morilog\Jalali\Jalalian;
 trait HasPersianDate
 {
     protected static array $conversionTable = [
+        '0' => 'صفر',
         '1' => 'یک',
         '2' => 'دو',
         '3' => 'سه',

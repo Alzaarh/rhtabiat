@@ -72,7 +72,7 @@ class ProductService
                     }
                 } else {
                     for ($i = 0; $i < count($data['items']); $i++) {
-                        if (!is_set($data['items'][$i]['container']) && $data['items'][$i]['weight'] == $item->weight) {
+                        if (!isset($data['items'][$i]['container']) && $data['items'][$i]['weight'] == $item->weight) {
                             $item->price = $data['items'][$i]['price'];
                             $item->quantity = $data['items'][$i]['quantity'];
                             $item->save();

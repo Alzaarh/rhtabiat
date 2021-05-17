@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreArticleRequest extends FormRequest
 {
@@ -17,8 +18,11 @@ class StoreArticleRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:255',
-            'slug' => 'required|max:255',
+            'title' => [
+                'required',
+                'max:255',
+                Rule::unique('articles')->ignore($this->article),
+            ],
             'image' => 'nullable|image|max:5120',
             'body' => 'required',
             'meta' => 'nullable|json',

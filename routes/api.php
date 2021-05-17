@@ -115,7 +115,7 @@ Route::namespace('Admin')->group(
             }
         );
 
-        Route::apiResource('articles', 'ArticleController')
+        Route::apiResource('admin/articles', 'ArticleController')
             ->except(['index', 'show'])
             ->middleware(['auth:admin', 'role:writer']);
 
