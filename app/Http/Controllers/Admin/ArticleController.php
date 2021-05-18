@@ -28,10 +28,8 @@ class ArticleController extends Controller
 
     public function update(StoreArticleRequest $request, Article $article)
     {
-        if ($article->image) {
+        if ($request->hasFile('image')) {
             Storage::delete($article->image);
-        }
-        if ($request->image) {
             $article->image = $request->image->store('images');
         }
         if ($request->user()->role === Admin::ROLES['admin']) {
