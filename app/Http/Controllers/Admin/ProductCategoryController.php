@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
+use App\Http\Requests\UpdateProductCategoryRequest;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,14 +23,17 @@ class ProductCategoryController extends Controller
         ], 201);
     }
 
-    public function update(StoreProductCategoryRequest $request, ProductCategory $category)
+    public function update(UpdateProductCategoryRequest $request, ProductCategory $category)
     {
         $data = $request->validated();
-        $data['image'] = $request->image->store('images');
-        $data['image_mobile'] = $request->image_mobile->store('images');
-
-        Storage::delete($category->image);
-        Storage::delete($category->image_mobile);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->image->store('images');
+            Storage::delete($category->image);
+        }
+        if ($request->hasFile('image_mobile')) {
+            $data['image_mobile'] = $request->image_mobile->store('images');
+            Storage::delete($category->image_mobile);
+        }
 
         $category->update($data);
         return response()->json(['message' => 'دسته بندی با موفقیت به روزرسانی شد']);
