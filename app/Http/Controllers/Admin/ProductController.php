@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
@@ -24,7 +25,7 @@ class ProductController extends Controller
         return response()->json(['message' => 'محصول با موفقیت ایجاد شد'], 201);
     }
 
-    public function update(StoreProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         $this->productService->update($request->validated(), $product);
         return response()->json(['message' => 'محصول با موفقیت به روزرسانی شد']);

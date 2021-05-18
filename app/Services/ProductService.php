@@ -54,10 +54,12 @@ class ProductService
 
     public function update(array $data, Product $product): Product
     {
-        Storage::delete($product->image);
+        if (isset($data['image'])) {
+            Storage::delete($product->image);
+            $data['image'] = request()->image->store('images');
+        }
 
         return DB::transaction(function () use (&$data, $product) {
-            $data['image'] = request()->image->store('images');
             $product->update($data);
             $product->items->each(function ($item) use (&$data) {
                 if ($item->container) {
