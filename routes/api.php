@@ -94,6 +94,8 @@ Route::prefix('article-categories')->group(function () {
     });
 });
 
+Route::apiResource('return-requests', 'Shop\ReturnRequestController');
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
