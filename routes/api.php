@@ -51,13 +51,9 @@ Route::prefix('orders')->group(function () {
         Route::post('guests', 'GuestOrderController@store');
         Route::get('delivery-cost', 'GetOrderDeliveryCostFormula');
         Route::put('verify', 'VerifyOrder');
-        Route::get('track', 'TrackOrder');
         Route::post('notify', 'NotifyUserForOrder');
     });
-
-    // Route::namespace('Admin')->group(function () {
-    //     Route::get('/', 'GuestOrderController@index')->middleware(['auth:admin', 'role:discount_generator']);
-    // });
+    Route::get('status', 'User\GetOrderStatus');
 });
 
 

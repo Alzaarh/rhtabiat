@@ -147,6 +147,7 @@ return [
         'city_id' => 'شهر',
         'zipcode' => 'کد پستی',
         'address' => 'آدرس پستی',
+        'order_code' => 'کدسفارش',
     ],
 
 ];
