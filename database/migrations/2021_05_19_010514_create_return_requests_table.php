@@ -13,7 +13,7 @@ class CreateReturnRequestsTable extends Migration
             $table->string('name');
             $table->string('phone');
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->text('reason');
             $table->timestamp('created_at')->useCurrent();
         });

@@ -14,6 +14,7 @@ class OrderResource extends JsonResource
             'code' => $this->code,
             'price' => $this->price,
             'status_fa' => Order::STATUS_FA[$this->status],
+            'products' => ProductItemResource::collection($this->whenLoaded('items')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

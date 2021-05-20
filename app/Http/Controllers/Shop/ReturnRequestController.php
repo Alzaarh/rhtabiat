@@ -26,7 +26,7 @@ class ReturnRequestController extends Controller
                     request()->merge(['order_id' => $orderId]);
                 },
             ],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['email', 'max:255'],
             'reason' => ['required', 'string', 'max:64000'],
         ]);
         

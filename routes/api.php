@@ -55,7 +55,7 @@ Route::prefix('orders')->group(function () {
     });
     Route::get('status', 'User\GetOrderStatus');
 });
-
+Route::apiResource('orders', 'User\OrderController')->except(['store', 'destroy'])->middleware('auth:admin');
 
 Route::namespace('Blog')->group(function () {
     Route::prefix('article-categories')->group(function () {
@@ -185,3 +185,5 @@ Route::namespace('User')->group(function () {
     Route::post('messages', 'MessageController@store');
 }
 );
+
+Route::get('admins/self', 'Admin\AdminController@getSelf')->middleware('auth:admin');
