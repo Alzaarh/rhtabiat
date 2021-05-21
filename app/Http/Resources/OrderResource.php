@@ -13,9 +13,12 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'price' => $this->price,
+            'discount_code' => $this->discount_code,
             'status_fa' => Order::STATUS_FA[$this->status],
             'products' => ProductItemResource::collection($this->whenLoaded('items')),
+            'user' => $this->user,
             'created_at' => $this->created_at,
+            'created_at_fa' => $this->created_at_fa,
             'updated_at' => $this->updated_at,
         ];
     }

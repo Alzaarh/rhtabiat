@@ -18,6 +18,8 @@ return [
 
         'order_rejected' => '8skjs7ehc3',
 
+        'order_post_office' => 'jotkag15nh',
+
     ],
 
     'zarinpal' => [

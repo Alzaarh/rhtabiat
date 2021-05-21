@@ -20,20 +20,30 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load('items');
         return new OrderResource($order);
     }
 
     public function update(Order $order)
     {
         if ($order->status === Order::STATUS['being_processed']) {
+            request()->validate(['delivery_code' => 'required']);
             $order->status = Order::STATUS['in_post_office'];
             $order->delivery_code = request()->delivery_code;
             $order->save();
             if ($order->forGuest()) {
                 $phone = $order->guestDetail->mobile;
+                $name = $order->guestDetail->name;
             }
-            // NotifyViaSms::dispatch($phone, );
+            NotifyViaSms::dispatchSync(
+                $phone, 
+                config('app.sms_patterns.order_post_office'), 
+                ['name' => $name, 'code' => request()->delivery_code]
+            );
+        } elseif ($order->status === Order::STATUS['in_post_office']) {
+            $order->status = Order::STATUS['delivered'];
+            $order->save();
         }
+
+        return response()->json(['message' => 'سفارش با موفقیت به روزرسانی شد']);
     }
 }

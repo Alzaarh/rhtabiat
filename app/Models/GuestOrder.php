@@ -27,4 +27,14 @@ class GuestOrder extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class);
+    }
 }

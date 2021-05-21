@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Morilog\Jalali\Jalalian;
 
 class Order extends Model
 {
@@ -119,5 +120,17 @@ class Order extends Model
             return true;
         }
         return false;
+    }
+
+    public function getUserAttribute()
+    {
+        if ($this->forGuest()) {
+            return $this->guestDetail->load('city', 'province');
+        }
+    }
+
+    public function getCreatedAtFaAttribute()
+    {
+        return Jalalian::fromCarbon($this->created_at)->format('Y/m/d');
     }
 }

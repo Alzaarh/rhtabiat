@@ -35,6 +35,12 @@ services:
             - sail
         healthcheck:
           test: ["CMD", "mysqladmin", "ping"]
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
