@@ -16,12 +16,14 @@ class Order extends Model
         'being_processed' => 2,
         'in_post_office' => 3,
         'delivered' => 4,
+        'rejected' => 5,
     ];
     public const STATUS_FA = [
         1 => 'در انتظار پرداخت',
         2 => 'در حال پردازش',
         3 => 'تحویل به شرکت پست',
         4 => 'تحویل به مشتری',
+        5 => 'رد شده',
     ];
     public const WITHIN_PROVINCE = 11;
     public const DELIVERY_THRESHOLD = 350000;

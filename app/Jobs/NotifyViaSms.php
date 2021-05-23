@@ -22,11 +22,6 @@ class NotifyViaSms implements ShouldQueue
 
     protected array $data;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     public function __construct(string $phone, string $pattern, array $data)
     {
         $this->phone = $phone;

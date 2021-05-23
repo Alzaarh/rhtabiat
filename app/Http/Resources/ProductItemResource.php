@@ -16,6 +16,9 @@ class ProductItemResource extends JsonResource
             'price' => $this->price,
             'quantity' => $this->quantity,
             'order_quantity' => $this->whenPivotLoaded('order_product_item', fn() => $this->pivot->quantity),
+            'order_price' => $this->whenPivotLoaded('order_product_item', fn() => $this->pivot->price),
+            'order_off' => $this->whenPivotLoaded('order_product_item', fn() => $this->pivot->off),
+            'order_weight' => $this->whenPivotLoaded('order_product_item', fn() => $this->pivot->weight),
             'cart_quantity' => $this->whenPivotLoaded('cart_product_item', fn() => $this->pivot->quantity),
             'product' => new IndexProduct($this->whenLoaded('product')),
         ];

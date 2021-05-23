@@ -47,4 +47,11 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'سفارش با موفقیت به روزرسانی شد']);
     }
+
+    public function reject(Order $order)
+    {
+        $order->status = Order::STATUS['rejected'];
+        $order->save();
+        return response()->json(['message' => 'سفارش با موفقیت به رد شد']);
+    }
 }

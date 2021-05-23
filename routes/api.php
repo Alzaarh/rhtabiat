@@ -56,6 +56,7 @@ Route::prefix('orders')->group(function () {
     Route::get('status', 'User\GetOrderStatus');
 });
 Route::apiResource('orders', 'User\OrderController')->except(['store', 'destroy'])->middleware('auth:admin');
+Route::patch('orders/{order}/reject', 'User\OrderController@reject');
 
 Route::namespace('Blog')->group(function () {
     Route::prefix('article-categories')->group(function () {
@@ -134,14 +135,8 @@ Route::namespace('Admin')->group(
     }
 );
 
-
+Route::post('verification-codes', 'User\VerificationCodeController@store')->middleware('throttle:1,1');
 Route::namespace('User')->group(function () {
-    Route::prefix('verification-codes')->group(
-        function () {
-            Route::post('/', 'VerificationCodeController@store')
-                ->middleware('throttle:1,1');
-        }
-    );
     Route::prefix('users')->group(
         function () {
             Route::get('self', 'UserGetSelf')->middleware('auth:user');
