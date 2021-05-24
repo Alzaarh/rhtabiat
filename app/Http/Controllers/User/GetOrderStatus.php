@@ -24,6 +24,9 @@ class GetOrderStatus extends Controller
             case 4:
                 $msg = 'سفارش به مشتری تحویل داده شده است';
                 break;
+            case 5:
+                $msg = 'سفارش رد شده است';
+                break;
         }
         return response()->json(['message' => $msg]);
     }
