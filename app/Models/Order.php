@@ -84,7 +84,7 @@ class Order extends Model
 
     public function discountCode()
     {
-        return $this->belongsTo(DiscountCode::class);
+        return $this->belongsTo(DiscountCode::class)->withoutGlobalScope('valid');
     }
 
     public function guestDetail()
