@@ -10,18 +10,11 @@ class ArticleRelatedArticleController extends Controller
 {
     public function __invoke(Article $article)
     {
-        $relatedArticleCollection = Article::where(
-            'article_category_id',
-            $article->article_category_id
-        )
-            ->take(request()->query('count', 4))
-            ->get();
-        if ($relatedArticleCollection->count() < 4) {
-            $relatedArticleCollection = Article::inRandomOrder()
-                ->take(4 - $relatedArticleCollection->count())
+        return ArticleResource::collection(
+            Article::where('article_category_id', $article->article_category_id)
+                ->where('id', '!=', $article->id)
+                ->take(request()->query('count', 4))
                 ->get()
-                ->merge($relatedArticleCollection);
-        }
-        return ArticleResource::collection($relatedArticleCollection);
+        );
     }
 }
