@@ -10,7 +10,7 @@ class CreateBannersTable extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
+            $table->foreignId('image_id')->nullable()->constrained()->onDelete('set null');
             $table->integer('location');
         });
     }

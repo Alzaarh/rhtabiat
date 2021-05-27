@@ -2,7 +2,7 @@
 
 return [
 
-    'domain' => env('APP_DOMAIN', '127.0.0.1'),
+    'domain' => env('APP_DOMAIN', '127.0.0.1/'),
 
     'sms_uname' => env('SMS_USERNAME'),
 
@@ -48,6 +48,8 @@ return [
      */
 
     'port' => env('APP_PORT', '3000'),
+
+    'fs_path' => env('FS_PATH'),
 
     /*
     |--------------------------------------------------------------------------

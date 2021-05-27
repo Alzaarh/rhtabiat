@@ -99,6 +99,8 @@ Route::get('banners/locations', 'Shop\IndexBannerLocation');
 
 Route::apiResource('discount-codes', 'Shop\DiscountCodeController')->middleware(['auth:admin', 'role:discount_generator']);
 
+Route::apiResource('images', 'Shop\ImageController');
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
