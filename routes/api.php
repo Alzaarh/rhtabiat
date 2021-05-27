@@ -97,6 +97,8 @@ Route::apiResource('banners', 'Shop\BannerController')->except(['index', 'show']
 Route::get('banners', 'Shop\BannerController@index');
 Route::get('banners/locations', 'Shop\IndexBannerLocation');
 
+Route::apiResource('discount-codes', 'Shop\DiscountCodeController')->middleware(['auth:admin', 'role:discount_generator']);
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
@@ -114,10 +116,6 @@ Route::namespace('Admin')->group(
         Route::apiResource('admin/articles', 'ArticleController')
             ->except(['index', 'show'])
             ->middleware(['auth:admin', 'role:writer']);
-
-        Route::apiResource('discount-codes', 'DiscountCodeController')->except('show')->middleware(
-            ['auth:admin', 'role:discount_generator']
-        );
     }
 );
 

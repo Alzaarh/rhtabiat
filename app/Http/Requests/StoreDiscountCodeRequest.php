@@ -6,21 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDiscountCodeRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
@@ -32,6 +17,7 @@ class StoreDiscountCodeRequest extends FormRequest
             'users.*' => 'required|exists:users,id',
             'expires_at' => 'required|date_format:Y-m-d',
             'count' => 'required_without:users|integer|min:1',
+            'code' => 'string',
         ];
     }
 }

@@ -7,36 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-/**
- * App\Models\DiscountCode
- *
- * @property int $id
- * @property string $code
- * @property int|null $max
- * @property int|null $min
- * @property int|null $percent
- * @property int|null $value
- * @property int|null $user_id
- * @property string $created_at
- * @property string $expires_at
- * @property string|null $used_at
- * @method static Builder|DiscountCode newModelQuery()
- * @method static Builder|DiscountCode newQuery()
- * @method static Builder|DiscountCode query()
- * @method static Builder|DiscountCode whereCode($value)
- * @method static Builder|DiscountCode whereCreatedAt($value)
- * @method static Builder|DiscountCode whereExpiresAt($value)
- * @method static Builder|DiscountCode whereId($value)
- * @method static Builder|DiscountCode whereMax($value)
- * @method static Builder|DiscountCode whereMin($value)
- * @method static Builder|DiscountCode wherePercent($value)
- * @method static Builder|DiscountCode whereUsedAt($value)
- * @method static Builder|DiscountCode whereUserId($value)
- * @method static Builder|DiscountCode whereValue($value)
- * @mixin \Eloquent
- * @method static Builder|DiscountCode whereValidExpiration()
- * @method static Builder|DiscountCode notUsed()
- */
 class DiscountCode extends Model
 {
     use HasFactory;
@@ -46,11 +16,11 @@ class DiscountCode extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope(
-            'valid',
-            fn($b) => $b->where('expires_at', '>=', now()->toDateString())
-                ->whereNull('used_at')
-        );
+//        static::addGlobalScope(
+//            'valid',
+//            fn($b) => $b->where('expires_at', '>=', now()->toDateString())
+//                ->whereNull('used_at')
+//        );
     }
 
     public function scopeNotUsed($query)
@@ -94,5 +64,14 @@ class DiscountCode extends Model
             $off = $this->max;
         }
         return $off;
+    }
+
+    public function getGroup(): int
+    {
+        $code = static::latest()->first();
+        if (!$code) {
+            return 1;
+        }
+        return $code->group_id + 1;
     }
 }

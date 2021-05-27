@@ -6,33 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDiscountCodesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('discount_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->integer('max')->nullable();
-            $table->integer('min')->nullable();
-            $table->integer('percent')->nullable();
-            $table->integer('value')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('code')->index();
             $table->boolean('is_suspended')->default(false);
-            $table->timestamp('created_at')->useCurrent();
-            $table->date('expires_at');
+            $table->foreignId('discount_code_group_id')->constrained()->onDelete('cascade');
             $table->timestamp('used_at')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('discount_codes');
