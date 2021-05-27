@@ -8,7 +8,7 @@ Route::prefix('products')->group(function () {
         Route::put('admin/{product:id}', 'ProductController@update')->middleware(['auth:admin', 'role:admin']);
         Route::delete('admin/{product:id}', 'ProductController@destroy')->middleware(['auth:admin', 'role:admin']);
     });
-    
+
     Route::namespace('Shop')->group(function () {
         Route::get('/', 'ProductController@index');
         Route::get('best-selling', 'IndexBestSellingProduct');
@@ -93,16 +93,13 @@ Route::prefix('article-categories')->group(function () {
 
 Route::apiResource('return-requests', 'Shop\ReturnRequestController');
 
+Route::apiResource('banners', 'Shop\BannerController')->except(['index', 'show'])->middleware(['auth:admin', 'role:admin']);
+Route::get('banners', 'Shop\BannerController@index');
+Route::get('banners/locations', 'Shop\IndexBannerLocation');
+
 Route::namespace('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
-
-        Route::prefix('banners')->group(
-            function () {
-                Route::get('/', 'BannerController@index');
-                Route::get('locations', 'IndexBannerLocation');
-            }
-        );
     }
 );
 
@@ -120,17 +117,6 @@ Route::namespace('Admin')->group(
 
         Route::apiResource('discount-codes', 'DiscountCodeController')->except('show')->middleware(
             ['auth:admin', 'role:discount_generator']
-        );
-
-        Route::prefix('banners')->group(
-            function () {
-                Route::middleware(['auth:admin', 'role:admin'])->group(
-                    function () {
-                        Route::post('/', 'BannerController@store');
-                        Route::delete('/{banner}', 'BannerController@destroy');
-                    }
-                );
-            }
         );
     }
 );
