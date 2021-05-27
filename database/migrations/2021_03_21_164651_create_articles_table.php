@@ -13,7 +13,7 @@ class CreateArticlesTable extends Migration
             $table->string('title')->unique();
             $table->string('slug')->unique();
             $table->string('short_desc', 1000);
-            $table->string('image')->nullable();
+            $table->foreignId('image_id')->nullable()->constrained()->onDelete('set null');
             $table->mediumText('body');
             $table->json('meta')->nullable();
             $table->boolean('is_verified')->default(false);

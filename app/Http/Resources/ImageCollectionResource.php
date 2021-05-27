@@ -12,11 +12,7 @@ class ImageCollectionResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'alt' => $this->alt,
-            'short_desc' => $this->short_desc,
-            'desc' => $this->desc,
             'url' => config('app.domain') . $this->url,
-            'created_at_fa' => $this->created_at_fa,
-            'updated_at_fa' => $this->updated_at_fa,
         ];
     }
 }

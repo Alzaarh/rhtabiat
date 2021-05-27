@@ -17,7 +17,7 @@ class Article extends Model
         'body',
         'short_desc',
         'meta',
-        'image',
+        'image_id',
         'article_category_id',
         'is_verified',
     ];
@@ -75,5 +75,10 @@ class Article extends Model
     public static function getLatest($count)
     {
         return self::latest()->take($count)->get();
+    }
+
+    public function image()
+    {
+        return $this->belongsTo(image::class);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreImageRequest;
 use App\Http\Resources\ImageCollectionResource;
+use App\Http\Resources\ImageResource;
 use App\Models\image;
 
 class ImageController extends Controller
@@ -13,6 +14,12 @@ class ImageController extends Controller
     {
         return ImageCollectionResource::collection(image::paginate(request()->query('count', 10)));
     }
+
+    public function show(Image $image)
+    {
+        return new ImageResource($image);
+    }
+
     public function store(StoreImageRequest $request)
     {
         $path = config('app.fs_path');

@@ -27,4 +27,19 @@ class image extends Model
     {
         return Jalalian::fromCarbon($this->updated_at)->format('%B %d, %Y');
     }
+
+    public function getHeightAttribute()
+    {
+        return \Image::make(config('app.fs_path') . $this->url)->height();
+    }
+
+    public function getWidthAttribute()
+    {
+        return \Image::make(config('app.fs_path') . $this->url)->width();
+    }
+
+    public function getSizeAttribute()
+    {
+        return round(\Image::make(config('app.fs_path') . $this->url)->filesize() / 1024, 2);
+    }
 }

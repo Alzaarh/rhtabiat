@@ -99,7 +99,7 @@ Route::get('banners/locations', 'Shop\IndexBannerLocation');
 
 Route::apiResource('discount-codes', 'Shop\DiscountCodeController')->middleware(['auth:admin', 'role:discount_generator']);
 
-Route::apiResource('images', 'Shop\ImageController');
+Route::apiResource('images', 'Shop\ImageController')->middleware(['auth:admin', 'role:writer']);
 
 Route::namespace('Shop')->group(
     function () {

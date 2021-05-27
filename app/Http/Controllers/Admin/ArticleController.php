@@ -14,14 +14,10 @@ class ArticleController extends Controller
 {
     public function store(StoreArticleRequest $request)
     {
-        $data = $request->validated();
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->image->store('images');
-        }
         if ($request->user()->role === Admin::ROLES['admin']) {
             $data['is_verified'] = true;
         }
-        $article = new Article($data);
+        $article = new Article($request->validated());
         $request->user()->articles()->save($article);
         return response()->json(['message' => 'مقاله با موفقیت ایجاد شد'], 201);
     }
@@ -49,7 +45,7 @@ class ArticleController extends Controller
         Gate::authorize('destroy-article', $article);
 
         $article->delete();
-        
+
         return response()->json(['message' => 'مقاله با موفقیت حذف شد']);
     }
 }
