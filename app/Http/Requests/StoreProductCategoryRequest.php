@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreProductCategoryRequest extends FormRequest
 {
@@ -11,8 +10,8 @@ class StoreProductCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'image' => 'required|image|max:5120',
-            'image_mobile' => 'required|image|max:5120',
+            'image_id' => 'required|exists:images,id',
+            'image_mobile_id' => 'required|exists:images,id',
             'parent_id' => 'nullable|exists:product_categories,id',
         ];
     }
@@ -21,8 +20,8 @@ class StoreProductCategoryRequest extends FormRequest
     {
         return [
             'name' => 'نام',
-            'image' => 'عکس',
-            'image_mobile' => 'عکس حالت موبایل',
+            'image_id' => 'عکس',
+            'image_mobile_id' => 'عکس حالت موبایل',
             'parent_id' => 'والد',
         ];
     }
