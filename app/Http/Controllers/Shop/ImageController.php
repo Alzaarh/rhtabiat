@@ -7,6 +7,7 @@ use App\Http\Requests\StoreImageRequest;
 use App\Http\Resources\ImageCollectionResource;
 use App\Http\Resources\ImageResource;
 use App\Models\image;
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -30,5 +31,12 @@ class ImageController extends Controller
         file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
         image::create($request->validated());
         return response()->json(['message' => 'پیوست با موفقیت ایجاد شد'], 201);
+    }
+
+    public function destroy(Image $image)
+    {
+        Storage::delete($image->url);
+        $image->delete();
+        return response()->json(['message' => 'پیوست با موفقیت حذف شد']);
     }
 }
