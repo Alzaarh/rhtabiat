@@ -12,7 +12,7 @@ class ImageResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'alt' => $this->alt,
-            'url' => url($this->url),
+            'url' => url("storage/{$this->image}"),
             'short_desc' => $this->short_desc,
             'desc' => $this->desc,
             'height' => $this->height,

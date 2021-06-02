@@ -24,10 +24,10 @@ class ImageController extends Controller
     {
         $parts = explode('/', $request->url);
         $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
-        if (!file_exists(storage_path($dir))) {
-            mkdir(storage_path() . $dir, 0775, true);
+        if (!file_exists(storage_path('app/public/' . $dir))) {
+            mkdir(storage_path('app/public/' . $dir), 0775, true);
         }
-        file_put_contents(storage_path() . $request->url, $request->image->get());
+        file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
         image::create($request->validated());
         return response()->json(['message' => 'پیوست با موفقیت ایجاد شد'], 201);
     }

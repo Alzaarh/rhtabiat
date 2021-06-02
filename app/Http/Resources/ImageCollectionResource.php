@@ -12,7 +12,7 @@ class ImageCollectionResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'alt' => $this->alt,
-            'url' => url($this->url),
+            'url' => url('storage/' . $this->url),
         ];
     }
 }

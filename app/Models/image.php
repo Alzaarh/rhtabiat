@@ -30,16 +30,16 @@ class image extends Model
 
     public function getHeightAttribute()
     {
-        return \Image::make(config('app.fs_path') . $this->url)->height();
+        return \Image::make(storage_path('app/public/') . $this->url)->height();
     }
 
     public function getWidthAttribute()
     {
-        return \Image::make(config('app.fs_path') . $this->url)->width();
+        return \Image::make(storage_path('app/public/') . $this->url)->width();
     }
 
     public function getSizeAttribute()
     {
-        return round(\Image::make(config('app.fs_path') . $this->url)->filesize() / 1024, 2);
+        return round(\Image::make(storage_path('app/public/') . $this->url)->filesize() / 1024, 2);
     }
 }
