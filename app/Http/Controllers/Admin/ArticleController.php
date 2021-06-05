@@ -24,10 +24,6 @@ class ArticleController extends Controller
 
     public function update(StoreArticleRequest $request, Article $article)
     {
-        if ($request->hasFile('image')) {
-            Storage::delete($article->image);
-            $article->image = $request->image->store('images');
-        }
         if ($request->user()->role === Admin::ROLES['admin']) {
             $article->is_verified = true;
         }
@@ -36,6 +32,7 @@ class ArticleController extends Controller
         $article->meta = $request->meta;
         $article->article_category_id = $request->article_category_id;
         $article->is_verified = false;
+        $article->image_id = $request->image_id;
         $article->save();
         return response()->json(['message' => 'مقاله با موفقیت به روزرسانی شد']);
     }

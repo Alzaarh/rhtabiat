@@ -13,7 +13,7 @@ class SingleArticleResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'preview' => $this->short_desc,
-            'image' => url("storage/$this->image"),
+            'image' => new ImageCollectionResource($this->image),
             'meta_tags' => json_decode($this->meta),
             'body' => $this->body,
             'category' => $this->category,

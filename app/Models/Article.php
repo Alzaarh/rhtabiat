@@ -6,6 +6,7 @@ use App\Traits\HasPersianDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Models\image;
 
 class Article extends Model
 {
@@ -79,6 +80,6 @@ class Article extends Model
 
     public function image()
     {
-        return $this->belongsTo(image::class);
+        return $this->belongsTo(Image::class);
     }
 }
