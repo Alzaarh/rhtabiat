@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\image;
 
 class ProductCategory extends Model
 {
@@ -32,6 +33,11 @@ class ProductCategory extends Model
     }
 
     public function image()
+    {
+        return $this->belongsTo(Image::class);
+    }
+
+    public function imageMobile()
     {
         return $this->belongsTo(Image::class);
     }

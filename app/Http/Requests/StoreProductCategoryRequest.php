@@ -9,7 +9,7 @@ class StoreProductCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:product_categories',
             'image_id' => 'required|exists:images,id',
             'image_mobile_id' => 'required|exists:images,id',
             'parent_id' => 'nullable|exists:product_categories,id',

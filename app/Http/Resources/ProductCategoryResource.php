@@ -13,7 +13,7 @@ class ProductCategoryResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'image' => new ImageCollectionResource($this->image),
-//            'image_mobile' => $this->image,
+            'image_mobile' => new ImageCollectionResource($this->imageMobile),
             'parent' => new self($this->whenLoaded('parent')),
             'parent_id' => $this->parent_id,
             'children' => self::collection($this->whenLoaded('children')),
