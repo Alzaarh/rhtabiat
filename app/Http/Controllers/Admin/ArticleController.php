@@ -40,9 +40,7 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         Gate::authorize('destroy-article', $article);
-
-        $article->delete();
-
+        \DB::table('articles')->where('id', $article->id)->delete();
         return response()->json(['message' => 'مقاله با موفقیت حذف شد']);
     }
 }
