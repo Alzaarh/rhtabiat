@@ -15,7 +15,7 @@ class CreateProductsTable extends Migration
             $table->string('short_desc', 2000);
             $table->mediumText('desc');
             $table->json('meta_tags')->nullable();
-            $table->string('image');
+            $table->foreignId('image_id')->nullable()->constrained()->onDelete('set null');
             $table->integer('off')->default(0);
             $table->foreignId('category_id')
                 ->constrained('product_categories')

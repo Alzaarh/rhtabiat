@@ -45,7 +45,6 @@ class ProductService
     public function create(array $data): Product
     {
         return DB::transaction(function () use ($data) {
-            $data['image'] = request()->image->store('images');
             $product = Product::create($data);
             $product->items()->createMany($data['items']);
             return $product;
@@ -54,11 +53,6 @@ class ProductService
 
     public function update(array $data, Product $product): Product
     {
-        if (isset($data['image'])) {
-            Storage::delete($product->image);
-            $data['image'] = request()->image->store('images');
-        }
-
         return DB::transaction(function () use (&$data, $product) {
             $product->update($data);
             $product->items->each(function ($item) use (&$data) {

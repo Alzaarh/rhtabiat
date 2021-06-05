@@ -33,8 +33,6 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        Storage::delete($product->image);
-
         $product->delete();
         return response()->json(['message' => 'محصول با موفقیت جذف شد']);
     }

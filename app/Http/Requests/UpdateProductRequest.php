@@ -19,7 +19,7 @@ class UpdateProductRequest extends FormRequest
             'category_id' => 'required|exists:product_categories,id',
             'short_desc' => 'required|max:2000',
             'desc' => 'required',
-            'image' => 'image|max:5120',
+            'image_id' => 'required|exists:images,id',
             'meta_tags' => 'string',
             'off' => 'integer|between:0,99',
             'has_container' => 'required|boolean',

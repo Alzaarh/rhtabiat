@@ -16,7 +16,7 @@ class IndexProduct extends JsonResource
 
             'slug' => $this->slug,
 
-            'image' => url("storage/$this->image"),
+            'image' => new ImageCollectionResource($this->image),
 
             'price' => $this->when(filled($this->price), $this->price),
 

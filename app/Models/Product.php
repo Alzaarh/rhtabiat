@@ -6,55 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Pishran\LaravelPersianSlug\HasPersianSlug;
 use Spatie\Sluggable\SlugOptions;
+use App\Models\image;
 
-/**
- * App\Models\Product
- *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property string $short_desc
- * @property string $desc
- * @property mixed|null $meta_tags
- * @property string|null $image
- * @property int $off
- * @property int $category_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ProductCategory $category
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
- * @property-read int|null $comments_count
- * @property-read mixed $avg_score
- * @property-read mixed $max_price
- * @property-read mixed $min_price
- * @property-read mixed $price
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductItem[] $items
- * @property-read int|null $items_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
- * @property-read int|null $orders_count
- * @method static \Database\Factories\ProductFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Product hasDiscount()
- * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Product query()
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereMetaTags($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereOff($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product wherePriceIsGreater($price)
- * @method static \Illuminate\Database\Eloquent\Builder|Product wherePriceIsLess($price)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereShortDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
- * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|Product orderByPrice(string $dir)
- * @method static \Illuminate\Database\Eloquent\Builder|Product wherePrice(string $op, int $value)
- * @method static \Illuminate\Database\Eloquent\Builder|Product orderByScore()
- */
 class Product extends Model
 {
     use HasFactory;
@@ -65,7 +18,7 @@ class Product extends Model
         'slug',
         'meta_tags',
         'off',
-        'image',
+        'image_id',
         'short_desc',
         'desc',
         'category_id',
@@ -207,5 +160,10 @@ class Product extends Model
     {
         return $this->whereCategoryId($this->category_id)
             ->get();
+    }
+
+    public function image()
+    {
+        return $this->belongsTo(Image::class);
     }
 }
