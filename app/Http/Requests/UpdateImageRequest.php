@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdateImageRequest extends FormRequest
+{
+    public function rules()
+    {
+        return [
+            'alt' => 'string|max:255',
+            'title' => 'required|string|max:255',
+            'short_desc' => 'string|max:1000',
+            'desc' => 'string|max:10000',
+            'url' => [
+                'string',
+                'max:255',
+                Rule::unique('images')->ignore($this->image),
+            ],
+            'image' => 'required_with:url|image|max:5120',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'url' => 'لینک پیوست',
+        ];
+    }
+}
