@@ -26,4 +26,9 @@ class Banner extends Model
     {
         return array_search($location, self::LOCATIONS);
     }
+
+    public function image()
+    {
+        return $this->belongsTo(image::class);
+    }
 }

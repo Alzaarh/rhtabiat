@@ -10,7 +10,7 @@ class BannerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => url("storage/{$this->image}"),
+            'image' => new ImageCollectionResource($this->image),
             'location' => $this->location,
         ];
     }
