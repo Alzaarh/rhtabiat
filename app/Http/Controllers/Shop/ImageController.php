@@ -7,7 +7,11 @@ use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateImageRequest;
 use App\Http\Resources\ImageCollectionResource;
 use App\Http\Resources\ImageResource;
+use App\Models\Article;
+use App\Models\Banner;
 use App\Models\image;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
@@ -51,6 +55,14 @@ class ImageController extends Controller
 
     public function destroy(Image $image)
     {
+        if (
+            Banner::where('image_id', $image->id)->exists() ||
+            ProductCategory::where('image_id', $image->id)->exists() ||
+            Product::where('image_id', $image->id)->exists() ||
+            Article::where('image_id', $image->id)->exists()
+        ) {
+            return response()->json(['message' => 'پیوست در حال استفاده است'], 400);
+        }
         Storage::delete($image->url);
         $image->delete();
         return response()->json(['message' => 'پیوست با موفقیت حذف شد']);
