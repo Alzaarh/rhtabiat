@@ -14,7 +14,7 @@ class ImageController extends Controller
 {
     public function index()
     {
-        return ImageCollectionResource::collection(image::paginate(request()->query('count', 10)));
+        return ImageCollectionResource::collection(image::latest()->paginate(request()->query('count', 10)));
     }
 
     public function show(Image $image)
