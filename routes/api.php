@@ -54,6 +54,7 @@ Route::prefix('orders')->group(function () {
         Route::post('notify', 'NotifyUserForOrder');
     });
     Route::get('status', 'User\GetOrderStatus');
+    Route::post('admins', 'Admin\OrderController@store')->middleware(['auth:admin', 'role:admin']);
 });
 Route::apiResource('orders', 'User\OrderController')->except(['store', 'destroy'])->middleware('auth:admin');
 Route::patch('orders/{order}/reject', 'User\OrderController@reject');

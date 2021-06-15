@@ -31,13 +31,13 @@ class Order extends Model
 
     protected static function booted()
     {
-        static::creating(
-            function ($order) {
+        static::creating(function ($order) {
+            if (!isset($order->status)) {
                 $order->status = static::STATUS['not_paid'];
-                $order->code = static::count() . rand(10000, 99999);
-                $order->visitor = request()->ip();
             }
-        );
+            $order->code = static::count() . rand(10000, 99999);
+            $order->visitor = request()->ip();
+        });
     }
 
     public function getPriceAttribute(): int
