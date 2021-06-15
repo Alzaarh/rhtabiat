@@ -42,8 +42,13 @@ class ProductService
         return $filteredProductCollection ?? $productCollection;
     }
 
-    public function create(array $data): Product
+    public function create($data): Product
     {
+        if (isset($data['price'])) {
+            foreach ($data['items'] as &$item) {
+                $item['price'] = $item['weight'] * $data['price'];
+            }
+        }
         return DB::transaction(function () use ($data) {
             $product = Product::create($data);
             $product->items()->createMany($data['items']);
@@ -53,6 +58,11 @@ class ProductService
 
     public function update(array $data, Product $product): Product
     {
+        if (isset($data['price'])) {
+            foreach ($data['items'] as &$item) {
+                $item['price'] = $item['weight'] * $data['price'];
+            }
+        }
         return DB::transaction(function () use (&$data, $product) {
             $product->update($data);
             $product->items->each(function ($item) use (&$data) {

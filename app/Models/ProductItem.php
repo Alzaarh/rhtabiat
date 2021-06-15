@@ -6,30 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-/**
- * App\Models\ProductItem
- *
- * @property int $id
- * @property float $weight
- * @property int $price
- * @property int $quantity
- * @property int|null $container
- * @property int $product_id
- * @property-read \Illuminate\Database\Eloquent\Collection|Cart[] $carts
- * @property-read int|null $carts_count
- * @property-read Product $product
- * @method static \Database\Factories\ProductItemFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem query()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem whereContainer($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductItem whereWeight($value)
- * @mixin \Eloquent
- */
 class ProductItem extends Model
 {
     use HasFactory;

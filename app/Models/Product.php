@@ -23,6 +23,7 @@ class Product extends Model
         'desc',
         'category_id',
         'is_best_selling',
+        'price',
     ];
 
     protected $casts = [
