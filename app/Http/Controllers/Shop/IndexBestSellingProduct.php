@@ -11,8 +11,7 @@ class IndexBestSellingProduct extends Controller
     public function __invoke()
     {
         return IndexProduct::collection(
-            Product::withCount('orders')
-                ->orderBy('orders_count', 'desc')
+            Product::whereIsBestSelling(true)
                 ->take(request()->query('count', 10))
                 ->get()
         );

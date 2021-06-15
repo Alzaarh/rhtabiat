@@ -25,6 +25,7 @@ class IndexProduct extends JsonResource
             'max_price' => $this->when(filled($this->max_price), $this->max_price),
 
             'off' => $this->off,
+            'is_best_selling' => $this->is_best_selling,
         ];
     }
 }

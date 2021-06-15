@@ -32,6 +32,7 @@ class UpdateProductRequest extends FormRequest
                 'prohibited_if:has_container,0',
                 Rule::in([ProductItem::ZINC_CONTAINER, ProductItem::PLASTIC_CONTAINER]),
             ],
+            'is_best_selling' => 'boolean',
         ];
     }
 }

@@ -22,6 +22,11 @@ class Product extends Model
         'short_desc',
         'desc',
         'category_id',
+        'is_best_selling',
+    ];
+
+    protected $casts = [
+        'is_best_selling' => 'boolean',
     ];
 
     public function getSlugOptions(): SlugOptions
