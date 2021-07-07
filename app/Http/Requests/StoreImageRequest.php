@@ -14,7 +14,7 @@ class StoreImageRequest extends FormRequest
             'short_desc' => 'string|max:1000',
             'desc' => 'string|max:10000',
             'url' => 'required|string|max:255|unique:images',
-            'image' => 'required|image|max:5120',
+            'image' => 'required|image|max:10240',
             'group' => 'in:1,2,3',
         ];
     }

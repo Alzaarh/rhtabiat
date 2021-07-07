@@ -33,7 +33,11 @@ class ImageController extends Controller
         if (!file_exists(storage_path('app/public/' . $dir))) {
             mkdir(storage_path('app/public/' . $dir), 0775, true);
         }
-        file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
+        if (\Image::make($request->image)->filesize() > 2 * 1024) {
+            \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.175, \Image::make($request->image)->height() * 0.175)->save(storage_path('app/public/') . $request->url);
+        } else {
+            file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
+        }
         image::create($request->validated());
         return response()->json(['message' => 'پیوست با موفقیت ایجاد شد'], 201);
     }
@@ -47,7 +51,11 @@ class ImageController extends Controller
             if (!file_exists(storage_path('app/public/' . $dir))) {
                 mkdir(storage_path('app/public/' . $dir), 0775, true);
             }
-            file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
+            if (\Image::make($request->image)->filesize() > 2 * 1024) {
+                \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.175, \Image::make($request->image)->height() * 0.175)->save(storage_path('app/public/') . $request->url);
+            } else {
+                file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
+            }
         }
         $image->update($request->validated());
         return response()->json(['message' => 'پیوست با موفقیت به روزرسانی شد']);
