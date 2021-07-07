@@ -16,6 +16,7 @@ class image extends Model
         'short_desc',
         'desc',
         'url',
+        'group',
     ];
 
     public function getCreatedAtFaAttribute()

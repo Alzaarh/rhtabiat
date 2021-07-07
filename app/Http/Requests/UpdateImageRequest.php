@@ -20,6 +20,7 @@ class UpdateImageRequest extends FormRequest
                 Rule::unique('images')->ignore($this->image),
             ],
             'image' => 'required_with:url|image|max:5120',
+            'group' => 'in:1,2,3',
         ];
     }
 

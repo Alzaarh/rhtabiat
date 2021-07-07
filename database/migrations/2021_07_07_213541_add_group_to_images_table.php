@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLoginCodesTable extends Migration
+class AddGroupToImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateLoginCodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('login_codes', function (Blueprint $table) {
-            $table->id();
-            $table->char('phone', 11)->unique();
-            $table->char('code', 5);
-            $table->timestamp('updated_at');
+        Schema::table('images', function (Blueprint $table) {
+            $table->unsignedTinyInteger('group')->default(3);
         });
     }
 
@@ -28,6 +25,8 @@ class CreateLoginCodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('login_codes');
+        Schema::table('images', function (Blueprint $table) {
+            $table->dropColumn('group');
+        });
     }
 }
