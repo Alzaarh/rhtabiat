@@ -17,6 +17,7 @@ class image extends Model
         'desc',
         'url',
         'group',
+        'is_server_serve',
     ];
 
     public function getCreatedAtFaAttribute()

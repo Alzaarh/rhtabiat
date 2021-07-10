@@ -49,6 +49,9 @@ class ImageController extends Controller
     public function update(UpdateImageRequest $request, image $image)
     {
         if ($request->hasFile('image')) {
+            if (!$image->is_server_serve) {
+                abort(403);
+            }
             Storage::delete($image->url);
             $parts = explode('/', $request->url);
             $dir = implode('/', array_splice($parts, 0, count($parts) - 1));

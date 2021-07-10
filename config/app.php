@@ -2,6 +2,8 @@
 
 return [
 
+    'webapp_domain' => env('WEBAPP_DOMAIN', '127.0.0.1/'),
+
     'domain' => env('APP_DOMAIN', '127.0.0.1/'),
 
     'sms_uname' => env('SMS_USERNAME'),
