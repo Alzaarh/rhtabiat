@@ -18,7 +18,11 @@ class ImageController extends Controller
 {
     public function index()
     {
-        return ImageCollectionResource::collection(image::latest()->paginate(request()->query('count', 10)));
+        $query = image::latest();
+        if (request()->filled('group')) {
+            $query->whereGroup(request()->group);
+        }
+        return ImageCollectionResource::collection($query->paginate(request()->query('count', 10)));
     }
 
     public function show(Image $image)
@@ -34,7 +38,7 @@ class ImageController extends Controller
             mkdir(storage_path('app/public/' . $dir), 0775, true);
         }
         if (\Image::make($request->image)->filesize() > 2 * 1024) {
-            \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.175, \Image::make($request->image)->height() * 0.175)->save(storage_path('app/public/') . $request->url);
+            \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
         } else {
             file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
         }
@@ -52,7 +56,7 @@ class ImageController extends Controller
                 mkdir(storage_path('app/public/' . $dir), 0775, true);
             }
             if (\Image::make($request->image)->filesize() > 2 * 1024) {
-                \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.175, \Image::make($request->image)->height() * 0.175)->save(storage_path('app/public/') . $request->url);
+                \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
             } else {
                 file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
             }
