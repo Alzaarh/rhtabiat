@@ -32,39 +32,44 @@ class ImageController extends Controller
 
     public function store(StoreImageRequest $request)
     {
-        $parts = explode('/', $request->url);
-        $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
-        if (!file_exists(storage_path('app/public/' . $dir))) {
-            mkdir(storage_path('app/public/' . $dir), 0775, true);
-        }
-        if (\Image::make($request->image)->filesize() > 2 * 1024) {
-            \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
-        } else {
-            file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
-        }
-        image::create($request->validated());
+//        $parts = explode('/', $request->url);
+//        $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
+//        if (!file_exists(storage_path('app/public/' . $dir))) {
+//            mkdir(storage_path('app/public/' . $dir), 0775, true);
+//        }
+//        if (\Image::make($request->image)->filesize() > 2 * 1024) {
+//            \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
+//        } else {
+//            file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
+//        }
+        $url = $request->image->store('images');
+        image::create(array_merge($request->validated(), ['url' => $url]));
         return response()->json(['message' => 'پیوست با موفقیت ایجاد شد'], 201);
     }
 
     public function update(UpdateImageRequest $request, image $image)
     {
         if ($request->hasFile('image')) {
-            if (!$image->is_server_serve) {
-                abort(403);
-            }
+//            if (!$image->is_server_serve) {
+//                abort(403);
+//            }
+//            Storage::delete($image->url);
+//            $parts = explode('/', $request->url);
+//            $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
+//            if (!file_exists(storage_path('app/public/' . $dir))) {
+//                mkdir(storage_path('app/public/' . $dir), 0775, true);
+//            }
+//            if (\Image::make($request->image)->filesize() > 2 * 1024) {
+//                \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
+//            } else {
+//                file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
+//            }
             Storage::delete($image->url);
-            $parts = explode('/', $request->url);
-            $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
-            if (!file_exists(storage_path('app/public/' . $dir))) {
-                mkdir(storage_path('app/public/' . $dir), 0775, true);
-            }
-            if (\Image::make($request->image)->filesize() > 2 * 1024) {
-                \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
-            } else {
-                file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
-            }
+            $url = $request->image->store('images');
+            $image->update(array_merge($request->validated(), ['url' => $url]));
+        } else {
+            $image->update($request->validated());
         }
-        $image->update($request->validated());
         return response()->json(['message' => 'پیوست با موفقیت به روزرسانی شد']);
     }
 

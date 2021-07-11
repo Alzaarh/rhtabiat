@@ -32,16 +32,16 @@ class image extends Model
 
     public function getHeightAttribute()
     {
-        return \Image::make(storage_path('app/public/') . $this->url)->height();
+        return \Image::make(config('app.webapp_path') . $this->url)->height();
     }
 
     public function getWidthAttribute()
     {
-        return \Image::make(storage_path('app/public/') . $this->url)->width();
+        return \Image::make(config('app.webapp_path') . $this->url)->width();
     }
 
     public function getSizeAttribute()
     {
-        return round(\Image::make(storage_path('app/public/') . $this->url)->filesize() / 1024, 2);
+        return round(\Image::make(config('app.webapp_path') . $this->url)->filesize() / 1024, 2);
     }
 }
