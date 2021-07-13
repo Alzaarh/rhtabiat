@@ -22,6 +22,8 @@ class SingleProductResource extends JsonResource
             'category' => new ProductCategoryResource($this->whenLoaded('category')),
 
             'items' => ProductItemResource::collection($this->whenLoaded('items')),
+
+            'package_price' => $this->package_price,
         ];
 
         $single['items'] = !$this->hasContainer() ? $this->items : [

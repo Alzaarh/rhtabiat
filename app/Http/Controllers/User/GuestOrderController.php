@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGuestOrderRequest;
 use App\Models\Order;
+use App\Models\Product;
 use App\Services\CalcOrderDeliveryCostService;
 use App\Services\InitiateWithZarinpalService;
 use App\Services\ValidateGuestOrderService;
@@ -44,8 +45,10 @@ class GuestOrderController extends Controller
             fn($c, $i) => $i['weight'] * $i['quantity'] + $c,
             0
         );
+        $orderPackagePrice = Product::find(array_column($orderItems, 'product_id'))
+            ->reduce(fn ($carry, $product) => $carry + $product->package_price, 0);
 
-        $authority = DB::transaction(function () use ($request, $orderPrice, $orderWeight, $orderItems) {
+        $authority = DB::transaction(function () use ($request, $orderPrice, $orderWeight, $orderItems, $orderPackagePrice) {
             $order = Order::create([
                 'delivery_cost' => $this->calcDeliveryCost->handle(
                     $orderPrice,
@@ -53,6 +56,7 @@ class GuestOrderController extends Controller
                     $orderWeight
                 ),
                 'discount_code_id' => filled($request->discount_code) ? $request->discount_code->id : null,
+                'package_price' => $orderPackagePrice,
             ]);
             if ($request->discount_code) {
                 $code = $request->discount_code;

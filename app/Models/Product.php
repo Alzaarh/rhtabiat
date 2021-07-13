@@ -24,6 +24,7 @@ class Product extends Model
         'category_id',
         'is_best_selling',
         'price',
+        'package_price',
     ];
 
     protected $casts = [

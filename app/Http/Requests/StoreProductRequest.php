@@ -34,6 +34,7 @@ class StoreProductRequest extends FormRequest
             ],
             'is_best_selling' => 'boolean',
             'price' => 'integer|min:1',
+            'package_price' => 'integer|min:0',
         ];
     }
 }
