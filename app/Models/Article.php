@@ -33,10 +33,6 @@ class Article extends Model
             fn ($article) =>
             Storage::delete($article->getRawOriginal('image'))
         );
-
-        static::saving(function ($article) {
-            $article->slug = makeSlug($article->title);
-        });
     }
 
     public function author()

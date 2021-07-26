@@ -28,6 +28,7 @@ class ArticleController extends Controller
             $article->is_verified = true;
         }
         $article->title = $request->title;
+        $article->slug = $request->slug;
         $article->body = $request->body;
         $article->meta = $request->meta;
         $article->article_category_id = $request->article_category_id;
