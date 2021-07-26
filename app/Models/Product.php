@@ -112,7 +112,7 @@ class Product extends Model
 
     public function scopeOrderByPrice($query, string $dir)
     {
-        return $query->selectRaw('products.*, price * (100-off) / 100 as p')
+        return $query->selectRaw('products.*, product_items.price * (100-off) / 100 as p')
             ->distinct('products.id')
             ->join('product_items', 'products.id', '=', 'product_id')
             ->orderBy('p', $dir);

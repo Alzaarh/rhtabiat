@@ -26,6 +26,7 @@ class IndexProduct extends JsonResource
 
             'off' => $this->off,
             'is_best_selling' => $this->is_best_selling,
+            'package_price' => $this->package_price,
         ];
     }
 }
