@@ -30,9 +30,15 @@ class Product extends Model
         'is_best_selling' => 'boolean',
     ];
 
-    public function getPriceAttribute()
+
+    /**
+     * price per 1 kilogram
+     * @return int
+     */
+    public function getPriceAttribute(): int
     {
-        return !$this->hasMultipleItems() ? $this->items()->value('price') : null;
+        $firstItem = $this->items()->first();
+        return round($firstItem->price / $firstItem->weight);
     }
 
     public function getMetaTagsAttribute($value)
