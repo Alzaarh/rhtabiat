@@ -11,10 +11,10 @@ use App\Models\image;
 class Article extends Model
 {
     use HasFactory;
-    use HasPersianDate;
 
     protected $fillable = [
         'title',
+        'slug',
         'body',
         'short_desc',
         'meta',

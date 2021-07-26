@@ -11,7 +11,6 @@ use App\Models\image;
 class Product extends Model
 {
     use HasFactory;
-    use HasPersianSlug;
 
     protected $fillable = [
         'name',
@@ -30,13 +29,6 @@ class Product extends Model
     protected $casts = [
         'is_best_selling' => 'boolean',
     ];
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
 
     public function getPriceAttribute()
     {
