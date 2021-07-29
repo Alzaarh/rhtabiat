@@ -6,7 +6,7 @@ use App\Traits\HasPersianDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use App\Models\image;
+use App\Models\Image;
 
 class Article extends Model
 {

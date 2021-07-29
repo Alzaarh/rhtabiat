@@ -14,11 +14,13 @@ class UpdateImageRequest extends FormRequest
             'title' => 'required|string|max:255',
             'short_desc' => 'string|max:1000',
             'desc' => 'string|max:10000',
-//            'url' => [
-//                'string',
-//                'max:255',
-//                Rule::unique('images')->ignore($this->image),
-//            ],
+            'url' => [
+                'string',
+                'max:100',
+                'starts_with:images/',
+                'ends_with:.png,.jpg,.jpeg',
+                Rule::unique('images')->ignore($this->image),
+            ],
             'image' => 'image|max:10240',
             'group' => 'in:1,2,3',
         ];

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Morilog\Jalali\Jalalian;
 
-class image extends Model
+class Image extends Model
 {
     use HasFactory;
 
@@ -17,7 +17,6 @@ class image extends Model
         'desc',
         'url',
         'group',
-        'is_server_serve',
     ];
 
     public function getCreatedAtFaAttribute()
@@ -29,19 +28,4 @@ class image extends Model
     {
         return Jalalian::fromCarbon($this->updated_at)->format('%B %d, %Y');
     }
-
-//    public function getHeightAttribute()
-//    {
-//        return \Image::make(config('app.webapp_path') . $this->url)->height();
-//    }
-//
-//    public function getWidthAttribute()
-//    {
-//        return \Image::make(config('app.webapp_path') . $this->url)->width();
-//    }
-//
-//    public function getSizeAttribute()
-//    {
-//        return round(\Image::make(config('app.webapp_path') . $this->url)->filesize() / 1024, 2);
-//    }
 }

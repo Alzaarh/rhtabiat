@@ -9,7 +9,7 @@ use App\Http\Resources\ImageCollectionResource;
 use App\Http\Resources\ImageResource;
 use App\Models\Article;
 use App\Models\Banner;
-use App\Models\image;
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +18,7 @@ class ImageController extends Controller
 {
     public function index()
     {
-        $query = image::latest();
+        $query = Image::latest();
         if (request()->filled('group')) {
             $query->whereGroup(request()->group);
         }
@@ -42,17 +42,27 @@ class ImageController extends Controller
 //        } else {
 //            file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
 //        }
-        $url = $request->image->store('images');
-        image::create(array_merge($request->validated(), ['url' => $url]));
+//        $url = $request->image->store('images');
+        // if user enters url use it otherwise generate random url
+        if ($request->has('url')) {
+            $urlSegments = explode('/', $request->input('url'));
+            $filePath = implode('/', array_slice($urlSegments, 0, count($urlSegments) - 1));
+            $fileName = $urlSegments[count($urlSegments) - 1];
+            $url = $request->file('image')->storeAs($filePath, $fileName);
+        } else {
+            $url = $request->file('image')->store('images');
+        }
+
+        Image::create(array_merge($request->validated(), ['url' => $url]));
         return response()->json(['message' => 'پیوست با موفقیت ایجاد شد'], 201);
     }
 
-    public function update(UpdateImageRequest $request, image $image)
+    public function update(UpdateImageRequest $request, Image $image)
     {
         if ($request->hasFile('image')) {
-//            if (!$image->is_server_serve) {
-//                abort(403);
-//            }
+            if (!$image->is_server_serve) {
+                abort(403);
+            }
 //            Storage::delete($image->url);
 //            $parts = explode('/', $request->url);
 //            $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
@@ -64,8 +74,15 @@ class ImageController extends Controller
 //            } else {
 //                file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
 //            }
-            Storage::delete($image->url);
-            $url = $request->image->store('images');
+            if ($request->has('url')) {
+                Storage::delete($image->url);
+                $urlSegments = explode('/', $request->input('url'));
+                $filePath = implode('/', array_slice($urlSegments, 0, count($urlSegments) - 1));
+                $fileName = $urlSegments[count($urlSegments) - 1];
+                $url = $request->file('image')->storeAs($filePath, $fileName);
+            } else {
+                $url = $image->url;
+            }
             $image->update(array_merge($request->validated(), ['url' => $url]));
         } else {
             $image->update($request->validated());

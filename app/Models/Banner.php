@@ -29,6 +29,6 @@ class Banner extends Model
 
     public function image()
     {
-        return $this->belongsTo(image::class);
+        return $this->belongsTo(Image::class);
     }
 }
