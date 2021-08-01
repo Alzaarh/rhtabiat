@@ -9,9 +9,9 @@ class VerifyZarinpalService
     public function handle(string $authority, int $amount): array
     {
         $jsonData = json_encode([
-            'MerchantID' => config('app.zarinpal.key'),
-            'Authority' => $authority,
-            'Amount' => $amount,
+            'merchant_id' => config('app.zarinpal.key'),
+            'authority' => $authority,
+            'amount' => $amount,
         ]);
         $ch = curl_init(config('app.zarinpal.verify_url'));
         curl_setopt($ch, CURLOPT_USERAGENT, 'ZarinPal Rest Api v4');

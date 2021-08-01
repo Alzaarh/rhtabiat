@@ -66,13 +66,13 @@ class GuestOrderController extends Controller
             $order->guestDetail()->create($request->validated());
             $order->items()->attach($orderItems);
             $result = $this->initiateWithZarinpal->handle($order->price);
-            if ($result['Status'] == 100) {
+            if (empty($result['errors']) && $result['data']['code'] == 100) {
                 $order->transactions()->create([
                     'amount' => $order->price,
-                    'authority' => $result['Authority'],
+                    'authority' => $result['data']['authority'],
                 ]);
             }
-            return $result['Authority'];
+            return $result['data']['authority'];
         });
 
         return response()->json([

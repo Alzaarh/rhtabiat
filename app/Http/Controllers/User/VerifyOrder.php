@@ -27,16 +27,7 @@ class VerifyOrder extends Controller
         }
         $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
 
-        if ($result['Status'] == 101) {
-            return response()->json([
-                'message' => 'تراکنش با موفقیت انجام شد',
-                'data' => [
-                    'code' => 1,
-                ],
-            ]);
-        }
-
-        if ($result['Status'] == 100) {
+        if ($result['data']['code'] == 100) {
             DB::transaction(function () use ($transaction, $result) {
                 $transaction->verify($result['RefID']);
                 $transaction->order->verify();
@@ -57,7 +48,14 @@ class VerifyOrder extends Controller
                     'code' => 1,
                 ],
             ]);
+            return response()->json([
+                'message' => 'تراکنش با موفقیت انجام شد',
+                'data' => [
+                    'code' => 1,
+                ],
+            ]);
         }
+            
 
         DB::transaction(function () use ($transaction) {
             $transaction->reject();

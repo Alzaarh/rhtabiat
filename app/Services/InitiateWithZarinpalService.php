@@ -10,10 +10,10 @@ class InitiateWithZarinpalService
     {
         $jsonData = json_encode(
             [
-                'MerchantID' => config('app.zarinpal.key'),
-                'Amount' => $amount,
-                'CallbackURL' => config('app.zarinpal.callback_url'),
-                'Description' => 'خرید از فروشگاه '.config('app.name'),
+                'merchant_id' => config('app.zarinpal.key'),
+                'amount' => $amount,
+                'callback_url' => config('app.zarinpal.callback_url'),
+                'description' => 'خرید از فروشگاه '.config('app.name'),
             ]
         );
         $ch = curl_init(config('app.zarinpal.initiate_url'));
