@@ -32,76 +32,44 @@ class ImageController extends Controller
 
     public function store(StoreImageRequest $request)
     {
-//        $parts = explode('/', $request->url);
-//        $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
-//        if (!file_exists(storage_path('app/public/' . $dir))) {
-//            mkdir(storage_path('app/public/' . $dir), 0775, true);
-//        }
-//        if (\Image::make($request->image)->filesize() > 2 * 1024) {
-//            \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
-//        } else {
-//            file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
-//        }
-//        $url = $request->image->store('images');
-        // if user enters url use it otherwise generate random url
-        if ($request->has('url')) {
-            $urlSegments = explode('/', $request->input('url'));
-            $filePath = implode('/', array_slice($urlSegments, 0, count($urlSegments) - 1));
-            $fileName = $urlSegments[count($urlSegments) - 1];
-            $url = $request->file('image')->storeAs($filePath, $fileName);
-        } else {
-            $url = $request->file('image')->store('images');
-        }
+        $image = new Image($request->validated());
+        $image->resize();
+        $image->upload();
+        $image->save();
 
-        Image::create(array_merge($request->validated(), ['url' => $url]));
         return response()->json(['message' => 'پیوست با موفقیت ایجاد شد'], 201);
     }
 
     public function update(UpdateImageRequest $request, Image $image)
     {
+        $image->update($request->only([
+            'title',
+            'alt',
+            'short_desc',
+            'desc',
+            'group',
+        ]));
+
         if ($request->hasFile('image')) {
-            if (!$image->is_server_serve) {
-                abort(403);
-            }
-//            Storage::delete($image->url);
-//            $parts = explode('/', $request->url);
-//            $dir = implode('/', array_splice($parts, 0, count($parts) - 1));
-//            if (!file_exists(storage_path('app/public/' . $dir))) {
-//                mkdir(storage_path('app/public/' . $dir), 0775, true);
-//            }
-//            if (\Image::make($request->image)->filesize() > 2 * 1024) {
-//                \Image::make($request->image)->resize(\Image::make($request->image)->width() * 0.5, \Image::make($request->image)->height() * 0.5)->save(storage_path('app/public/') . $request->url);
-//            } else {
-//                file_put_contents(storage_path('app/public/') . $request->url, $request->image->get());
-//            }
-            if ($request->has('url')) {
-                Storage::delete($image->url);
-                $urlSegments = explode('/', $request->input('url'));
-                $filePath = implode('/', array_slice($urlSegments, 0, count($urlSegments) - 1));
-                $fileName = $urlSegments[count($urlSegments) - 1];
-                $url = $request->file('image')->storeAs($filePath, $fileName);
-            } else {
-                $url = $image->url;
-            }
-            $image->update(array_merge($request->validated(), ['url' => $url]));
-        } else {
-            $image->update($request->validated());
+            $image->image = $request->file('image');
+            $image->deleteImage();
+            $image->resize();
+            $image->url = $request->input('url') ?? $image->url;
+            $image->upload();
+            $image->save();
         }
+
         return response()->json(['message' => 'پیوست با موفقیت به روزرسانی شد']);
     }
 
     public function destroy(Image $image)
     {
-        if (
-            Banner::where('image_id', $image->id)->exists() ||
-            ProductCategory::where('image_id', $image->id)->exists() ||
-            Product::where('image_id', $image->id)->exists() ||
-            Article::where('image_id', $image->id)->exists()
-        ) {
+        if ($image->isInUse()) {
             return response()->json(['message' => 'پیوست در حال استفاده است'], 400);
         }
-        Storage::delete($image->url);
+        $image->deleteImage();
         $image->delete();
+
         return response()->json(['message' => 'پیوست با موفقیت حذف شد']);
     }
 }

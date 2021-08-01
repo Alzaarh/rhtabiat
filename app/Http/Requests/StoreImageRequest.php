@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Image;
 
 class StoreImageRequest extends FormRequest
 {
@@ -21,14 +22,6 @@ class StoreImageRequest extends FormRequest
 
     public function attributes()
     {
-        return [
-            'alt' => 'متن جایگزین',
-            'title' => 'عنوان',
-            'short_desc' => 'توضیح کوتاه',
-            'desc' => 'توضیح',
-            'url' => 'لینک پیوست',
-            'image' => 'فایل پیوست',
-            'group' => 'دسته بندی',
-        ];
+        return Image::fieldNames();
     }
 }
