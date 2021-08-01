@@ -50,7 +50,7 @@ class ProductService
             }
         }
         return DB::transaction(function () use ($data) {
-            $product = Product::create($data);
+            $product = Product::create(array_merge($data, ['price' => round($data['items'][0]['price']/$data['items'][0]['weight'])]));
             $product->items()->createMany($data['items']);
             return $product;
         });

@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $query = Product::latest();
+        $query = Product::query();
 
         request()->whenFilled('sort_by', function ($sortBy) use ($query) {
             switch ($sortBy) {
