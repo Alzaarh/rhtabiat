@@ -11,7 +11,7 @@ class InitiateWithZarinpalService
         $jsonData = json_encode(
             [
                 'merchant_id' => config('app.zarinpal.key'),
-                'amount' => $amount,
+                'amount' => $amount * 10,
                 'callback_url' => config('app.zarinpal.callback_url'),
                 'description' => 'خرید از فروشگاه '.config('app.name'),
             ]
