@@ -14,7 +14,8 @@ class CalcOrderDeliveryCostService
         $weight += 0.15;
         if ($price < Order::DELIVERY_THRESHOLD) {
             $cost = $provinceId === Order::WITHIN_PROVINCE ? $weight * 9800 : $weight * 14000;
+            return ($cost + 2500) * 1.1;
         }
-        return ($cost + 2500) * 1.1;
+        return 0;
     }
 }

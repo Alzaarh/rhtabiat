@@ -26,7 +26,7 @@ class Order extends Model
         5 => 'رد شده',
     ];
     public const WITHIN_PROVINCE = 11;
-    public const DELIVERY_THRESHOLD = 350000;
+    public const DELIVERY_THRESHOLD = 450000;
     protected $guarded = [];
 
     protected static function booted()
