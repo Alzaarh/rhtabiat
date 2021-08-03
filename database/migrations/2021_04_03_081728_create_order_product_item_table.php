@@ -20,7 +20,7 @@ class CreateOrderProductItemTable extends Migration
             $table->integer('price');
             $table->integer('off');
             $table->integer('quantity');
-            $table->integer('weight');
+            $table->float('weight');
             $table->primary(['order_id', 'product_item_id']);
         });
     }
