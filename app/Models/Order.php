@@ -48,7 +48,7 @@ class Order extends Model
         if (filled($this->discountCode)) {
             $off = $this->discountCode->calc($priceWithoutOff);
         }
-        return $price - $off + $this->delivery_cost;
+        return $price - $off + $this->delivery_cost + $this->package_price;
     }
 
     public function getProductsPriceAttribute()

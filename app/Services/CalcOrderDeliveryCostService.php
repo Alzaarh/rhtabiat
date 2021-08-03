@@ -8,7 +8,7 @@ use App\Models\Order;
 
 class CalcOrderDeliveryCostService
 {
-    public function handle(int $price, int $provinceId, int $weight): int
+    public function handle(int $price, int $provinceId, float $weight): int
     {
         $cost = 0;
         $weight += 0.15;
