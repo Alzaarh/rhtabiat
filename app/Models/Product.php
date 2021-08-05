@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Pishran\LaravelPersianSlug\HasPersianSlug;
 use Spatie\Sluggable\SlugOptions;
 use App\Models\Image;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
@@ -29,6 +30,13 @@ class Product extends Model
     protected $casts = [
         'is_best_selling' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('latest', function (Builder $builder) {
+            $builder->latest('updated_at');
+        });
+    }
 
     /**
      * price per 1 kilogram

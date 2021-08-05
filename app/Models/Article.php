@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Image;
+use Illuminate\Database\Eloquent\Builder;
 
 class Article extends Model
 {
@@ -25,7 +26,7 @@ class Article extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope('latest', function ($builder) {
+        static::addGlobalScope('latest', function (Builder $builder) {
             $builder->latest('updated_at');
         });
 
