@@ -65,7 +65,7 @@ class GuestOrderController extends Controller
             }
             $order->guestDetail()->create($request->validated());
             $order->items()->attach($orderItems);
-            $result = $this->initiateWithZarinpal->handle($order->price);
+            $result = $this->initiateWithZarinpal->handle($order->price, $request->input('email', ''), $request->input('mobile'));
             if (empty($result['errors']) && $result['data']['code'] == 100) {
                 $order->transactions()->create([
                     'amount' => $order->price,

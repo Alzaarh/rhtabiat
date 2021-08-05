@@ -6,7 +6,7 @@ namespace App\Services;
 
 class InitiateWithZarinpalService
 {
-    public function handle(int $amount): array
+    public function handle(int $amount, string $userEmail, string $userMobile): array
     {
         $jsonData = json_encode(
             [
@@ -14,6 +14,7 @@ class InitiateWithZarinpalService
                 'amount' => $amount * 10,
                 'callback_url' => config('app.zarinpal.callback_url'),
                 'description' => 'خرید از فروشگاه '.config('app.name'),
+                'metadata' => ['email' => $userEmail, 'mobile' => $userMobile],
             ]
         );
         $ch = curl_init(config('app.zarinpal.initiate_url'));
