@@ -18,6 +18,15 @@ class Banner extends Model
         'home_mob_small' => 6,
     ];
 
+    /**
+     * used in form requests
+     * @var array
+     */
+    const VALIDATION_NAMES = [
+        'location' => 'موقعیت',
+        'link' => 'لینک',
+    ];
+
     public $timestamps = false;
 
     protected $guarded = [];

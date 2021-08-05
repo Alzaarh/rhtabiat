@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerResource;
 use App\Models\Banner;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\StoreBannerRequest;
+use App\Http\Requests\UpdateBannerRequest;
 
 class BannerController extends Controller
 {
@@ -14,34 +16,24 @@ class BannerController extends Controller
         return BannerResource::collection(Banner::all());
     }
 
-    public function store()
+    public function store(StoreBannerRequest $request)
     {
-        request()->validate([
-            'image_id' => 'required|exists:images,id',
-            'location' => ['required', Rule::in(Banner::LOCATIONS)]
-        ]);
-        Banner::create([
-            'image_id' => request()->image_id,
-            'location' => request()->location,
-        ]);
-        return response()->json(['message' => 'بنر با موفقیت ایجاد شد'], 201);
+        Banner::create($request->validated());
+
+        return response()->json(['message' => __('messages.banner.store')], 201);
     }
 
-    public function update(Banner $banner)
+    public function update(UpdateBannerRequest $request, Banner $banner)
     {
-        request()->validate([
-            'image_id' => 'required|exists:images,id',
-            'location' => ['required', Rule::in(Banner::LOCATIONS)],
-        ]);
-        $banner->image_id = request()->image_id;
-        $banner->location = request()->location;
-        $banner->save();
-        return response()->json(['message' => 'بنر با موفقیت به روز رسانی شد']);
+        $banner->update($request->validated());
+
+        return response()->json(['message' => __('messages.banner.update')]);
     }
 
     public function destroy(Banner $banner)
     {
         $banner->delete();
-        return response()->json(['message' => 'بنر با موفقیت حذف شد']);
+
+        return response()->json(['message' => __('messages.banner.destroy')]);
     }
 }

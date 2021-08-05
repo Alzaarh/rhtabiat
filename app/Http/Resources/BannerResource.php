@@ -12,6 +12,7 @@ class BannerResource extends JsonResource
             'id' => $this->id,
             'image' => new ImageCollectionResource($this->image),
             'location' => $this->location,
+            'link' => $this->link,
         ];
     }
 }
