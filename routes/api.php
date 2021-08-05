@@ -98,7 +98,7 @@ Route::apiResource('banners', 'Shop\BannerController')->except(['index', 'show']
 Route::get('banners', 'Shop\BannerController@index');
 Route::get('banners/locations', 'Shop\IndexBannerLocation');
 
-Route::apiResource('discount-codes', 'Shop\DiscountCodeController')->middleware(['auth:admin', 'role:discount_generator']);
+Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware(['auth:admin', 'role:admin']);
 
 Route::apiResource('images', 'Shop\ImageController')->middleware(['auth:admin', 'role:writer']);
 
