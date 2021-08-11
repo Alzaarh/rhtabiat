@@ -47,4 +47,37 @@ class PromoCode extends Model
         return Jalalian::fromCarbon(Carbon::make($this->valid_date))
             ->format('%B %d %Y');
     }
+
+    /**
+     * check if promo code is expired
+     * @return bool
+     */
+    public function isExpired(): bool
+    {
+        return now()->greaterThan($this->valid_date);
+    }
+
+    /**
+     * calculate discount
+     * @param int $orderPrice
+     * @return int
+     */
+    public function evaluate(int $orderPrice): int
+    {
+        if ((int) $this->min > $orderPrice) {
+            abort(403, 'مبلغ خرید حداقل باید ' . $this->min . ' باشد');
+        }
+
+        $discountUsingPercent = (int) $this->off_percent * $orderPrice / 100;
+        $discountUsingValue = (int) $this->off_value;
+
+        $discountUsingPercent = (int) $this->max < $discountUsingPercent ? $this->max : $discountUsingPercent;
+        $discountUsingValue = (int) $this->max < $discountUsingValue ? $this->max : $discountUsingValue;
+
+        if ($discountUsingPercent > $discountUsingValue) {
+            return $discountUsingPercent;
+        } else {
+            return $discountUsingValue;
+        }
+    }
 }

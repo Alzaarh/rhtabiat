@@ -48,6 +48,10 @@ class GuestOrderController extends Controller
         $orderPackagePrice = Product::find(array_column($orderItems, 'product_id'))
             ->reduce(fn ($carry, $product) => $carry + $product->package_price, 0);
 
+        if ($request->has('promo_code')) {
+            $discount = $request->input('promo_code')->evaluate($orderPrice);
+        }
+
         $authority = DB::transaction(function () use ($request, $orderPrice, $orderWeight, $orderItems, $orderPackagePrice) {
             $order = Order::create([
                 'delivery_cost' => $this->calcDeliveryCost->handle(
@@ -55,7 +59,7 @@ class GuestOrderController extends Controller
                     $request->province_id,
                     $orderWeight
                 ),
-                'discount_code_id' => filled($request->discount_code) ? $request->discount_code->id : null,
+                'promo_code_id' => $request->has('promo_code') ? $request->input('promo_code')->id : null,
                 'package_price' => $orderPackagePrice,
             ]);
             if ($request->discount_code) {

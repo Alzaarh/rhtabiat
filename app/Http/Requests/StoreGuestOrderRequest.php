@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\DiscountCode;
 use App\Models\ProductItem;
+use App\Models\PromoCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreGuestOrderRequest extends FormRequest
@@ -21,6 +22,20 @@ class StoreGuestOrderRequest extends FormRequest
             'products' => ['required', 'array'],
             'products.*.id' => ['required', 'exists:product_items'],
             'products.*.quantity' => ['required', 'integer', 'min:1'],
+            'promo_code' => [
+                'string',
+                function ($fieldName, $fieldValue, $fail) {
+                    $promoCode = PromoCode::where('code', $fieldValue)
+                        ->where('user_only', false)
+                        ->first();
+
+                    if (!$promoCode || $promoCode->isExpired()) {
+                        $fail('کد تخفیف معتبر نیست');
+                    }
+
+                    $this->merge(['promo_code' => $promoCode]);
+                },
+            ],
             'discount_code' => [
                 function ($attr, $value, $fail) {
                     $code = DiscountCode::where('code', $value)
@@ -47,6 +62,7 @@ class StoreGuestOrderRequest extends FormRequest
     {
         return [
             'mobile' => 'شماره همراه',
+            'promo_code' => 'کد تخفیف',
         ];
     }
 }

@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
                 case 401:
                     return jsonResponse(['message' => 'Login first'], 401);
                 case 403:
-                    return jsonResponse(['message' => 'Forbidden'], 403);
+                    return jsonResponse(['message' => $e->getMessage() ?? 'Forbidden'], 403);
 
                 case 429:
                     return response()->json(['message' => 'لطفا یک دقیقه دیگر امتحان کنید'], 429);

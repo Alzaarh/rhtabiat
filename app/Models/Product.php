@@ -93,7 +93,11 @@ class Product extends Model
         return $query->whereHas('items', fn($query) => $query->where('price', '<=', $price));
     }
 
-    public function scopeHasDiscount($query)
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeHasDiscount(Builder $query): Builder
     {
         return $query->where('off', '>', 0);
     }
