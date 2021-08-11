@@ -175,4 +175,14 @@ class Product extends Model
     {
         return $this->belongsTo(Image::class);
     }
+
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeBestSelling(Builder $query): Builder
+    {
+        return $query->whereIsBestSelling(true);
+    }
 }

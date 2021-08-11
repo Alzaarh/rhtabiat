@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\IndexProduct;
 use App\Http\Resources\SingleProductResource;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = Product::query();
 
@@ -46,6 +47,10 @@ class ProductController extends Controller
             'category_id',
             fn ($categoryId) => $query->whereCategoryId($categoryId)
         );
+
+        if ($request->query('only_best_selling') === 'true') {
+            $query->bestSelling();
+        }
 
         return IndexProduct::collection(
             $query->paginate(request()->count)
