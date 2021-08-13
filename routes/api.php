@@ -100,7 +100,8 @@ Route::get('banners/locations', 'Shop\IndexBannerLocation');
 
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware(['auth:admin', 'role:admin']);
 
-Route::apiResource('images', 'Shop\ImageController')->middleware(['auth:admin', 'role:writer']);
+Route::get('images/{image}', 'Shop\ImageController@show');
+Route::apiResource('images', 'Shop\ImageController')->except('show')->middleware(['auth:admin', 'role:writer']);
 
 Route::namespace('Shop')->group(
     function () {
