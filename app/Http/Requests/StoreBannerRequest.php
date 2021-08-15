@@ -18,7 +18,7 @@ class StoreBannerRequest extends FormRequest
         return [
             'image_id' => 'required|exists:images,id',
             'location' => ['required', Rule::in(Banner::LOCATIONS)],
-            'link' => 'string|max:255|url',
+            'link' => 'string|max:255',
         ];
     }
 

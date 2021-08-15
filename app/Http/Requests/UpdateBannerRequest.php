@@ -18,7 +18,7 @@ class UpdateBannerRequest extends FormRequest
         return [
             'image_id' => 'exists:images,id',
             'location' => [Rule::in(Banner::LOCATIONS)],
-            'link' => 'string|max:255|url',
+            'link' => 'string|max:255',
         ];
     }
 
