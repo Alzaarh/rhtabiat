@@ -66,7 +66,6 @@ Route::namespace('Blog')->group(function () {
     Route::prefix('articles')->group(function () {
         Route::get('/', 'ArticleController@index');
         Route::get('/{article:slug}', 'ArticleController@show');
-        Route::get('/{article:slug}/related-products', 'GetArticleRelatedProducts');
         Route::get('/{article:slug}/related-articles', 'ArticleRelatedArticleController');
     });
 });
@@ -171,3 +170,6 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 // shop related endpoints
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
+
+// blog related endpoints
+Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedProductsController');
