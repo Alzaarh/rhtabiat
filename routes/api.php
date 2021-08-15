@@ -16,7 +16,6 @@ Route::prefix('products')->group(function () {
         Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
         Route::get('items', 'GetProductItems');
         Route::get('{product:slug}', 'ProductController@show');
-
     });
 });
 
@@ -124,49 +123,51 @@ Route::namespace('Admin')->group(
 );
 
 Route::post('verification-codes', 'User\VerificationCodeController@store')->middleware('throttle:1,1');
-Route::namespace('User')->group(function () {
-    Route::prefix('users')->group(
-        function () {
-            Route::get('self', 'UserGetSelf')->middleware('auth:user');
-            Route::post('/', 'UserController@store');
-            Route::post('login', 'LoginUser');
-        }
-    );
-    Route::prefix('carts')->group(
-        function () {
-            Route::post('products', 'CartItemController@store')
-                ->middleware('auth:user');
-            Route::get('products', 'CartItemController@index')
-                ->middleware('auth:user');
-            Route::patch('products/{cartProduct}', 'CartItemController@update')
-                ->middleware('auth:user');
-            Route::delete('products/{cartProduct}', 'CartItemController@destroy')
-                ->middleware('auth:user');
-        }
-    );
+Route::namespace('User')->group(
+    function () {
+        Route::prefix('users')->group(
+            function () {
+                Route::get('self', 'UserGetSelf')->middleware('auth:user');
+                Route::post('/', 'UserController@store');
+                Route::post('login', 'LoginUser');
+            }
+        );
+        Route::prefix('carts')->group(
+            function () {
+                Route::post('products', 'CartItemController@store')
+                    ->middleware('auth:user');
+                Route::get('products', 'CartItemController@index')
+                    ->middleware('auth:user');
+                Route::patch('products/{cartProduct}', 'CartItemController@update')
+                    ->middleware('auth:user');
+                Route::delete('products/{cartProduct}', 'CartItemController@destroy')
+                    ->middleware('auth:user');
+            }
+        );
 
-    Route::prefix('user-details')->group(
-        function () {
-            Route::put('/', 'UserDetailController@update')
-                ->middleware('auth:user');
-            Route::put('passwords', 'UpdateUserPassword')->middleware('auth:user');
-        }
-    );
+        Route::prefix('user-details')->group(
+            function () {
+                Route::put('/', 'UserDetailController@update')
+                    ->middleware('auth:user');
+                Route::put('passwords', 'UpdateUserPassword')->middleware('auth:user');
+            }
+        );
 
-    Route::apiResource('addresses', 'AddressController')
-        ->middleware('auth:user');
+        Route::apiResource('addresses', 'AddressController')
+            ->middleware('auth:user');
 
-    Route::prefix('transactions')->group(
-        function () {
-            Route::post('/', 'TransactionController@store');
-            Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
-        }
-    );
+        Route::prefix('transactions')->group(
+            function () {
+                Route::post('/', 'TransactionController@store');
+                Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
+            }
+        );
 
-    Route::get('discount-codes/evaluate', 'EvaluateDiscountCode');
-
-    Route::post('messages', 'MessageController@store');
-}
+        Route::get('discount-codes/evaluate', 'EvaluateDiscountCode');
+    }
 );
 
 Route::get('admins/self', 'Admin\AdminController@getSelf')->middleware('auth:admin');
+
+Route::post('messages', 'User\MessageController@store');
+Route::apiResource('messages', 'User\MessageController')->only('index', 'show')->middleware('auth:admin');

@@ -6,11 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMessageRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
-
     public function rules()
     {
         return [
@@ -24,7 +19,10 @@ class StoreMessageRequest extends FormRequest
     public function attributes()
     {
         return [
+            'name' => 'نام',
             'phone' => 'شماره تماس',
+            'email' => 'آدرس ایمیل',
+            'message' => 'پیام',
         ];
     }
 }

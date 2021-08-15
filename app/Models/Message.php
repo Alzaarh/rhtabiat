@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Morilog\Jalali\Jalalian;
 
 /**
  * App\Models\Message
@@ -33,4 +35,9 @@ class Message extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function getCreatedAtAttribute(string $createdAt): string
+    {
+        return Jalalian::fromCarbon(Carbon::make($createdAt))->format('Y-m-d H:i:s');
+    }
 }
