@@ -48,10 +48,6 @@ class PromoCode extends Model
             ->format('%B %d %Y');
     }
 
-    /**
-     * check if promo code is expired
-     * @return bool
-     */
     public function isExpired(): bool
     {
         return now()->greaterThan($this->valid_date);
@@ -79,5 +75,10 @@ class PromoCode extends Model
         } else {
             return $discountUsingValue;
         }
+    }
+
+    public function IsPriceGraterThanMin(int $orderCost): bool
+    {
+        return $orderCost >= $this->min;
     }
 }

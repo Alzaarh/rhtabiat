@@ -97,8 +97,6 @@ Route::apiResource('banners', 'Shop\BannerController')->except(['index', 'show']
 Route::get('banners', 'Shop\BannerController@index');
 Route::get('banners/locations', 'Shop\IndexBannerLocation');
 
-Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware(['auth:admin', 'role:admin']);
-
 Route::get('images/{image}', 'Shop\ImageController@show');
 Route::apiResource('images', 'Shop\ImageController')->except('show')->middleware(['auth:admin', 'role:writer']);
 
@@ -162,8 +160,6 @@ Route::namespace('User')->group(
                 Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
             }
         );
-
-        Route::get('discount-codes/evaluate', 'EvaluateDiscountCode');
     }
 );
 
@@ -171,3 +167,7 @@ Route::get('admins/self', 'Admin\AdminController@getSelf')->middleware('auth:adm
 
 Route::post('messages', 'User\MessageController@store');
 Route::apiResource('messages', 'User\MessageController')->only('index', 'show')->middleware('auth:admin');
+
+// shop related endpoints
+Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
+Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
