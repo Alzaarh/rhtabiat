@@ -18,4 +18,9 @@ class ReturnRequest extends Model
         'order_id',
         'reason',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

@@ -90,8 +90,6 @@ Route::prefix('article-categories')->group(function () {
     });
 });
 
-Route::apiResource('return-requests', 'Shop\ReturnRequestController');
-
 Route::apiResource('banners', 'Shop\BannerController')->except(['index', 'show'])->middleware(['auth:admin', 'role:admin']);
 Route::get('banners', 'Shop\BannerController@index');
 Route::get('banners/locations', 'Shop\IndexBannerLocation');
@@ -170,6 +168,7 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 // shop related endpoints
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
+Route::apiResource('return-requests', 'Shop\ReturnRequestController');
 
 // blog related endpoints
 Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedProductsController');

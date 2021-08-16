@@ -12,42 +12,26 @@
 
 namespace App\Models{
 /**
- * App\Models\Article
+ * App\Models\ReturnRequest
  *
  * @property int $id
- * @property string $title
- * @property string $slug
- * @property string $short_desc
- * @property int|null $image_id
- * @property string $body
- * @property mixed|null $meta
- * @property int $is_verified
- * @property int $article_category_id
- * @property int $admin_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Admin $author
- * @property-read \App\Models\ArticleCategory $category
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
- * @property-read int|null $comments_count
- * @property-read \App\Models\Image|null $image
- * @method static \Database\Factories\ArticleFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Article newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Article newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Article query()
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereArticleCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereBody($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereImageId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereIsVerified($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereMeta($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereShortDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Article whereUpdatedAt($value)
+ * @property string $name
+ * @property string $phone
+ * @property int $order_id
+ * @property string|null $email
+ * @property string $reason
+ * @property string $created_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ReturnRequest whereReason($value)
  */
-	class Article extends \Eloquent {}
+	class ReturnRequest extends \Eloquent {}
 }
 

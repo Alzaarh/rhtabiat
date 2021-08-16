@@ -9,6 +9,18 @@ use App\Models\Order;
 
 class ReturnRequestController extends Controller
 {
+    public function index()
+    {
+        return response()->json(['data' => ReturnRequest::paginate(10)]);
+    }
+
+    public function show(ReturnRequest $returnRequest)
+    {
+        $returnRequest->load('order.items', 'order.guestDetail');
+
+        return response()->json(['data' => $returnRequest]);
+    }
+
     public function store()
     {
         request()->validate([
@@ -29,7 +41,7 @@ class ReturnRequestController extends Controller
             'email' => ['email', 'max:255'],
             'reason' => ['required', 'string', 'max:64000'],
         ]);
-        
+
         ReturnRequest::create(request()->all());
         return response()->json(['message' => 'درخواست مرجوعی با موفقیت ثبت شد'], 201);
     }
