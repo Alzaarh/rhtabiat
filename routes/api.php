@@ -55,7 +55,7 @@ Route::prefix('orders')->group(function () {
     Route::get('status', 'User\GetOrderStatus');
     Route::post('admins', 'Admin\OrderController@store')->middleware(['auth:admin', 'role:admin']);
 });
-Route::apiResource('orders', 'User\OrderController')->except(['store', 'destroy'])->middleware('auth:admin');
+
 Route::patch('orders/{order}/reject', 'User\OrderController@reject');
 
 Route::namespace('Blog')->group(function () {
@@ -169,6 +169,14 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
 Route::apiResource('return-requests', 'Shop\ReturnRequestController');
+Route::prefix('orders')->middleware('auth:admin')->group(function () {
+    Route::patch('{order}/status', 'Shop\UpdateOrderStatusController');
+    Route::patch('{order}/delivery-code', 'Shop\UpdateOrderDeliveryCodeController');
+    Route::patch('{order}/reject', 'Shop\RejectOrderController');
+    Route::get('', 'Shop\OrderController@index');
+    Route::get('{order}', 'Shop\OrderController@show');
+});
+
 
 // blog related endpoints
 Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedProductsController');

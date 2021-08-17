@@ -2,22 +2,27 @@
 
 namespace App\Models;
 
+use App\Scopes\LatestScope;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Morilog\Jalali\Jalalian;
 
 class Order extends Model
 {
     use HasFactory;
 
-    public const STATUS = [
+    const STATUS = [
         'not_paid' => 1,
         'being_processed' => 2,
         'in_post_office' => 3,
         'delivered' => 4,
         'rejected' => 5,
     ];
+
     public const STATUS_FA = [
         1 => 'در انتظار پرداخت',
         2 => 'در حال پردازش',
@@ -31,6 +36,8 @@ class Order extends Model
 
     protected static function booted()
     {
+        static::addGlobalScope(new LatestScope);
+
         static::creating(function ($order) {
             if (!isset($order->status)) {
                 $order->status = static::STATUS['not_paid'];
@@ -43,8 +50,8 @@ class Order extends Model
     public function getPriceAttribute(): int
     {
         $off = 0;
-        $price = $this->items->reduce(fn($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
-        $priceWithoutOff = $this->items->reduce(fn($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
+        $price = $this->items->reduce(fn ($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
+        $priceWithoutOff = $this->items->reduce(fn ($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
         if (filled($this->discountCode)) {
             $off = $this->discountCode->calc($priceWithoutOff);
         }
@@ -54,7 +61,7 @@ class Order extends Model
     public function getProductsPriceAttribute()
     {
         return $this->products->reduce(
-            fn($carry, $product) => $product->pivot->price *
+            fn ($carry, $product) => $product->pivot->price *
                 (100 - $product->pivot->off) / 100 *
                 $product->pivot->quantity + $carry,
             0
@@ -131,8 +138,92 @@ class Order extends Model
         }
     }
 
-    public function getCreatedAtFaAttribute()
+    /**
+     * Convert created at column to Persian date.
+     *
+     * @param Carbon $createdAt
+     * @return string
+     */
+    public function getCreatedAtAttribute(string $createdAt): string
     {
-        return Jalalian::fromCarbon($this->created_at)->format('Y/m/d');
+        return Jalalian::fromCarbon(Carbon::make($createdAt))->format('Y/m/d');
+    }
+
+    /**
+     * Translate status code to persian text.
+     *
+     * @return string
+     */
+    public function translateStatus(): string
+    {
+        switch ($this->status) {
+            case 1:
+                return 'در انتظار پرداخت';
+            case 2:
+                return 'در حال پردازش';
+            case 3:
+                return 'تحویل به شرکت پست';
+            case 4:
+                return 'تحویل به مشتری';
+            case 5:
+                return 'رد شده';
+            default:
+                return '';
+        }
+    }
+
+    /**
+     * Search through orders by order code.
+     *
+     * @param Builder $builder
+     * @param string $orderCode
+     * @return Builder
+     */
+    public function scopeSearch(Builder $builder, string $orderCode): Builder
+    {
+        return $builder->where('code', 'like', '%' . $orderCode . '%');
+    }
+
+    /**
+     * Filter orders by status.
+     *
+     * @param Builder $builder
+     * @param integer $status
+     * @return Builder
+     */
+    public function scopeFilter(Builder $builder, int $status): Builder
+    {
+        return $builder->whereStatus($status);
+    }
+
+    /**
+     * order is purchased by user.
+     *
+     * @return BelongsTo
+     */
+    public function purchasedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'userId');
+    }
+
+    /**
+     * order is purchased by guest.
+     *
+     * @return BelongsTo
+     */
+    public function purchasedByGuest(): HasOne
+    {
+        return $this->hasOne(GuestOrder::class, 'order_id');
+    }
+
+    /**
+     * Update order status to rejected.
+     *
+     * @return void
+     */
+    public function reject(): void
+    {
+        $this->status = self::STATUS['rejected'];
+        $this->save();
     }
 }

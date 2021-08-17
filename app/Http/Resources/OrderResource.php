@@ -13,14 +13,13 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'price' => $this->price,
-            'discount_code' => $this->discountCode,
-            'status_fa' => Order::STATUS_FA[$this->status],
+            // 'discount_code' => $this->discountCode,
+            'status' => $this->translateStatus(),
             'products' => ProductItemResource::collection($this->whenLoaded('items')),
-            'user' => $this->user,
+            'purchasedByGuest' => new GuestResource($this->whenLoaded('purchasedByGuest')),
             'delivery_cost' => $this->delivery_cost,
             'package_price' => $this->package_price,
             'created_at' => $this->created_at,
-            'created_at_fa' => $this->created_at_fa,
             'updated_at' => $this->updated_at,
         ];
     }

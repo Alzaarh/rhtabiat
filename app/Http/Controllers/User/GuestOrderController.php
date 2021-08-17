@@ -37,12 +37,12 @@ class GuestOrderController extends Controller
         $orderItems = $this->validateOrder->handle($request->products);
         $orderPrice = array_reduce(
             $orderItems,
-            fn($c, $i) => $i['price'] * (100 - $i['off']) / 100 * $i['quantity'] + $c,
+            fn ($c, $i) => $i['price'] * (100 - $i['off']) / 100 * $i['quantity'] + $c,
             0
         );
         $orderWeight = array_reduce(
             $orderItems,
-            fn($c, $i) => $i['weight'] * $i['quantity'] + $c,
+            fn ($c, $i) => $i['weight'] * $i['quantity'] + $c,
             0
         );
         $orderPackagePrice = Product::find(array_column($orderItems, 'product_id'))
