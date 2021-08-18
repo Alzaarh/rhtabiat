@@ -12,7 +12,6 @@ Route::prefix('products')->group(function () {
         Route::get('best-selling', 'IndexBestSellingProduct');
         Route::get('specials', 'IndexSpecialProduct');
         Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
-        Route::get('items', 'GetProductItems');
     });
 });
 
@@ -177,6 +176,7 @@ Route::prefix('orders')->namespace('Shop')->group(function () {
 Route::post('products', 'Shop\ProductController@store')->middleware('auth:admin');
 Route::get('products', 'Shop\ProductController@index');
 Route::get('products/units', 'Shop\GetProductUnitsController');
+Route::get('products/items', 'Shop\GetProductItemsController');
 Route::get('products/{product:slug}', 'Shop\ProductController@show')->name('product.show');
 Route::prefix('return-requests')->namespace('Shop')->group(function () {
     Route::post('/', 'ReturnRequestController@store');

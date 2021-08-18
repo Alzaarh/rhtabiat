@@ -57,6 +57,11 @@ class Product extends Model
         return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
     /*
 
     #--------------------------------------------------------------------------
@@ -186,12 +191,7 @@ class Product extends Model
 
     public function getAvgScoreAttribute()
     {
-        return $this->comments()->count() > 0 ? $this->comments()->avg('score') : 0;
-    }
-
-    public function comments()
-    {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->comments()->count() > 0 ? round($this->comments()->avg('score')) : 0;
     }
 
     public function scopeWherePriceIsGreater($query, $price)

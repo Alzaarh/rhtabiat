@@ -30,9 +30,12 @@ class ProductResource extends JsonResource
             'is_best_selling' => $this->getIsBestSelling(),
             'package_price' => $this->getPackagePrice(),
             'unit' => $this->getUnitTranslation(),
+            // TODO: refactor this.
+            'avg_score' => $this->avg_score,
             'image' => new ImageResource($this->whenLoaded('image')),
             'category' => new ProductCategoryResource($this->whenLoaded('category')),
             'items' => $this->when(isset($items), $items),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'createdAt' => $this->getCreatedAt(),
         ];
     }
