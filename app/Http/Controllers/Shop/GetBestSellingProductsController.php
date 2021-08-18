@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\IndexProduct;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 
-class IndexBestSellingProduct extends Controller
+class GetBestSellingProductsController
 {
     public function __invoke()
     {
-        return IndexProduct::collection(
+        return ProductResource::collection(
             Product::whereIsBestSelling(true)
                 ->take(request()->query('count', 10))
                 ->get()

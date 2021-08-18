@@ -40,6 +40,9 @@ return [
     'product' => [
 
         'store' => 'محصول با موفقیت ایجاد شد',
+
+        'destroy' => 'محصول با موفقیت حذف شد',
+
     ],
 
     'returnRequest' => [

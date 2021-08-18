@@ -11,21 +11,16 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                'max:255',
-                Rule::unique('products')->ignore($this->product),
-            ],
+            'name' => 'string|max:255',
             'slug' => [
-                'required',
                 'string',
                 'max:255',
                 Rule::unique('products')->ignore($this->product),
             ],
-            'category_id' => 'required|exists:product_categories,id',
-            'short_desc' => 'required|max:2000',
-            'desc' => 'required',
-            'image_id' => 'required|exists:images,id',
+            'category_id' => 'exists:product_categories,id',
+            'short_desc' => 'string|max:2000',
+            'desc' => 'string',
+            'image_id' => 'exists:images,id',
             'meta_tags' => 'string',
             'off' => 'integer|between:0,99',
             'has_container' => 'required|boolean',
@@ -39,7 +34,6 @@ class UpdateProductRequest extends FormRequest
                 Rule::in([ProductItem::ZINC_CONTAINER, ProductItem::PLASTIC_CONTAINER]),
             ],
             'is_best_selling' => 'boolean',
-            'price' => 'integer|min:1',
             'package_price' => 'integer|min:0',
         ];
     }

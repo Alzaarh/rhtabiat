@@ -14,7 +14,7 @@ class ProductCategory extends Model
 
     protected static function booted()
     {
-        static::saving(fn($category) => $category->slug = makeSlug($category->name));
+        static::saving(fn ($category) => $category->slug = makeSlug($category->name));
     }
 
     public function children()
@@ -27,11 +27,6 @@ class ProductCategory extends Model
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    public function products()
-    {
-        return $this->hasMany(Product::class, 'category_id');
-    }
-
     public function image()
     {
         return $this->belongsTo(Image::class);
@@ -40,5 +35,18 @@ class ProductCategory extends Model
     public function imageMobile()
     {
         return $this->belongsTo(Image::class);
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Relationships
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'category_id');
     }
 }

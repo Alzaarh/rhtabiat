@@ -10,10 +10,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Morilog\Jalali\Jalalian;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     /*
 
@@ -39,6 +41,19 @@ class Product extends Model
 
     protected $casts = ['is_best_selling' => 'boolean'];
 
+    protected $fillable = [
+        'name',
+        'slug',
+        'short_desc',
+        'desc',
+        'image_id',
+        'meta_tags',
+        'off',
+        'is_best_selling',
+        'package_price',
+        'unit',
+    ];
+
     /*
 
     #--------------------------------------------------------------------------
@@ -60,6 +75,11 @@ class Product extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class);
     }
 
     /*
@@ -92,7 +112,7 @@ class Product extends Model
 
     public function getPrice(): int
     {
-        return $this->getAttribute('price') ?? $this->items()->first()->price / $this->items()->first()->weight;
+        return $this->items->first()->price / $this->items->first()->weight;
     }
 
     public function getOff(): int
@@ -152,56 +172,41 @@ class Product extends Model
     /*
 
     #--------------------------------------------------------------------------
-    # Methdos
+    # Other Stuff
     #--------------------------------------------------------------------------
 
     */
-
-    protected $guarded = [];
 
     protected static function booted()
     {
         static::addGlobalScope(new LatestScope);
     }
 
-    /**
-     * price per 1 kilogram
-     * @return int
-     */
-    public function getPriceAttribute(): int
+    public function scopeOrderByPrice(Builder $query, string $ascOrDesc): Builder
     {
-        $firstItem = $this->items()->first();
-        return round($firstItem->price / $firstItem->weight);
+        return $query->join('product_items', 'products.id', '=', 'product_items.product_id')
+            ->selectRaw('price / weight as basePrice')
+            ->orderBy('basePrice', $ascOrDesc);
     }
 
-    private function hasMultipleItems(): bool
+    public function scopeSearch(Builder $query, string $search)
     {
-        return $this->items()->count() > 1;
+        return $query->where('name', 'like', '%' . $search . '%');
     }
 
-    public function getMinPriceAttribute()
-    {
-        return $this->hasMultipleItems() ? $this->items()->reorder('price', 'asc')->value('price') : null;
-    }
+    /*
 
-    public function getMaxPriceAttribute()
-    {
-        return $this->hasMultipleItems() ? $this->items()->reorder('price', 'desc')->value('price') : null;
-    }
+    #--------------------------------------------------------------------------
+    # Methdos
+    #--------------------------------------------------------------------------
+
+    */
+
+
 
     public function getAvgScoreAttribute()
     {
         return $this->comments()->count() > 0 ? round($this->comments()->avg('score')) : 0;
-    }
-
-    public function scopeWherePriceIsGreater($query, $price)
-    {
-        return $query->whereHas('items', fn ($query) => $query->where('price', '>=', $price));
-    }
-
-    public function scopeWherePriceIsLess($query, $price)
-    {
-        return $query->whereHas('items', fn ($query) => $query->where('price', '<=', $price));
     }
 
     /**
@@ -213,10 +218,7 @@ class Product extends Model
         return $query->where('off', '>', 0);
     }
 
-    public function category()
-    {
-        return $this->belongsTo(ProductCategory::class);
-    }
+
 
     public function orders()
     {
@@ -228,17 +230,7 @@ class Product extends Model
         return $this->items->contains(fn ($item) => filled($item->container));
     }
 
-    public function scopeOrderByPrice(Builder $query, string $ascOrDesc): Builder
-    {
-        return $query->join('product_items', 'products.id', '=', 'product_items.product_id')
-            ->selectRaw('product_items.price / product_items.weight as basePrice')
-            ->orderBy('basePrice', $ascOrDesc);
-    }
 
-    public function scopeSearch(Builder $query, string $search): Builder
-    {
-        return $query->where('name', 'like', '%' . $search . '%');
-    }
 
     public function scopeOrderByScore($query)
     {
@@ -255,32 +247,9 @@ class Product extends Model
             ->orderBy('avg_score', 'desc');
     }
 
-    public function scopeWherePrice($query, string $op, int $value)
+    public function getSimilar(): Collection
     {
-        return $query->selectRaw('products.*')
-            ->distinct('products.id')
-            ->join(
-                'product_items',
-                'products.id',
-                '=',
-                'product_items.product_id'
-            )
-            ->where('product_items.price', $op, $value);
-    }
-
-    public function scopeWhereCategoryId($query, $id)
-    {
-        return $query->where('category_id', $id)
-            ->orWhereHas(
-                'category.parent',
-                fn ($query) => $query->whereId($id)
-            );
-    }
-
-    public function getSimilar()
-    {
-        return $this->whereCategoryId($this->category_id)
-            ->get();
+        return $this->whereCategoryId($this->category->id)->get();
     }
 
     /**

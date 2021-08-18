@@ -2,23 +2,19 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexProductRequest;
 use App\Http\Requests\StoreProductRequest;
-use App\Http\Resources\IndexProduct;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\SingleProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ProductController extends Controller
+class ProductController
 {
-    public function index(IndexProductRequest $request, ProductService $productService): ResourceCollection
+    public function index(IndexProductRequest $request, ProductService $productService)
     {
-        $query = Product::select('*')->with('image');
+        $query = Product::select('products.*')->with('image');
 
         $request->whenHas('sort_by', fn ($sortBy) => $productService->sortByKey($query, $sortBy));
 
@@ -40,14 +36,7 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    /**
-     * Create product with items.
-     *
-     * @param StoreProductRequest $request
-     * @param ProductService $productService
-     * @return JsonResponse
-     */
-    public function store(StoreProductRequest $request, ProductService $productService): JsonResponse
+    public function store(StoreProductRequest $request, ProductService $productService)
     {
         $productService->create($request->validated());
 
@@ -55,5 +44,19 @@ class ProductController extends Controller
             'statusCode' => '201',
             'message' => __('messages.product.store'),
         ], 201);
+    }
+
+    public function update(UpdateProductRequest $request, Product $product)
+    {
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return response()->json([
+            'statusCode' => '200',
+            'message' => __('messages.product.destroy'),
+        ]);
     }
 }

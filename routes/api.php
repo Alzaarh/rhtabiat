@@ -4,14 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('products')->group(function () {
     Route::namespace('Admin')->group(function () {
-        Route::put('admin/{product:id}', 'ProductController@update')->middleware(['auth:admin', 'role:admin']);
-        Route::delete('admin/{product:id}', 'ProductController@destroy')->middleware(['auth:admin', 'role:admin']);
     });
 
     Route::namespace('Shop')->group(function () {
-        Route::get('best-selling', 'IndexBestSellingProduct');
-        Route::get('specials', 'IndexSpecialProduct');
-        Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
     });
 });
 
@@ -173,11 +168,18 @@ Route::prefix('orders')->namespace('Shop')->group(function () {
         Route::get('{order}', 'OrderController@show');
     });
 });
-Route::post('products', 'Shop\ProductController@store')->middleware('auth:admin');
-Route::get('products', 'Shop\ProductController@index');
+Route::prefix('products')->namespace('Shop')->group(function () {
+    Route::get('/', 'ProductController@index');
+    Route::get('best-selling', 'GetBestSellingProductsController');
+    Route::get('specials', 'IndexSpecialProduct');
+    Route::get('{product:slug}/similar-products', 'GetSimilarProductsController');
+    Route::get('{product:slug}', 'ProductController@show')->name('product.show');
+    Route::post('/', 'ProductController@store')->middleware('auth:admin');
+    Route::put('admin/{product:id}', 'ProductController@update')->middleware('auth:admin');
+    Route::delete('{product:id}', 'ProductController@destroy')->middleware('auth:admin');
+});
 Route::get('products/units', 'Shop\GetProductUnitsController');
 Route::get('products/items', 'Shop\GetProductItemsController');
-Route::get('products/{product:slug}', 'Shop\ProductController@show')->name('product.show');
 Route::prefix('return-requests')->namespace('Shop')->group(function () {
     Route::post('/', 'ReturnRequestController@store');
     Route::get('/', 'ReturnRequestController@index')->middleware('auth:admin');
