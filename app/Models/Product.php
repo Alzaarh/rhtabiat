@@ -129,7 +129,7 @@ class Product extends Model
         return $this->desc;
     }
 
-    public function getMetaTags(): ?array
+    public function getMetaTags()
     {
         return json_decode($this->getAttribute('meta_tags'));
     }
