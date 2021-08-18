@@ -169,11 +169,6 @@ class Product extends Model
         return round($firstItem->price / $firstItem->weight);
     }
 
-    public function getMetaTagsAttribute($value)
-    {
-        return json_decode($value);
-    }
-
     private function hasMultipleItems(): bool
     {
         return $this->items()->count() > 1;

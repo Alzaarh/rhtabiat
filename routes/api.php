@@ -164,7 +164,6 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 // shop related endpoints
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
-Route::apiResource('return-requests', 'Shop\ReturnRequestController');
 Route::prefix('orders')->namespace('Shop')->group(function () {
     Route::get('delivery-cost', 'GetOrderDeliveryCostFormulaController');
     Route::middleware('auth:admin')->group(function () {
@@ -179,6 +178,10 @@ Route::post('products', 'Shop\ProductController@store')->middleware('auth:admin'
 Route::get('products', 'Shop\ProductController@index');
 Route::get('products/units', 'Shop\GetProductUnitsController');
 Route::get('products/{product:slug}', 'Shop\ProductController@show')->name('product.show');
+Route::prefix('return-requests')->namespace('Shop')->group(function () {
+    Route::post('/', 'ReturnRequestController@store');
+    Route::get('/', 'ReturnRequestController@index')->middleware('auth:admin');
+});
 
 // blog related endpoints
 Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedProductsController');

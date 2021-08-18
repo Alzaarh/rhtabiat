@@ -15,6 +15,19 @@ class Order extends Model
 {
     use HasFactory;
 
+    /*
+
+    #--------------------------------------------------------------------------
+    # Relationships
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
+
     const STATUS = [
         'not_paid' => 1,
         'being_processed' => 2,
