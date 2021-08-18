@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Morilog\Jalali\Jalalian;
@@ -12,7 +13,7 @@ class Image extends Model
     use HasFactory;
 
     protected $guarded = [];
-    
+
     protected static function booted()
     {
         static::saving(function (self $image) {
@@ -39,14 +40,24 @@ class Image extends Model
         ];
     }
 
+    /**
+     * Get created at column and convert it to Persian date.
+     *
+     * @return string
+     */
+    public function getCreatedAt(): string
+    {
+        return Jalalian::fromCarbon($this->created_at)->ago();
+    }
+
     public function getCreatedAtFaAttribute()
     {
-        return Jalalian::fromCarbon($this->created_at)->format('%B %d, %Y');
+        return Jalalian::fromCarbon(Carbon::make($this->getRawOriginal('created_at')))->format('%B %d, %Y');
     }
 
     public function getUpdatedAtFaAttribute()
     {
-        return Jalalian::fromCarbon($this->updated_at)->format('%B %d, %Y');
+        return Jalalian::fromCarbon(Carbon::make($this->getRawOriginal('created_at')))->format('%B %d, %Y');
     }
 
     public function banners()
@@ -73,7 +84,7 @@ class Image extends Model
     {
         return $this->hasMany(Article::class);
     }
-        
+
     /**
      * if image dimensions are greater than 1200 resize it to 1200
      *
@@ -86,7 +97,7 @@ class Image extends Model
         $newHeight = $image->height() > 1200 ? 1200 : $image->height();
         $this->image = $image->resize($newWidth, $newHeight);
     }
-    
+
     /**
      * save image to filesystem
      *
@@ -105,7 +116,7 @@ class Image extends Model
             $image->save(storage_path('app/public/') . $this->url);
         }
     }
-    
+
     /**
      * delete image from filesystem
      *
@@ -115,7 +126,7 @@ class Image extends Model
     {
         \Storage::delete($this->url);
     }
-    
+
     /**
      * check if image is in use
      *
@@ -124,10 +135,10 @@ class Image extends Model
     public function isInUse()
     {
         if (
-            $this->banners()->exists() || 
-            $this->productCategories()->exists() || 
+            $this->banners()->exists() ||
+            $this->productCategories()->exists() ||
             $this->productCategoriesMobile()->exists() ||
-            $this->products()->exists() || 
+            $this->products()->exists() ||
             $this->articles()->exists()
         ) {
             return true;

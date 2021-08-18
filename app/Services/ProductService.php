@@ -4,7 +4,11 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\ProductItem;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,18 +46,46 @@ class ProductService
         return $filteredProductCollection ?? $productCollection;
     }
 
-    public function create($data): Product
+    /**
+     * @param array $data
+     * @throws Exception
+     * @return Product
+     */
+    public function create(array $data): Product
     {
         if (isset($data['price'])) {
-            foreach ($data['items'] as &$item) {
-                $item['price'] = $item['weight'] * $data['price'];
-            }
+            $withCalculatedPrice = $this->calculateItemsPrice($data['items'], $data['price']);
         }
-        return DB::transaction(function () use ($data) {
-            $product = Product::create(array_merge($data, ['price' => round($data['items'][0]['price']/$data['items'][0]['weight'])]));
-            $product->items()->createMany($data['items']);
+        DB::beginTransaction();
+
+        try {
+            $product = Product::create(Arr::except($data, ['items', 'has_container']));
+            $product->items()->createMany(isset($withCalculatedPrice) ? $withCalculatedPrice : $data['items']);
+
+            DB::commit();
+
             return $product;
-        });
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
+    }
+
+    public function sortByKey(Builder $query, string $key): Builder
+    {
+        switch ($key) {
+            case 'lowest_price':
+                $query->orderByPrice('asc');
+                break;
+            case 'highest_price':
+                $query->orderByPrice('desc');
+                break;
+            case 'highest_rated':
+                // TODO
+        }
+
+        return $query;
     }
 
     public function update(array $data, Product $product): Product
@@ -112,5 +144,20 @@ class ProductService
             ->join('comments', 'products.id', '=', 'comments.commentable_id')
             ->groupBy('products.id')
             ->orderBy('avg_score', 'desc');
+    }
+
+    /**
+     * Calculate price for each item based on base price.
+     *
+     * @param array $items
+     * @param integer $basePrice
+     * @return Collection
+     */
+    private function calculateItemsPrice(array $items, int $basePrice): Collection
+    {
+        return collect($items)->map(function ($item) use ($basePrice) {
+            $item['price'] = $item['weight'] * $basePrice;
+            return $item;
+        });
     }
 }

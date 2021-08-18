@@ -4,13 +4,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('products')->group(function () {
     Route::namespace('Admin')->group(function () {
-        Route::post('/', 'ProductController@store')->middleware(['auth:admin', 'role:admin']);
         Route::put('admin/{product:id}', 'ProductController@update')->middleware(['auth:admin', 'role:admin']);
         Route::delete('admin/{product:id}', 'ProductController@destroy')->middleware(['auth:admin', 'role:admin']);
     });
 
     Route::namespace('Shop')->group(function () {
-        Route::get('/', 'ProductController@index');
         Route::get('best-selling', 'IndexBestSellingProduct');
         Route::get('specials', 'IndexSpecialProduct');
         Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
@@ -176,7 +174,9 @@ Route::prefix('orders')->middleware('auth:admin')->group(function () {
     Route::get('', 'Shop\OrderController@index');
     Route::get('{order}', 'Shop\OrderController@show');
 });
-
+Route::post('products', 'Shop\ProductController@store')->middleware('auth:admin');
+Route::get('products', 'Shop\ProductController@index');
+Route::get('products/{product:slug}', 'Shop\ProductController@show')->name('product.show');
 
 // blog related endpoints
 Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedProductsController');

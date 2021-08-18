@@ -14,10 +14,11 @@ class IndexProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'count' => 'integer|min:1|max:15',
-            'sortBy' => 'in:lowPrice,highPrice',
-            'minPrice' => 'integer|min:1',
-            'maxPrice' => 'integer|min:1|gt:minPrice'
+            'count' => 'integer|between:1,30',
+            'sort_by' => 'in:lowest_price,highest_price,highest_score',
+            'search' => 'string|between:1,30',
+            'best_selling' => 'in:true',
+            'featured' => 'in:true',
         ];
     }
 }

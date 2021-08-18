@@ -4,38 +4,167 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Pishran\LaravelPersianSlug\HasPersianSlug;
-use Spatie\Sluggable\SlugOptions;
 use App\Models\Image;
+use App\Scopes\LatestScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Morilog\Jalali\Jalalian;
 
 class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'meta_tags',
-        'off',
-        'image_id',
-        'short_desc',
-        'desc',
-        'category_id',
-        'is_best_selling',
-        'price',
-        'package_price',
-    ];
+    /*
 
-    protected $casts = [
-        'is_best_selling' => 'boolean',
+    #--------------------------------------------------------------------------
+    # Constants
+    #--------------------------------------------------------------------------
+
+    */
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Properties
+    #--------------------------------------------------------------------------
+
+    */
+
+    protected $casts = ['is_best_selling' => 'boolean'];
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Relationships
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function image()
+    {
+        return $this->belongsTo(Image::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Accessors and Mutators
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function getId(): int
+    {
+        return $this->getAttribute('id');
+    }
+
+    public function getName(): string
+    {
+        return $this->getAttribute('name');
+    }
+
+    public function getSlug(): string
+    {
+        return $this->getAttribute('slug');
+    }
+
+    public function getShortDescription(): string
+    {
+        return $this->getAttribute('short_desc');
+    }
+
+    public function getPrice(): int
+    {
+        return $this->getAttribute('price') ?? $this->items()->first()->price / $this->items()->first()->weight;
+    }
+
+    public function getOff(): int
+    {
+        return $this->getAttribute('off');
+    }
+
+    public function getIsBestSelling(): bool
+    {
+        return $this->getAttribute('is_best_selling');
+    }
+
+    public function getPackagePrice(): int
+    {
+        return (int) $this->getAttribute('package_price');
+    }
+
+    public function getUnitTranslation(): string
+    {
+        switch ($this->getAttribute('unit')) {
+            case 1:
+                return 'کیلوگرم';
+            case 2:
+                return 'مثقال';
+            case 3:
+                return 'عدد';
+            default:
+                return '';
+        }
+    }
+
+    public function getCreatedAt(): string
+    {
+        return Jalalian::fromCarbon(Carbon::make($this->getAttribute('created_at')))->ago();
+    }
+
+    public function getDescription(): string
+    {
+        return $this->desc;
+    }
+
+    public function getMetaTags(): ?array
+    {
+        return json_decode($this->getAttribute('meta_tags'));
+    }
+
+    public function getZincItems(): Collection
+    {
+        return $this->items->where('container', ProductItem::ZINC_CONTAINER);
+    }
+
+    public function getPlasticItems(): Collection
+    {
+        return $this->items->where('container', ProductItem::PLASTIC_CONTAINER);
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Methdos
+    #--------------------------------------------------------------------------
+
+    */
+
+    protected $guarded = [];
+
+
+
+    /**
+     * Product can have different units.
+     * For example 2 kilogram, 1 mesghal, 20 eggs.
+     * 
+     * @var array
+     */
+    public const UNITS = [
+        'kilogram' => 1,
+        'mesghal' => 2,
+        'number' => 3,
     ];
 
     protected static function booted()
     {
-        static::addGlobalScope('latest', function (Builder $builder) {
-            $builder->latest('updated_at');
-        });
+        static::addGlobalScope(new LatestScope);
     }
 
     /**
@@ -56,11 +185,6 @@ class Product extends Model
     private function hasMultipleItems(): bool
     {
         return $this->items()->count() > 1;
-    }
-
-    public function items()
-    {
-        return $this->hasMany(ProductItem::class)->orderBy('weight', 'asc');
     }
 
     public function getMinPriceAttribute()
@@ -85,12 +209,12 @@ class Product extends Model
 
     public function scopeWherePriceIsGreater($query, $price)
     {
-        return $query->whereHas('items', fn($query) => $query->where('price', '>=', $price));
+        return $query->whereHas('items', fn ($query) => $query->where('price', '>=', $price));
     }
 
     public function scopeWherePriceIsLess($query, $price)
     {
-        return $query->whereHas('items', fn($query) => $query->where('price', '<=', $price));
+        return $query->whereHas('items', fn ($query) => $query->where('price', '<=', $price));
     }
 
     /**
@@ -114,22 +238,19 @@ class Product extends Model
 
     public function hasContainer(): bool
     {
-        return $this->items->contains(fn($item) => filled($item->container));
+        return $this->items->contains(fn ($item) => filled($item->container));
     }
 
-    public function getZincItems()
+    public function scopeOrderByPrice(Builder $query, string $ascOrDesc): Builder
     {
-        return $this->items->where('container', ProductItem::ZINC_CONTAINER);
+        return $query->join('product_items', 'products.id', '=', 'product_items.product_id')
+            ->selectRaw('product_items.price / product_items.weight as basePrice')
+            ->orderBy('basePrice', $ascOrDesc);
     }
 
-    public function getPlasticItems()
+    public function scopeSearch(Builder $query, string $search): Builder
     {
-        return $this->items->where('container', ProductItem::PLASTIC_CONTAINER);
-    }
-
-    public function scopeOrderByPrice($query, string $dir)
-    {
-        return $query->orderBy('price', $dir);
+        return $query->where('name', 'like', '%' . $search . '%');
     }
 
     public function scopeOrderByScore($query)
@@ -165,7 +286,7 @@ class Product extends Model
         return $query->where('category_id', $id)
             ->orWhereHas(
                 'category.parent',
-                fn($query) => $query->whereId($id)
+                fn ($query) => $query->whereId($id)
             );
     }
 
@@ -174,12 +295,6 @@ class Product extends Model
         return $this->whereCategoryId($this->category_id)
             ->get();
     }
-
-    public function image()
-    {
-        return $this->belongsTo(Image::class);
-    }
-
 
     /**
      * @param Builder $query

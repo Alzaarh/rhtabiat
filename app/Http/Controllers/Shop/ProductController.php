@@ -3,70 +3,57 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexProductRequest;
+use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\IndexProduct;
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\SingleProductResource;
 use App\Models\Product;
+use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexProductRequest $request, ProductService $productService): ResourceCollection
     {
-        $product = Product::query();
+        $query = Product::select('*')->with('image');
 
-        request()->whenFilled('sort_by', function ($sortBy) use ($product) {
-            switch ($sortBy) {
-                case 'lowest_price':
-                    $product->orderByPrice('asc');
-                    break;
-                case 'highest_price':
-                    $product->orderByPrice('desc');
-                    break;
-                case 'highest_rated':
-                    $product->orderByScore();
-                    break;
-            }
-        });
+        $request->whenHas('sort_by', fn ($sortBy) => $productService->sortByKey($query, $sortBy));
 
-        request()->whenFilled(
-            'search',
-            fn($term) => $product->where('name', 'like', '%'.$term.'%')
-        );
+        $request->whenHas('search', fn ($search) => $query->search($search));
 
-        request()->whenFilled(
-            'min_price',
-            fn ($price) => $product->wherePrice('>=', $price)
-        );
+        $request->whenHas('category_id', fn ($categoryId) => $query->whereCategoryId($categoryId));
 
-        request()->whenFilled(
-            'max_price',
-            fn ($price) => $product->wherePrice('<=', $price)
-        );
+        $request->whenHas('best_selling', fn () => $query->whereIsBestSelling(true));
 
-        request()->whenFilled(
-            'category_id',
-            fn ($categoryId) => $product->whereCategoryId($categoryId)
-        );
+        $request->whenHas('featured', fn () => $query->where('off', '>', 0));
 
-        // best selling filter
-        if ($request->query('best_selling') === 'true') {
-            $product->bestSelling();
-        }
-
-        // product with off filter
-        if ($request->query('featured') === 'true') {
-            $product->where('off', '>', 0);
-        }
-
-        return IndexProduct::collection(
-            $product->paginate(request()->count)
-        );
+        return ProductResource::collection($query->paginate($request->query('count', 10)));
     }
 
     public function show(Product $product)
     {
-        $product->load(['category.parent', 'comments', 'items']);
+        $product->load('category.parent', 'comments', 'items', 'image');
 
-        return new SingleProductResource($product);
+        return new ProductResource($product);
+    }
+
+    /**
+     * Create product with items.
+     *
+     * @param StoreProductRequest $request
+     * @param ProductService $productService
+     * @return JsonResponse
+     */
+    public function store(StoreProductRequest $request, ProductService $productService): JsonResponse
+    {
+        $productService->create($request->validated());
+
+        return response()->json([
+            'statusCode' => '201',
+            'message' => __('messages.product.store'),
+        ], 201);
     }
 }
