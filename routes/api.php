@@ -13,7 +13,6 @@ Route::prefix('products')->group(function () {
         Route::get('specials', 'IndexSpecialProduct');
         Route::get('{product:slug}/similar-products', 'GetSimilarProducts');
         Route::get('items', 'GetProductItems');
-        Route::get('{product:slug}', 'ProductController@show');
     });
 });
 
@@ -46,7 +45,6 @@ Route::prefix('logs')->group(function () {
 Route::prefix('orders')->group(function () {
     Route::namespace('User')->group(function () {
         Route::post('guests', 'GuestOrderController@store');
-        Route::get('delivery-cost', 'GetOrderDeliveryCostFormula');
         Route::put('verify', 'VerifyOrder');
         Route::post('notify', 'NotifyUserForOrder');
     });
@@ -167,15 +165,19 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
 Route::apiResource('return-requests', 'Shop\ReturnRequestController');
-Route::prefix('orders')->middleware('auth:admin')->group(function () {
-    Route::patch('{order}/status', 'Shop\UpdateOrderStatusController');
-    Route::patch('{order}/delivery-code', 'Shop\UpdateOrderDeliveryCodeController');
-    Route::patch('{order}/reject', 'Shop\RejectOrderController');
-    Route::get('', 'Shop\OrderController@index');
-    Route::get('{order}', 'Shop\OrderController@show');
+Route::prefix('orders')->namespace('Shop')->group(function () {
+    Route::get('delivery-cost', 'GetOrderDeliveryCostFormulaController');
+    Route::middleware('auth:admin')->group(function () {
+        Route::patch('{order}/status', 'UpdateOrderStatusController');
+        Route::patch('{order}/delivery-code', 'UpdateOrderDeliveryCodeController');
+        Route::patch('{order}/reject', 'RejectOrderController');
+        Route::get('', 'OrderController@index');
+        Route::get('{order}', 'OrderController@show');
+    });
 });
 Route::post('products', 'Shop\ProductController@store')->middleware('auth:admin');
 Route::get('products', 'Shop\ProductController@index');
+Route::get('products/units', 'Shop\GetProductUnitsController');
 Route::get('products/{product:slug}', 'Shop\ProductController@show')->name('product.show');
 
 // blog related endpoints

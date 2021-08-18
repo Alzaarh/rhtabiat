@@ -23,6 +23,12 @@ class Product extends Model
 
     */
 
+    public const UNITS = [
+        'kilogram' => 1,
+        'mesghal' => 2,
+        'number' => 3,
+    ];
+
     /*
 
     #--------------------------------------------------------------------------
@@ -147,20 +153,6 @@ class Product extends Model
     */
 
     protected $guarded = [];
-
-
-
-    /**
-     * Product can have different units.
-     * For example 2 kilogram, 1 mesghal, 20 eggs.
-     * 
-     * @var array
-     */
-    public const UNITS = [
-        'kilogram' => 1,
-        'mesghal' => 2,
-        'number' => 3,
-    ];
 
     protected static function booted()
     {
