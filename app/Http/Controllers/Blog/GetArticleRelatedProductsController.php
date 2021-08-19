@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Blog;
 
-use App\Http\Resources\IndexProduct;
+use App\Http\Resources\ProductResource;
 use App\Models\Article;
 use App\Models\Product;
 
@@ -10,12 +10,12 @@ class GetArticleRelatedProductsController
 {
     public function __invoke(Article $article)
     {
-        $product = Product::query();
+        $product = Product::with('image');
 
         foreach (explode(' ', $article->title) as $productName) {
             $product->orWhere('name', 'like', '%' . $productName . '%');
         }
 
-        return IndexProduct::collection($product->take(10)->get());
+        return ProductResource::collection($product->take(10)->get());
     }
 }
