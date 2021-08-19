@@ -54,6 +54,8 @@ class Product extends Model
         'unit',
     ];
 
+    protected $with = ['image'];
+
     /*
 
     #--------------------------------------------------------------------------

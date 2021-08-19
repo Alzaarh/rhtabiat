@@ -10,7 +10,7 @@ class GetArticleRelatedProductsController
 {
     public function __invoke(Article $article)
     {
-        $product = Product::with('image');
+        $product = Product::query();
 
         foreach (explode(' ', $article->title) as $productName) {
             $product->orWhere('name', 'like', '%' . $productName . '%');

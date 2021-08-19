@@ -20,7 +20,7 @@ class ProductController
 
     public function index(IndexProductRequest $request)
     {
-        $query = Product::select('products.*')->with('image');
+        $query = Product::select('products.*');
 
         $request->whenHas('sort_by', fn ($sortBy) => $this->productService->sortByKey($query, $sortBy));
 
@@ -37,7 +37,7 @@ class ProductController
 
     public function show(Product $product)
     {
-        $product->load('category.parent', 'comments', 'items', 'image');
+        $product->load('category.parent', 'comments', 'items');
 
         return new ProductResource($product);
     }

@@ -16,7 +16,7 @@ class GetProductItemsController
         $ids = implode(',', $request->query('products'));
 
         return ProductItemResource::collection(
-            ProductItem::with('product.image')->whereIn('id', request()->products)
+            ProductItem::with('product')->whereIn('id', $request->query('products'))
                 ->orderByRaw(DB::raw("FIELD(id, $ids)"))
                 ->get()
         );
