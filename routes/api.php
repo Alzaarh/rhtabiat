@@ -2,14 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('products')->group(function () {
-    Route::namespace('Admin')->group(function () {
-    });
-
-    Route::namespace('Shop')->group(function () {
-    });
-});
-
 Route::namespace('User')->group(function () {
     Route::get('provinces', 'IndexProvinces');
     Route::get('cities', 'IndexCities');
@@ -57,18 +49,6 @@ Route::namespace('Blog')->group(function () {
         Route::get('/', 'ArticleController@index');
         Route::get('/{article:slug}', 'ArticleController@show');
         Route::get('/{article:slug}/related-articles', 'ArticleRelatedArticleController');
-    });
-});
-
-Route::prefix('product-categories')->group(function () {
-    Route::namespace('Admin')->group(function () {
-        Route::post('/', 'ProductCategoryController@store')->middleware(['auth:admin', 'role:admin']);
-        Route::put('{category}', 'ProductCategoryController@update')->middleware(['auth:admin', 'role:admin']);
-        Route::delete('{category}', 'ProductCategoryController@destroy')->middleware(['auth:admin', 'role:admin']);
-    });
-
-    Route::namespace('Shop')->group(function () {
-        Route::get('/', 'ProductCategoryController@index');
     });
 });
 
@@ -183,6 +163,13 @@ Route::get('products/items', 'Shop\GetProductItemsController');
 Route::prefix('return-requests')->namespace('Shop')->group(function () {
     Route::post('/', 'ReturnRequestController@store');
     Route::get('/', 'ReturnRequestController@index')->middleware('auth:admin');
+});
+Route::prefix('product-categories')->namespace('Shop')->group(function () {
+    Route::post('/', 'ProductCategoryController@store')->middleware('auth:admin');
+    Route::get('/', 'ProductCategoryController@index');
+    Route::get('{productCategory:slug}', 'ProductCategoryController@show');
+    Route::put('{productCategory}', 'ProductCategoryController@update')->middleware('auth:admin');
+    Route::delete('{productCategory}', 'ProductCategoryController@destroy')->middleware('auth:admin');
 });
 
 // blog related endpoints
