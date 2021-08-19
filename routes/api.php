@@ -150,16 +150,14 @@ Route::prefix('orders')->namespace('Shop')->group(function () {
 });
 Route::prefix('products')->namespace('Shop')->group(function () {
     Route::get('/', 'ProductController@index');
-    Route::get('best-selling', 'GetBestSellingProductsController');
-    Route::get('specials', 'IndexSpecialProduct');
+    Route::get('units', 'GetProductUnitsController');
+    Route::get('items', 'GetProductItemsController');
     Route::get('{product:slug}/similar-products', 'GetSimilarProductsController');
     Route::get('{product:slug}', 'ProductController@show')->name('product.show');
     Route::post('/', 'ProductController@store')->middleware('auth:admin');
-    Route::put('admin/{product:id}', 'ProductController@update')->middleware('auth:admin');
+    Route::put('{product}', 'ProductController@update')->middleware('auth:admin');
     Route::delete('{product:id}', 'ProductController@destroy')->middleware('auth:admin');
 });
-Route::get('products/units', 'Shop\GetProductUnitsController');
-Route::get('products/items', 'Shop\GetProductItemsController');
 Route::prefix('return-requests')->namespace('Shop')->group(function () {
     Route::post('/', 'ReturnRequestController@store');
     Route::get('/', 'ReturnRequestController@index')->middleware('auth:admin');

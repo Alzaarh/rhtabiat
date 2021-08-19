@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Product;
 use App\Models\ProductItem;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,7 @@ class UpdateProductRequest extends FormRequest
             'short_desc' => 'string|max:2000',
             'desc' => 'string',
             'image_id' => 'exists:images,id',
-            'meta_tags' => 'string',
+            'meta_tags' => 'nullable|string',
             'off' => 'integer|between:0,99',
             'has_container' => 'required|boolean',
             'items' => 'required|array',
@@ -35,6 +36,7 @@ class UpdateProductRequest extends FormRequest
             ],
             'is_best_selling' => 'boolean',
             'package_price' => 'integer|min:0',
+            'unit' => Rule::in(Product::UNITS),
         ];
     }
 }
