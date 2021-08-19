@@ -58,6 +58,11 @@ class ProductCategory extends Model
         return Jalalian::fromCarbon($this->created_at)->ago();
     }
 
+    public function getParentId(): ?int
+    {
+        return $this->parent_id;
+    }
+
     /*
 
     #--------------------------------------------------------------------------

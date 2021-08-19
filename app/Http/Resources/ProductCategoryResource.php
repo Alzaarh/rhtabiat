@@ -15,9 +15,10 @@ class ProductCategoryResource extends JsonResource
             'image' => new ImageResource($this->whenLoaded('image')),
             'image_mobile' => new ImageResource($this->whenLoaded('imageMobile')),
             'parent' => new self($this->whenLoaded('parent')),
+            'parent_id' => $this->getParentId(),
             'children' => self::collection($this->whenLoaded('children')),
             'products' => ProductResource::collection($this->whenLoaded('products')),
-            'created_at' => $this->getCreatedAt(),
+            'createdAt' => $this->getCreatedAt(),
         ];
     }
 }
