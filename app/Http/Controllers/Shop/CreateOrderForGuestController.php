@@ -27,5 +27,7 @@ class CreateOrderForGuestController
                 ],
             ], 201);
         }
+
+        return response()->json(['data' => $result], 400);
     }
 }
