@@ -139,6 +139,7 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
 Route::prefix('orders')->namespace('Shop')->group(function () {
+    Route::get('statuses', 'GetOrderStatusesController')->middleware('auth:admin');
     Route::post('guests', 'CreateOrderForGuestController');
     Route::get('delivery-cost', 'GetOrderDeliveryCostFormulaController');
     Route::middleware('auth:admin')->group(function () {

@@ -31,9 +31,6 @@ class Order extends Model
     // If order price is greater or equal than this number, delivery cost is free.
     public const FREE_DELIVERY_COST_PRICE = 400000;
 
-    /**
-     * @var array[int]
-     */
     public const STATUS = [
         'not_paid' => 1,
         'being_processed' => 2,
@@ -183,29 +180,6 @@ class Order extends Model
     }
 
     /**
-     * Translate status code to persian text.
-     *
-     * @return string
-     */
-    public function translateStatus(): string
-    {
-        switch ($this->status) {
-            case 1:
-                return 'در انتظار پرداخت';
-            case 2:
-                return 'در حال پردازش';
-            case 3:
-                return 'تحویل به شرکت پست';
-            case 4:
-                return 'تحویل به مشتری';
-            case 5:
-                return 'رد شده';
-            default:
-                return '';
-        }
-    }
-
-    /**
      * Search through orders by order code.
      *
      * @param Builder $builder
@@ -348,6 +322,16 @@ class Order extends Model
         return $this->package_price;
     }
 
+    public function setStatus(int $status): void
+    {
+        $this->status = $status;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
     /*
 
     #--------------------------------------------------------------------------
@@ -366,5 +350,31 @@ class Order extends Model
             }
             $order->code = self::count() . rand(10000, 99999);
         });
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Methods
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function translateStatus(): string
+    {
+        switch ($this->status) {
+            case 1:
+                return 'در انتظار پرداخت';
+            case 2:
+                return 'در حال پردازش';
+            case 3:
+                return 'تحویل به شرکت پست';
+            case 4:
+                return 'تحویل به مشتری';
+            case 5:
+                return 'رد شده';
+            default:
+                return '';
+        }
     }
 }
