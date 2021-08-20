@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\LatestScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Morilog\Jalali\Jalalian;
@@ -25,6 +26,8 @@ class PromoCode extends Model
 
     protected static function booted()
     {
+        static::addGlobalScope(new LatestScope);
+
         static::creating(function (self $promoCode) {
             // construct valid_date field from valid_days which is sent from
             // client
