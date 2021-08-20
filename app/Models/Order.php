@@ -332,6 +332,11 @@ class Order extends Model
         return $this->status;
     }
 
+    public function getDeliveryCode(): ?string
+    {
+        return $this->delivery_code;
+    }
+
     /*
 
     #--------------------------------------------------------------------------

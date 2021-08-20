@@ -19,6 +19,7 @@ class OrderResource extends JsonResource
             'purchasedByGuest' => new GuestResource($this->whenLoaded('purchasedByGuest')),
             'delivery_cost' => $this->delivery_cost,
             'package_price' => $this->package_price,
+            'deliveryCode' => $this->getDeliveryCode(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
