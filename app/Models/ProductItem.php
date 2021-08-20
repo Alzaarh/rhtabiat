@@ -71,4 +71,19 @@ class ProductItem extends Model
     {
         return $this->product;
     }
+
+    public function getOrderPrice(): int
+    {
+        return $this->pivot->price;
+    }
+
+    public function getOrderOff(): int
+    {
+        return $this->pivot->off;
+    }
+
+    public function getOrderQuantity(): int
+    {
+        return $this->pivot->quantity;
+    }
 }

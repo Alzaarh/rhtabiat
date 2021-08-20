@@ -5,13 +5,42 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductItem;
+use App\Models\PromoCode;
 use Exception;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    /**
+     * @throws Exception
+     */
+    public function create(array $orderData): Order
+    {
+        $order = new Order;
+        $order->setDeliveryCost($this->calculateDeliveryCost($orderData));
+        $order->setPackagePrice($this->calculatePackagePrice($orderData));
+
+        if (isset($orderData['promoCode'])) {
+            $promoCode = PromoCode::whereCode($orderData['promoCode'])->first();
+        }
+
+        DB::beginTransaction();
+        try {
+            $order->setPromoCode($promoCode);
+            $order->save();
+            $order->setGuestDetail($orderData);
+            $order->setItems($this->getItems($orderData)->toArray());
+            DB::commit();
+
+            return $order;
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
+    }
+
     private function calculateDeliveryCost(array $orderData): int
     {
         $totalItemsPrice = $this->getItems($orderData)->reduce(
@@ -47,30 +76,6 @@ class OrderService
         return $totalPackagePrice;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function create(array $orderData): Order
-    {
-        $order = new Order;
-        $order->setDeliveryCost($this->calculateDeliveryCost($orderData));
-        $order->setPackagePrice($this->calculatePackagePrice($orderData));
-
-        DB::beginTransaction();
-        try {
-            $order->save();
-            $order->setGuestDetail($orderData);
-            $order->setItems($this->getItems($orderData)->toArray());
-            DB::commit();
-
-            return $order;
-        } catch (Exception $e) {
-            DB::rollBack();
-
-            throw $e;
-        }
-    }
-
     private function getItems(array $orderData): Collection
     {
         $items = collect();
@@ -99,6 +104,7 @@ class OrderService
             $weight *= $quantity;
             $weight += 0.15;
             $cost = $provinceId === Order::KHORASAN_PROVINCE_ID ? $weight * 9800 : $weight * 14000;
+            $cost += 2500;
             $cost *= 1.1;
         } else {
             $cost = 20000;

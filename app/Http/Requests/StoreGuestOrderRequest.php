@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\ProductItem;
+use App\Models\PromoCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreGuestOrderRequest extends FormRequest
@@ -37,20 +38,18 @@ class StoreGuestOrderRequest extends FormRequest
                     }
                 },
             ],
-            // 'promo_code' => [
-            //     'string',
-            //     function ($fieldName, $fieldValue, $fail) {
-            //         $promoCode = PromoCode::where('code', $fieldValue)
-            //             ->where('user_only', false)
-            //             ->first();
+            'promoCode' => [
+                'string',
+                function ($attribute, $value, $fail) {
+                    $promoCode = PromoCode::where('code', $value)
+                        ->where('user_only', false)
+                        ->first();
 
-            //         if (!$promoCode || $promoCode->isExpired()) {
-            //             $fail('کد تخفیف معتبر نیست');
-            //         }
-
-            //         $this->merge(['promo_code' => $promoCode]);
-            //     },
-            // ],
+                    if (!$promoCode || $promoCode->isExpired()) {
+                        $fail('کد تخفیف معتبر نیست');
+                    }
+                },
+            ],
         ];
     }
 }

@@ -60,6 +60,11 @@ class Order extends Model
         return $this->belongsToMany(ProductItem::class)->withPivot('price', 'off', 'quantity', 'weight');
     }
 
+    public function promoCode()
+    {
+        return $this->belongsTo(PromoCode::class);
+    }
+
     public function returnRequests()
     {
         return $this->hasMany(ReturnRequest::class);
@@ -294,12 +299,21 @@ class Order extends Model
     public function getPrice(): int
     {
         $off = 0;
-        $price = $this->getItems()->reduce(fn ($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
+        $price = $this->getItems()->reduce(
+            fn (int $carry, ProductItem $item) =>
+            $item->getOrderPrice() * (100 - $item->getOrderOff()) / 100 * $item->getOrderQuantity() + $carry,
+            0
+        );
         $priceWithoutOff = $this->items->reduce(fn ($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
         if (filled($this->discountCode)) {
             $off = $this->discountCode->calc($priceWithoutOff);
         }
         return $price - $off + $this->delivery_cost + $this->package_price;
+    }
+
+    public function setPromoCode(PromoCode $promoCode): void
+    {
+        $this->promoCode()->save($promoCode);
     }
 
     /*
