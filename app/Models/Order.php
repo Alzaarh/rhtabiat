@@ -29,7 +29,7 @@ class Order extends Model
     public const KHORASAN_PROVINCE_ID = 11;
 
     // If order price is greater or equal than this number, delivery cost is free.
-    public const FREE_DELIVERY_COST_PRICE = 400000;
+    public const FREE_DELIVERY_COST_PRICE = 450000;
 
     public const STATUS = [
         'not_paid' => 1,
@@ -296,7 +296,7 @@ class Order extends Model
         );
 
         if ($this->getPromoCode()) {
-            $promoCodeOff = $priceWithoutOff - $this->getPromoCode()->calculateOff($priceWithoutOff);
+            $promoCodeOff = $this->getPromoCode()->calculateOff($priceWithoutOff);
         }
 
         return $price - $promoCodeOff + $this->getDeliveryCost() + $this->getPackagePrice();

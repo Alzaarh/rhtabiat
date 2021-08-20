@@ -42,7 +42,7 @@ class OrderService
     private function calculateDeliveryCost(array $orderData): int
     {
         $totalItemsPrice = $this->getItems($orderData)->reduce(
-            fn ($carry, $item) => $carry + ((100 - $item['off']) * $item['price'] / 100 * $item['quantity']),
+            fn ($carry, $item) => $carry + $item['price'] * $item['quantity'],
             0
         );
 
