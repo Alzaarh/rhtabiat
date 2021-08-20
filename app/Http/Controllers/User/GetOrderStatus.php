@@ -10,8 +10,8 @@ class GetOrderStatus extends Controller
     public function __invoke()
     {
         request()->validate(['order_code' => 'required|exists:orders,code']);
-        $status = Order::whereCode(request()->order_code)->value('status');
-        switch ($status) {
+        $order = Order::whereCode(request()->order_code)->first();
+        switch ($order->status) {
             case 1:
                 $msg = 'سفارش در انتظار پرداخت می باشد';
                 break;
@@ -19,7 +19,12 @@ class GetOrderStatus extends Controller
                 $msg = 'سفارش پرداخت و تایید شده است';
                 break;
             case 3:
-                $msg = 'سفارش به پست تحویل داده شده است';
+                $deliveryCode = $order->delivery_code;
+                if ($deliveryCode) {
+                    $msg = "سفارش به پست تحویل داده شده است و کد رهگیری پست $deliveryCode می باشد";
+                } else {
+                    $msg = "سفارش به پست تحویل داده شده است";
+                }
                 break;
             case 4:
                 $msg = 'سفارش به مشتری تحویل داده شده است';
