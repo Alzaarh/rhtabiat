@@ -20,17 +20,13 @@ class OrderService
         $order = new Order;
         $order->setDeliveryCost($this->calculateDeliveryCost($orderData));
         $order->setPackagePrice($this->calculatePackagePrice($orderData));
-
         if (isset($orderData['promoCode'])) {
-            $promoCode = PromoCode::whereCode($orderData['promoCode'])->first();
+            $order->setPromoCode(PromoCode::whereCode($orderData['promoCode'])->first());
         }
 
         DB::beginTransaction();
         try {
             $order->save();
-            if (isset($promoCode)) {
-                $order->setPromoCode($promoCode);
-            }
             $order->setGuestDetail($orderData);
             $order->setItems($this->getItems($orderData)->toArray());
             DB::commit();

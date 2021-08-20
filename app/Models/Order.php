@@ -45,6 +45,21 @@ class Order extends Model
     /*
 
     #--------------------------------------------------------------------------
+    # Properties
+    #--------------------------------------------------------------------------
+
+    */
+
+    protected $fillable = [
+        'code',
+        'delivery_cost',
+        'package_price',
+        'status',
+    ];
+
+    /*
+
+    #--------------------------------------------------------------------------
     # Relationships
     #--------------------------------------------------------------------------
 
@@ -115,11 +130,6 @@ class Order extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
-    }
-
-    public function discountCode()
-    {
-        return $this->belongsTo(DiscountCode::class)->withoutGlobalScope('valid');
     }
 
     public function verify(): void
@@ -320,7 +330,7 @@ class Order extends Model
 
     public function setPromoCode(PromoCode $promoCode): void
     {
-        $this->promoCode()->save($promoCode);
+        $this->promo_code_id = $promoCode->id;
     }
 
     public function getPromoCode(): ?PromoCode
