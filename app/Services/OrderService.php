@@ -19,7 +19,7 @@ class OrderService
     {
         $order = new Order;
         $order->setDeliveryCost($this->calculateDeliveryCost($orderData));
-        $order->setPackagePrice($this->calculatePackagePrice($orderData));
+        $order->setPackagePrice($this->calculatePackagePrice($this->getItems($orderData)->pluck('product_id')->toArray()));
         if (isset($orderData['promoCode'])) {
             $order->setPromoCode(PromoCode::whereCode($orderData['promoCode'])->first());
         }
@@ -63,15 +63,13 @@ class OrderService
         return $totalDeliveryCost;
     }
 
-    private function calculatePackagePrice(array $orderData): int
+    private function calculatePackagePrice(array $productIds): int
     {
-        $totalPackagePrice = 0;
-
-        $this->getItems($orderData)->each(function ($item) use (&$totalPackagePrice) {
-            $totalPackagePrice += ProductItem::find($item['id'])->getProduct()->getPackagePrice();
-        });
-
-        return $totalPackagePrice;
+        return Product::find($productIds)
+            ->reduce(
+                fn ($carry, $product) => $carry + $product->package_price,
+                0
+            );
     }
 
     private function getItems(array $orderData): Collection
