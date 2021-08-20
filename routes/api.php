@@ -30,7 +30,7 @@ Route::prefix('logs')->group(function () {
 
 Route::prefix('orders')->group(function () {
     Route::namespace('User')->group(function () {
-        Route::post('guests', 'GuestOrderController@store');
+
         Route::put('verify', 'VerifyOrder');
         Route::post('notify', 'NotifyUserForOrder');
     });
@@ -139,6 +139,7 @@ Route::apiResource('messages', 'User\MessageController')->only('index', 'show')-
 Route::get('promo-codes/evaluate', 'Shop\EvaluatePromoCodeController');
 Route::apiResource('promo-codes', 'Shop\PromoCodeController')->middleware('auth:admin');
 Route::prefix('orders')->namespace('Shop')->group(function () {
+    Route::post('guests', 'CreateOrderForGuestController');
     Route::get('delivery-cost', 'GetOrderDeliveryCostFormulaController');
     Route::middleware('auth:admin')->group(function () {
         Route::patch('{order}/status', 'UpdateOrderStatusController');

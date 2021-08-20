@@ -9,6 +9,14 @@ class GuestOrder extends Model
 {
     use HasFactory;
 
+    /*
+
+    #--------------------------------------------------------------------------
+    # Properties
+    #--------------------------------------------------------------------------
+
+    */
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,7 +28,6 @@ class GuestOrder extends Model
         'city_id',
         'zipcode',
         'address',
-        'guest_id',
     ];
 
     public function order()

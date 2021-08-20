@@ -45,6 +45,8 @@ return [
 
         'destroy' => 'محصول با موفقیت حذف شد',
 
+        'invalidQuantity' => 'تعداد محصول انتخاب شده بیش از حد مجاز است',
+
     ],
 
     'returnRequest' => [

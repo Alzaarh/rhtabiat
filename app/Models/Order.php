@@ -9,11 +9,38 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Arr;
 use Morilog\Jalali\Jalalian;
 
 class Order extends Model
 {
     use HasFactory;
+
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Constants
+    #--------------------------------------------------------------------------
+
+    */
+
+    // This is used to check if order is inside Khorasan province or not.
+    public const KHORASAN_PROVINCE_ID = 11;
+
+    // If order price is greater or equal than this number, delivery cost is free.
+    public const FREE_DELIVERY_COST_PRICE = 400000;
+
+    /**
+     * @var array[int]
+     */
+    public const STATUS = [
+        'not_paid' => 1,
+        'being_processed' => 2,
+        'in_post_office' => 3,
+        'delivered' => 4,
+        'rejected' => 5,
+    ];
 
     /*
 
@@ -23,18 +50,20 @@ class Order extends Model
 
     */
 
+    public function guestOrder()
+    {
+        return $this->hasOne(GuestOrder::class);
+    }
+
+    public function items()
+    {
+        return $this->belongsToMany(ProductItem::class)->withPivot('price', 'off', 'quantity', 'weight');
+    }
+
     public function returnRequests()
     {
         return $this->hasMany(ReturnRequest::class);
     }
-
-    const STATUS = [
-        'not_paid' => 1,
-        'being_processed' => 2,
-        'in_post_office' => 3,
-        'delivered' => 4,
-        'rejected' => 5,
-    ];
 
     public const STATUS_FA = [
         1 => 'در انتظار پرداخت',
@@ -46,19 +75,6 @@ class Order extends Model
     public const WITHIN_PROVINCE = 11;
     public const DELIVERY_THRESHOLD = 450000;
     protected $guarded = [];
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new LatestScope);
-
-        static::creating(function ($order) {
-            if (!isset($order->status)) {
-                $order->status = static::STATUS['not_paid'];
-            }
-            $order->code = static::count() . rand(10000, 99999);
-            $order->visitor = request()->ip();
-        });
-    }
 
     public function getPriceAttribute(): int
     {
@@ -86,12 +102,6 @@ class Order extends Model
         return $query->where('status', '!=', static::STATUS['not_paid']);
     }
 
-    public function items()
-    {
-        return $this->belongsToMany(ProductItem::class)
-            ->withPivot('price', 'off', 'quantity', 'weight');
-    }
-
     public function address()
     {
         return $this->belongsTo(Address::class);
@@ -105,11 +115,6 @@ class Order extends Model
     public function discountCode()
     {
         return $this->belongsTo(DiscountCode::class)->withoutGlobalScope('valid');
-    }
-
-    public function guestDetail()
-    {
-        return $this->hasOne(GuestOrder::class, 'order_id');
     }
 
     public function verify(): void
@@ -238,5 +243,82 @@ class Order extends Model
     {
         $this->status = self::STATUS['rejected'];
         $this->save();
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Accessor and Mutators
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function setDeliveryCost(int $cost): void
+    {
+        $this->delivery_cost = $cost;
+    }
+
+    public function setPackagePrice(int $price): void
+    {
+        $this->package_price = $price;
+    }
+
+    public function setGuestDetail(array $guestDetail): void
+    {
+        $this->guestOrder()->create($guestDetail);
+    }
+
+    public function getGuestDetail(): ?GuestOrder
+    {
+        return $this->guestOrder;
+    }
+
+    public function setItems(array $items): void
+    {
+        foreach ($items as $itemId => $item) {
+            $this->items()->attach($itemId, [
+                'price' => $item['price'],
+                'product_id' => $item['product_id'],
+                'off' => $item['off'],
+                'weight' => $item['weight'],
+                'quantity' => $item['quantity'],
+            ]);
+        }
+    }
+
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    public function getPrice(): int
+    {
+        $off = 0;
+        $price = $this->getItems()->reduce(fn ($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
+        $priceWithoutOff = $this->items->reduce(fn ($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
+        if (filled($this->discountCode)) {
+            $off = $this->discountCode->calc($priceWithoutOff);
+        }
+        return $price - $off + $this->delivery_cost + $this->package_price;
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Other stuff
+    #--------------------------------------------------------------------------
+
+    */
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new LatestScope);
+
+        static::creating(function (self $order) {
+            if (!$order->status) {
+                $order->status = self::STATUS['not_paid'];
+            }
+            $order->code = self::count() . rand(10000, 99999);
+        });
     }
 }

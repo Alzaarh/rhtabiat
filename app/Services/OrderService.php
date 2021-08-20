@@ -2,94 +2,108 @@
 
 namespace App\Services;
 
-use App\Models\Address;
-use App\Models\DiscountCode;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProductItem;
+use Exception;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    public function createForGuest()
+    private function calculateDeliveryCost(array $orderData): int
     {
-        $this->validateForGuest();
-    }
+        $totalItemsPrice = $this->getItems($orderData)->reduce(
+            fn ($carry, $item) => $carry + ((100 - $item['off']) * $item['price'] / 100 * $item['quantity']),
+            0
+        );
 
-    protected function validateForGuest()
-    {
-        request()->validate([
-            ''
-        ]);
-    }
-    /**
-     * @throws \Throwable
-     */
-    public function createOrder($request): Order
-    {
-        $user = auth('user')->user();
-        $address = Address::find($request->address);
-        $items = $user ? $user->cart->prepared() : $this->getItems($request->products);
-        $discount = DiscountCode::whereCode($request->discount_code)->value('id');
-
-        return DB::transaction(function () use ($request, $user, &$address, $items, $discount) {
-            if (empty($address)) {
-                $address = filled($user)
-                    ? $user->addresses()->create($request->validated())
-                    : Address::create($request->validated());
-            }
-            $order = $address->orders()->create([
-                'delivery_cost' => $this->calcDeliveryCost(
-                    $this->calcOrderCost($items),
-                    $address->province_id,
-                    $this->calcOrderWeight($items),
-                ),
-                'discount_code_id' => $discount,
-            ]);
-            $order->items()->attach($items);
-            return $order;
-        });
-    }
-
-    protected function getItems(array $items): array
-    {
-        $orderItems = [];
-        foreach ($items as $item) {
-            $i = ProductItem::find($item['id']);
-            $orderItems[$item['id']] = [
-                'quantity' => $item['quantity'],
-                'price' => $i->price,
-                'off' => $i->product->off,
-                'weight' => $i->weight,
-                'product_id' => $i->product->id,
-            ];
+        if ($totalItemsPrice >= Order::FREE_DELIVERY_COST_PRICE) {
+            return 0;
         }
-        return $orderItems;
+
+        $totalDeliveryCost = $this->getItems($orderData)->reduce(
+            fn ($carry, $item) => $carry + $this->CalculateItemDeliveryCost(
+                $item['unit'],
+                $item['weight'],
+                $item['quantity'],
+                $orderData['province_id']
+            ),
+            0
+        );
+
+        return $totalDeliveryCost;
     }
 
-    public function calcDeliveryCost(int $price, int $province, int $weight): int
+    private function calculatePackagePrice(array $orderData): int
+    {
+        $totalPackagePrice = 0;
+
+        $this->getItems($orderData)->each(function ($item) use (&$totalPackagePrice) {
+            $totalPackagePrice += ProductItem::find($item['id'])->getProduct()->getPackagePrice();
+        });
+
+        return $totalPackagePrice;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function create(array $orderData): Order
+    {
+        $order = new Order;
+        $order->setDeliveryCost($this->calculateDeliveryCost($orderData));
+        $order->setPackagePrice($this->calculatePackagePrice($orderData));
+
+        DB::beginTransaction();
+        try {
+            $order->save();
+            $order->setGuestDetail($orderData);
+            $order->setItems($this->getItems($orderData)->toArray());
+            DB::commit();
+
+            return $order;
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
+    }
+
+    private function getItems(array $orderData): Collection
+    {
+        $items = collect();
+
+        collect($orderData['products'])->each(function ($item) use ($items) {
+            $foundItem = ProductItem::find($item['id']);
+            $items->put($foundItem->getId(), [
+                'id' => $foundItem->id,
+                'quantity' => $item['quantity'],
+                'weight' => $foundItem->getWeight(),
+                'product_id' => $foundItem->getProduct()->getId(),
+                'price' => $foundItem->getPrice(),
+                'off' => $foundItem->product->getOff(),
+                'unit' => $foundItem->getProduct()->getUnit(),
+            ]);
+        });
+
+        return $items;
+    }
+
+    private function CalculateItemDeliveryCost(int $unit, float $weight, int $quantity, int $provinceId): int
     {
         $cost = 0;
-        if ($price < 200000) {
-            $cost = $province === Order::WITHIN_PROVINCE ? $weight * 9800 : $weight * 14000;
+
+        if ($unit === Product::UNITS['kilogram']) {
+            $weight *= $quantity;
+            $weight += 0.15;
+            $cost = $provinceId === Order::KHORASAN_PROVINCE_ID ? $weight * 9800 : $weight * 14000;
+            $cost *= 1.1;
+        } else {
+            $cost = 20000;
         }
-        return ($cost + 2500) * 1.1;
-    }
 
-    protected function calcOrderCost(array $items): int
-    {
-        return array_reduce(
-            $items,
-            fn($carry, $i) => $carry + $i['price'] * (100 - $i['off']) / 100 * $i['quantity'],
-            0
-        );
-    }
-
-    protected function calcOrderWeight(array $items): int
-    {
-        return array_reduce(
-            $items,
-            fn($carry, $i) => $carry + $i['quantity'] * $i['weight'],
-            0
-        );
+        return $cost;
     }
 }

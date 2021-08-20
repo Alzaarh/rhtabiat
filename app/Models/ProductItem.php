@@ -43,4 +43,32 @@ class ProductItem extends Model
         return static::with('product')
             ->find($ids);
     }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Accessors and Mutators
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    public function getProduct()
+    {
+        return $this->product;
+    }
 }

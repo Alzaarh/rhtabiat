@@ -171,6 +171,11 @@ class Product extends Model
         return $this->items->where('container', ProductItem::PLASTIC_CONTAINER);
     }
 
+    public function getUnit(): int
+    {
+        return $this->unit;
+    }
+
     /*
 
     #--------------------------------------------------------------------------
