@@ -298,22 +298,44 @@ class Order extends Model
 
     public function getPrice(): int
     {
-        $off = 0;
+        $promoCodeOff = 0;
+
         $price = $this->getItems()->reduce(
             fn (int $carry, ProductItem $item) =>
             $item->getOrderPrice() * (100 - $item->getOrderOff()) / 100 * $item->getOrderQuantity() + $carry,
             0
         );
-        $priceWithoutOff = $this->items->reduce(fn ($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
-        if (filled($this->discountCode)) {
-            $off = $this->discountCode->calc($priceWithoutOff);
+
+        $priceWithoutOff = $this->items->reduce(
+            fn (int $carry, ProductItem $item) => $item->getOrderPrice() * $item->getOrderQuantity() + $carry,
+            0
+        );
+
+        if ($this->getPromoCode()) {
+            $promoCodeOff = $priceWithoutOff - $this->getPromoCode()->calculateOff($priceWithoutOff);
         }
-        return $price - $off + $this->delivery_cost + $this->package_price;
+
+        return $price - $promoCodeOff + $this->getDeliveryCost() + $this->getPackagePrice();
     }
 
     public function setPromoCode(PromoCode $promoCode): void
     {
         $this->promoCode()->save($promoCode);
+    }
+
+    public function getPromoCode(): ?PromoCode
+    {
+        return $this->promoCode;
+    }
+
+    public function getDeliveryCost(): int
+    {
+        return $this->delivery_cost;
+    }
+
+    public function getPackagePrice(): int
+    {
+        return $this->package_price;
     }
 
     /*

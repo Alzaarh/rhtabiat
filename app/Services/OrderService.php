@@ -27,8 +27,10 @@ class OrderService
 
         DB::beginTransaction();
         try {
-            $order->setPromoCode($promoCode);
             $order->save();
+            if (isset($promoCode)) {
+                $order->setPromoCode($promoCode);
+            }
             $order->setGuestDetail($orderData);
             $order->setItems($this->getItems($orderData)->toArray());
             DB::commit();

@@ -12,11 +12,11 @@ class CreateOrderForGuestController
     {
         $order = $orderService->create($request->validated());
 
-        $result = $initiateWithZarinpal->handle($order->price, $request->input('email', ''), $request->input('mobile'));
+        $result = $initiateWithZarinpal->handle($order->getPrice(), $request->input('email', ''), $request->input('mobile'));
 
         if (empty($result['errors']) && $result['data']['code'] == 100) {
             $order->transactions()->create([
-                'amount' => $order->price,
+                'amount' => $order->getPrice(),
                 'authority' => $result['data']['authority'],
             ]);
 

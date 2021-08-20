@@ -81,4 +81,35 @@ class PromoCode extends Model
     {
         return $orderCost >= $this->min;
     }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Accessors and Mutators
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function getOffPercent(): ?int
+    {
+        return $this->off_percent;
+    }
+
+    public function getOffValue(): ?int
+    {
+        return $this->off_value;
+    }
+
+    /*
+
+    #--------------------------------------------------------------------------
+    # Methods
+    #--------------------------------------------------------------------------
+
+    */
+
+    public function calculateOff(int $price): int
+    {
+        return $this->getOffPercent() ? $this->getOffPercent() * $price / 100 : $this->getOffValue();
+    }
 }
