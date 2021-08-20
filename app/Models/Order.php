@@ -302,6 +302,16 @@ class Order extends Model
         return $price - $promoCodeOff + $this->getDeliveryCost() + $this->getPackagePrice();
     }
 
+    public function getPriceWithoutOff(): int
+    {
+        $priceWithoutOff = $this->items->reduce(
+            fn (int $carry, ProductItem $item) => $item->getOrderPrice() * $item->getOrderQuantity() + $carry,
+            0
+        );
+
+        return $priceWithoutOff;
+    }
+
     public function setPromoCode(PromoCode $promoCode): void
     {
         $this->promo_code_id = $promoCode->id;

@@ -30,7 +30,7 @@ class OrderController
 
     public function show(Order $order): OrderResource
     {
-        $order->load('items.product');
+        $order->load('items.product', 'promoCode');
 
         if ($order->purchasedByUser()->exists()) {
             $order->load('purchasedByUser');

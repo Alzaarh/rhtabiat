@@ -9,11 +9,16 @@ class OrderResource extends JsonResource
 {
     public function toArray($request)
     {
+        $promoCodeOff = 0;
+        if ($this->relationLoaded('promoCode')) {
+            $promoCodeOff = $this->getPromoCode()->calculateOff($this->getPriceWithoutOff());
+        }
         return [
             'id' => $this->id,
             'code' => $this->code,
-            'price' => $this->price,
-            // 'discount_code' => $this->discountCode,
+            'price' => $this->getPrice(),
+            'promoCode' => $this->whenLoaded('promoCode'),
+            'promoCodeOff' => $this->when($promoCodeOff, $promoCodeOff),
             'status' => $this->translateStatus(),
             'products' => ProductItemResource::collection($this->whenLoaded('items')),
             'purchasedByGuest' => new GuestResource($this->whenLoaded('purchasedByGuest')),
