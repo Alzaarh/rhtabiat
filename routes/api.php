@@ -148,6 +148,7 @@ Route::prefix('orders')->namespace('Shop')->group(function () {
         Route::patch('{order}/reject', 'RejectOrderController');
         Route::get('', 'OrderController@index');
         Route::get('{order}', 'OrderController@show');
+        Route::delete('{order}', 'OrderController@destroy');
     });
 });
 Route::prefix('products')->namespace('Shop')->group(function () {

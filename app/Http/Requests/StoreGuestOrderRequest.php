@@ -129,7 +129,7 @@ class StoreGuestOrderRequest extends FormRequest
             $item = ProductItem::with('product')->find($purchasedItem['id']);
             if ($item->product->unit === Product::KILOGRAM_UNIT) {
                 $weight = $item->weight;
-                $weight *= $$purchasedItem['quantity'];
+                $weight *= $purchasedItem['quantity'];
                 $weight += 0.15;
                 $deliveryCost +=
                     $this->province_id === Order::KHORASAN_PROVINCE_ID

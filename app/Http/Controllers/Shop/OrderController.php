@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -39,5 +40,12 @@ class OrderController
         }
 
         return new OrderResource($order);
+    }
+
+    public function destroy(Order $order): JsonResponse
+    {
+        $order->delete();
+
+        return response()->json();
     }
 }
