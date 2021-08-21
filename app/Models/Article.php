@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Image;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Morilog\Jalali\Jalalian;
 
 class Article extends Model
 {
@@ -78,5 +80,16 @@ class Article extends Model
     public function image()
     {
         return $this->belongsTo(Image::class);
+    }
+
+    /*
+    #--------------------------------------------------------------------------
+    # Accessors and Mutators
+    #--------------------------------------------------------------------------
+    */
+
+    public function getCreatedAtAttribute(string $createdAt): string
+    {
+        return Jalalian::fromCarbon(Carbon::make($createdAt))->ago();
     }
 }
