@@ -146,10 +146,11 @@ class StoreGuestOrderRequest extends FormRequest
 
     private function packagePrice(): int
     {
-        return ProductItem::distinct('product_id')
+        return ProductItem::with('product')
+            ->distinct('product_id')
             ->find(Arr::pluck($this->products, 'id'))
             ->reduce(
-                fn ($carry, $product) => $carry + $product->package_price,
+                fn ($carry, $item) => $carry + $item->product->package_price,
                 0
             );
     }

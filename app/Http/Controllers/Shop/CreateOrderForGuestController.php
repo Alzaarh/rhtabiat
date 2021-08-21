@@ -12,22 +12,23 @@ class CreateOrderForGuestController
     {
         $order = $orderService->create($request->orderData(), $request->promoCode());
 
-        $result = $initiateWithZarinpal->handle($order->getPrice(), $request->input('email', ''), $request->input('mobile'));
+        return response()->json(['message' => $order->getPrice()]);
+        // $result = $initiateWithZarinpal->handle($order->getPrice(), $request->input('email', ''), $request->input('mobile'));
 
-        if (empty($result['errors']) && $result['data']['code'] == 100) {
-            $order->transactions()->create([
-                'amount' => $order->getPrice(),
-                'authority' => $result['data']['authority'],
-            ]);
+        // if (empty($result['errors']) && $result['data']['code'] == 100) {
+        //     $order->transactions()->create([
+        //         'amount' => $order->getPrice(),
+        //         'authority' => $result['data']['authority'],
+        //     ]);
 
-            return response()->json([
-                'message' => __('messages.order.store'),
-                'data' => [
-                    'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
-                ],
-            ], 201);
-        }
+        //     return response()->json([
+        //         'message' => __('messages.order.store'),
+        //         'data' => [
+        //             'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
+        //         ],
+        //     ], 201);
+        // }
 
-        return response()->json(['data' => $result], 400);
+        // return response()->json(['data' => $result], 400);
     }
 }
