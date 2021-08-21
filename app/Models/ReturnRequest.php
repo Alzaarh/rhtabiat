@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Scopes\LatestScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Morilog\Jalali\Jalalian;
 
 class ReturnRequest extends Model
 {
@@ -26,6 +28,17 @@ class ReturnRequest extends Model
         'email',
         'reason',
     ];
+
+    /*
+    #--------------------------------------------------------------------------
+    # Accessors and Mutators
+    #--------------------------------------------------------------------------
+    */
+
+    public function getCreatedAtAttribute(string $createdAt): string
+    {
+        return Jalalian::fromCarbon(Carbon::make($createdAt))->ago();
+    }
 
     /*
 

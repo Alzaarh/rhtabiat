@@ -39,7 +39,7 @@ class Message extends Model
 
     public function getCreatedAtAttribute(string $createdAt): string
     {
-        return Jalalian::fromCarbon(Carbon::make($createdAt))->format('Y-m-d H:i:s');
+        return Jalalian::fromCarbon(Carbon::make($createdAt))->ago();
     }
 
     /*

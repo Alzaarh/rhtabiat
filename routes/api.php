@@ -164,6 +164,7 @@ Route::prefix('products')->namespace('Shop')->group(function () {
 Route::prefix('return-requests')->namespace('Shop')->group(function () {
     Route::post('/', 'ReturnRequestController@store');
     Route::get('/', 'ReturnRequestController@index')->middleware('auth:admin');
+    Route::get('{returnRequest}', 'ReturnRequestController@show')->middleware('auth:admin');
 });
 Route::prefix('product-categories')->namespace('Shop')->group(function () {
     Route::post('/', 'ProductCategoryController@store')->middleware('auth:admin');
