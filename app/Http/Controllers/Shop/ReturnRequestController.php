@@ -17,7 +17,7 @@ class ReturnRequestController extends Controller
 
     public function show(ReturnRequest $returnRequest)
     {
-        $returnRequest->load('order.items', 'order.guestDetail');
+        $returnRequest->load('order.items');
 
         return response()->json(['data' => $returnRequest]);
     }
