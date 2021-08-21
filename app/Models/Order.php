@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Morilog\Jalali\Jalalian;
 
 class Order extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
 
     /*
     #--------------------------------------------------------------------------

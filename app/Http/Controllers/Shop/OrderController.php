@@ -46,6 +46,6 @@ class OrderController
     {
         $order->delete();
 
-        return response()->json();
+        return response()->json(['message' => __('messages.destory_order')]);
     }
 }
