@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\LatestScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,5 +40,16 @@ class Message extends Model
     public function getCreatedAtAttribute(string $createdAt): string
     {
         return Jalalian::fromCarbon(Carbon::make($createdAt))->format('Y-m-d H:i:s');
+    }
+
+    /*
+    #--------------------------------------------------------------------------
+    # Events, Scopes, ...
+    #--------------------------------------------------------------------------
+    */
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new LatestScope);
     }
 }
