@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Image;
+use App\Scopes\LatestScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Morilog\Jalali\Jalalian;
@@ -28,9 +29,7 @@ class Article extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope('latest', function (Builder $builder) {
-            $builder->latest('updated_at');
-        });
+        static::addGlobalScope(new LatestScope);
 
         static::deleting(
             fn ($article) =>
