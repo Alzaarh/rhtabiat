@@ -131,12 +131,13 @@ class StoreGuestOrderRequest extends FormRequest
                 $weight = $item->weight;
                 $weight *= $purchasedItem['quantity'];
                 $weight += 0.15;
-                $deliveryCost +=
+                $cost =
                     $this->province_id === Order::KHORASAN_PROVINCE_ID
                     ? $weight * 9800
                     : $weight * 14000;
-                $deliveryCost += 2500;
-                $deliveryCost *= 1.1;
+                $cost += 2500;
+                $cost *= 1.1;
+                $deliveryCost += $cost;
             } else {
                 $deliveryCost += 20000;
             }

@@ -12,7 +12,7 @@ class CreateOrderForGuestController
     {
         $order = $orderService->create($request->orderData(), $request->promoCode());
 
-        return response()->json(['message' => $order->getPrice()]);
+        return response()->json(['message' => $order->getPrice()], 400);
         // $result = $initiateWithZarinpal->handle($order->getPrice(), $request->input('email', ''), $request->input('mobile'));
 
         // if (empty($result['errors']) && $result['data']['code'] == 100) {
