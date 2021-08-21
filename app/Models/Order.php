@@ -26,7 +26,7 @@ class Order extends Model
     // This is used to check if order is inside Khorasan province or not.
     public const KHORASAN_PROVINCE_ID = 11;
 
-    // If order price is greater or equal than this number, delivery cost is free.
+    // If order cost is greater or equal than this number, delivery cost is free.
     public const FREE_DELIVERY_COST_PRICE = 450000;
 
     public const STATUS = [

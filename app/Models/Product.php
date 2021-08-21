@@ -18,12 +18,12 @@ class Product extends Model
     use SoftDeletes;
 
     /*
-
     #--------------------------------------------------------------------------
     # Constants
     #--------------------------------------------------------------------------
-
     */
+
+    public const KILOGRAM_UNIT = 1;
 
     public const UNITS = [
         'kilogram' => 1,

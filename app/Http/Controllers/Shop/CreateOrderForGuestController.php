@@ -10,7 +10,7 @@ class CreateOrderForGuestController
 {
     public function __invoke(StoreGuestOrderRequest $request, OrderService $orderService, InitiateWithZarinpalService $initiateWithZarinpal)
     {
-        $order = $orderService->create($request->validated());
+        $order = $orderService->create($request->orderData(), $request->promoCode());
 
         $result = $initiateWithZarinpal->handle($order->getPrice(), $request->input('email', ''), $request->input('mobile'));
 

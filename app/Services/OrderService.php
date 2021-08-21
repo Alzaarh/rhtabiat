@@ -15,18 +15,13 @@ class OrderService
     /**
      * @throws Exception
      */
-    public function create(array $orderData): Order
+    public function create(array $orderData, PromoCode $promoCode = null): Order
     {
-        $order = new Order;
-        $order->setDeliveryCost($this->calculateDeliveryCost($orderData));
-        $order->setPackagePrice($this->calculatePackagePrice($this->getItems($orderData)->pluck('product_id')->toArray()));
-        if (isset($orderData['promoCode'])) {
-            $order->setPromoCode(PromoCode::whereCode($orderData['promoCode'])->first());
-        }
-
         DB::beginTransaction();
         try {
-            $order->save();
+            $order = $promoCode
+                ? $promoCode->orders()->create($orderData)
+                : Order::create($orderData);
             $order->setGuestDetail($orderData);
             $order->setItems($this->getItems($orderData)->toArray());
             DB::commit();
