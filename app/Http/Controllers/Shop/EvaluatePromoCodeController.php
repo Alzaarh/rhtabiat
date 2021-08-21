@@ -2,27 +2,14 @@
 
 namespace App\Http\Controllers\Shop;
 
-use App\Actions\EvaluatePromoCodeAction;
-use App\Exceptions\NotUsablePromoCodeException;
 use App\Http\Requests\EvaluatePromoCodeRequest;
-use App\Models\PromoCode;
 
 class EvaluatePromoCodeController
 {
-    public function __invoke(EvaluatePromoCodeRequest $request, EvaluatePromoCodeAction $action)
+    public function __invoke(EvaluatePromoCodeRequest $request)
     {
-        try {
-            $discount = $action->execute(
-                PromoCode::whereCode($request->input('promo_code'))->first(),
-                $request->input('order_cost')
-            );
-
-            return response()->json(['data' => ['discount' => $discount]]);
-        } catch (NotUsablePromoCodeException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'code' => '403',
-            ], 403);
-        }
+        return response()->json([
+            'data' => ['discount' => $request->promoCodeDiscount()],
+        ]);
     }
 }

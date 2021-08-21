@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Scopes\LatestScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Morilog\Jalali\Jalalian;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Morilog\Jalali\Jalalian;
 
 class PromoCode extends Model
 {
@@ -51,11 +51,6 @@ class PromoCode extends Model
             ->format('%B %d %Y');
     }
 
-    public function isExpired(): bool
-    {
-        return now()->greaterThan($this->valid_date);
-    }
-
     /**
      * calculate discount
      * @param int $orderPrice
@@ -91,7 +86,7 @@ class PromoCode extends Model
     # Accessors and Mutators
     #--------------------------------------------------------------------------
 
-    */
+     */
 
     public function getOffPercent(): ?int
     {
@@ -104,15 +99,26 @@ class PromoCode extends Model
     }
 
     /*
-
     #--------------------------------------------------------------------------
     # Methods
     #--------------------------------------------------------------------------
-
-    */
+     */
 
     public function calculateOff(int $price): int
     {
         return $this->getOffPercent() ? $this->getOffPercent() * $price / 100 : $this->getOffValue();
+    }
+
+    public function isExpired(): bool
+    {
+        return now()->greaterThan($this->valid_date);
+    }
+
+    public function isAvailable(): bool
+    {
+        $usedCount = Order::valid()
+            ->wherePromoCodeId($this->id)
+            ->count();
+        return $this->infinite || $this->count > $usedCount;
     }
 }

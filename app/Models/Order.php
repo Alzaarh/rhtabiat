@@ -18,11 +18,9 @@ class Order extends Model
 
 
     /*
-
     #--------------------------------------------------------------------------
     # Constants
     #--------------------------------------------------------------------------
-
     */
 
     // This is used to check if order is inside Khorasan province or not.
@@ -38,6 +36,10 @@ class Order extends Model
         'delivered' => 4,
         'rejected' => 5,
     ];
+
+    public const NOT_VERIFIED = 1;
+
+    public const REJECTED = 5;
 
     /*
 
@@ -348,11 +350,9 @@ class Order extends Model
     }
 
     /*
-
     #--------------------------------------------------------------------------
-    # Other stuff
+    # Events, Scopes, ...
     #--------------------------------------------------------------------------
-
     */
 
     protected static function booted()
@@ -365,6 +365,14 @@ class Order extends Model
             }
             $order->code = self::count() . rand(10000, 99999);
         });
+    }
+
+    public function scopeValid(Builder $query): Builder
+    {
+        return $query->whereNotIn('status', [
+            self::NOT_VERIFIED,
+            self::REJECTED,
+        ]);
     }
 
     /*
