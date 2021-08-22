@@ -80,10 +80,6 @@ Route::namespace('Admin')->group(
                 Route::post('auth/login', 'AdminLoginController');
             }
         );
-
-        Route::apiResource('admin/articles', 'ArticleController')
-            ->except(['index', 'show'])
-            ->middleware(['auth:admin', 'role:writer']);
     }
 );
 
@@ -176,3 +172,6 @@ Route::prefix('product-categories')->namespace('Shop')->group(function () {
 
 // blog related endpoints
 Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedProductsController');
+Route::apiResource('admin/articles', 'Blog\ArticleController')
+    ->only('store', 'update', 'destroy')
+    ->middleware('auth:admin');

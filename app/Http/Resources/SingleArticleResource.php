@@ -15,6 +15,8 @@ class SingleArticleResource extends JsonResource
             'preview' => $this->short_desc,
             'image' => new ImageCollectionResource($this->image),
             'meta_tags' => json_decode($this->meta),
+            'is_verified' => $this->is_verified,
+            'is_waiting' => $this->is_waiting,
             'body' => $this->body,
             'category' => $this->category,
             'comments' => CommentResource::collection($this->comments),

@@ -16,20 +16,42 @@ class Article extends Model
 {
     use HasFactory;
 
+    /*
+    #--------------------------------------------------------------------------
+    # Properties
+    #--------------------------------------------------------------------------
+    */
+
     protected $fillable = [
         'title',
         'slug',
-        'body',
         'short_desc',
+        'body',
         'meta',
         'image_id',
-        'article_category_id',
         'is_verified',
+        'is_waiting',
+        'article_category_id',
     ];
+
+    protected $casts = [
+        'is_verified' => 'boolean',
+        'is_waiting' => 'boolean',
+    ];
+
+    /*
+    #--------------------------------------------------------------------------
+    # Events, Scopes, ...
+    #--------------------------------------------------------------------------
+    */
 
     protected static function booted()
     {
         static::addGlobalScope(new LatestScope);
+        static::addGlobalScope('available', function (Builder $query) {
+            $query->whereIsVerified(true)
+                ->whereIsWaiting(true);
+        });
 
         static::deleting(
             fn ($article) =>

@@ -40,7 +40,7 @@ class Admin extends Authenticatable implements JWTSubject
         'نویسنده' => 3,
         'مسئول کدتخفیف' => 4,
     ];
-    
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -76,6 +76,12 @@ class Admin extends Authenticatable implements JWTSubject
     {
         return $query->where('role', $role);
     }
+
+    /*
+    #--------------------------------------------------------------------------
+    # Relationships
+    #--------------------------------------------------------------------------
+    */
 
     public function articles()
     {

@@ -15,6 +15,8 @@ class ArticleResource extends JsonResource
             'image' => new ImageCollectionResource($this->image),
             'preview' => $this->short_desc,
             'meta_tags' => json_decode($this->meta),
+            'is_verified' => $this->is_verified,
+            'is_waiting' => $this->is_waiting,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'created_at_fa' => $this->created_at_fa,

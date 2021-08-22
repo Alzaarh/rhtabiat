@@ -3,16 +3,22 @@
 namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\SingleArticleResource;
 use App\Models\Article;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $query = Article::query();
-
+        if ($request->user('admin')) {
+            $query = Article::withoutGlobalScope('available');
+        } else {
+            $query = Article::query();
+        }
         if (request()->filled('article_category_id')) {
             $query->where(
                 'article_category_id',
@@ -27,8 +33,26 @@ class ArticleController extends Controller
         return ArticleResource::collection($query->paginate(request()->count));
     }
 
-    public function show(Article $article)
+    public function show(Request $request, string $article)
     {
+        if ($request->user('admin')) {
+            $article = Article::withoutGlobalScope('available')
+                ->whereSlug($article)
+                ->firstOrFail();
+        } else {
+            $article = Article::whereSlug($article)->firstOrFail()($article);
+        }
         return new SingleArticleResource($article);
+    }
+
+    public function store(StoreArticleRequest $request): JsonResponse
+    {
+        $request
+            ->admin()
+            ->articles()
+            ->create($request->validated());
+        return response()->json([
+            'message' => __('messages.store_article'),
+        ], 201);
     }
 }
