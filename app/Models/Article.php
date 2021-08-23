@@ -52,11 +52,6 @@ class Article extends Model
             $query->whereIsVerified(true)
                 ->whereIsWaiting(false);
         });
-
-        static::deleting(
-            fn ($article) =>
-            Storage::delete($article->getRawOriginal('image'))
-        );
     }
 
     public function author()
