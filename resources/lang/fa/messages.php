@@ -68,4 +68,6 @@ return [
     'destroy_order' => 'سفارش با موفقیت حذف شد',
 
     'store_article' => 'مقاله با موفقیت ایجاد شد',
+    'update_article' => 'مقاله با موفقیت به روزرسانی شد',
+    'update_article_status' => 'وضعیت مقاله به روز شد',
 ];

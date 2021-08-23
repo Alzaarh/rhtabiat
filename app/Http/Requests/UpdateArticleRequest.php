@@ -2,52 +2,47 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Admin;
-use App\Models\ArticleCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreArticleRequest extends FormRequest
+class UpdateArticleRequest extends FormRequest
 {
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         return [
             'title' => [
-                'required',
                 'string',
                 'max:255',
             ],
             'slug' => [
-                'required',
                 'string',
                 'max:255',
-                'unique:articles',
+                Rule::unique('articles')->ignore($this->articleSlug),
             ],
             'short_desc' => [
-                'required',
                 'string',
                 'max:1000',
             ],
             'image_id' => [
+                'nullable',
                 'exists:images,id',
             ],
             'body' => [
-                'required',
                 'string',
             ],
             'meta' => [
+                'nullable',
                 'json',
             ],
             'article_category_id' => [
-                'required',
                 'exists:article_categories,id',
             ],
             'is_waiting' => 'boolean',
         ];
-    }
-
-    public function admin(): Admin
-    {
-        return $this->user();
     }
 }

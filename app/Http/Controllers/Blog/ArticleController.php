@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\SingleArticleResource;
 use App\Models\Article;
@@ -19,6 +20,7 @@ class ArticleController extends Controller
         } else {
             $query = Article::query();
         }
+        $request->whenHas('verified', fn () => $query->whereIsVerified(false));
         if (request()->filled('article_category_id')) {
             $query->where(
                 'article_category_id',
@@ -54,5 +56,24 @@ class ArticleController extends Controller
         return response()->json([
             'message' => __('messages.store_article'),
         ], 201);
+    }
+
+    public function update(UpdateArticleRequest $request, string $articleSlug): JsonResponse
+    {
+        $article = Article::withoutGlobalScope('available')
+            ->whereSlug($articleSlug)
+            ->firstOrFail();
+        $article->update($request->validated());
+        return response()->json(['message' => __('messages.update_article')]);
+
+    }
+
+    public function destroy(string $articleSlug)
+    {
+        $article = Article::withoutGlobalScope('available')
+            ->whereSlug($articleSlug)
+            ->firstOrFail();
+        $article->delete();
+        return response()->json(['message' => 'مقاله با موفقیت حذف شد']);
     }
 }

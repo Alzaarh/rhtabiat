@@ -50,7 +50,7 @@ class Article extends Model
         static::addGlobalScope(new LatestScope);
         static::addGlobalScope('available', function (Builder $query) {
             $query->whereIsVerified(true)
-                ->whereIsWaiting(true);
+                ->whereIsWaiting(false);
         });
 
         static::deleting(

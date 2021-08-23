@@ -175,3 +175,4 @@ Route::get('articles/{article:slug}/related-products', 'Blog\GetArticleRelatedPr
 Route::apiResource('admin/articles', 'Blog\ArticleController')
     ->only('store', 'update', 'destroy')
     ->middleware('auth:admin');
+Route::patch('articles/{articleId}/verify', 'Blog\UpdateArticleVerifiedStatusController')->middleware('auth:admin');
