@@ -22,7 +22,7 @@ class UpdateArticleRequest extends FormRequest
             'slug' => [
                 'string',
                 'max:255',
-                Rule::unique('articles')->ignore($this->articleSlug),
+                Rule::unique('articles')->ignore($this->articleId),
             ],
             'short_desc' => [
                 'string',

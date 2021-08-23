@@ -61,17 +61,17 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, string $articleSlug): JsonResponse
     {
         $article = Article::withoutGlobalScope('available')
-            ->whereSlug($articleSlug)
+            ->whereId($articleSlug)
             ->firstOrFail();
         $article->update($request->validated());
         return response()->json(['message' => __('messages.update_article')]);
 
     }
 
-    public function destroy(string $articleSlug)
+    public function destroy(string $articleId)
     {
         $article = Article::withoutGlobalScope('available')
-            ->whereSlug($articleSlug)
+            ->whereId($articleId)
             ->firstOrFail();
         $article->delete();
         return response()->json(['message' => 'مقاله با موفقیت حذف شد']);
