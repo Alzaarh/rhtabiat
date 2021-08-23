@@ -58,10 +58,10 @@ class ArticleController extends Controller
         ], 201);
     }
 
-    public function update(UpdateArticleRequest $request, string $articleSlug): JsonResponse
+    public function update(UpdateArticleRequest $request, string $articleId): JsonResponse
     {
         $article = Article::withoutGlobalScope('available')
-            ->whereId($articleSlug)
+            ->whereId($articleId)
             ->firstOrFail();
         $article->update($request->validated());
         return response()->json(['message' => __('messages.update_article')]);

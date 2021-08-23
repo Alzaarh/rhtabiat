@@ -13,7 +13,7 @@ class GetArticleRelatedProductsController
         $product = Product::query();
 
         foreach (explode(' ', $article->title) as $productName) {
-            $product->orWhere('name', 'like', '%' . $productName . '%');
+            $product->orWhere('name', 'like', '%' . $productName);
         }
 
         return ProductResource::collection($product->take(10)->get());

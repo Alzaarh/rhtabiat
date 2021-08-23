@@ -29,7 +29,6 @@ class Article extends Model
         'body',
         'meta',
         'image_id',
-        'is_verified',
         'is_waiting',
         'article_category_id',
     ];
