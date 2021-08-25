@@ -176,3 +176,6 @@ Route::apiResource('admin/articles', 'Blog\ArticleController')
     ->only('store', 'update', 'destroy')
     ->middleware('auth:admin');
 Route::patch('articles/{articleId}/verify', 'Blog\UpdateArticleVerifiedStatusController')->middleware('auth:admin');
+
+// others
+Route::get('instagram', 'GetLatestInstagramPostController');
