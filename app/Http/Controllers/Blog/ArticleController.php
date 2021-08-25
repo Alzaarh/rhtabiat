@@ -42,7 +42,7 @@ class ArticleController extends Controller
                 ->whereSlug($article)
                 ->firstOrFail();
         } else {
-            $article = Article::whereSlug($article)->firstOrFail()($article);
+            $article = Article::whereSlug($article)->firstOrFail($article);
         }
         return new SingleArticleResource($article);
     }
