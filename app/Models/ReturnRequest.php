@@ -37,7 +37,7 @@ class ReturnRequest extends Model
 
     public function getCreatedAtAttribute(string $createdAt): string
     {
-        return Jalalian::fromCarbon(Carbon::make($createdAt))->ago();
+        return Jalalian::fromCarbon(Carbon::make($createdAt))->format('Y/m/d');
     }
 
     /*

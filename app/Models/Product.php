@@ -148,7 +148,7 @@ class Product extends Model
 
     public function getCreatedAt(): string
     {
-        return Jalalian::fromCarbon(Carbon::make($this->getAttribute('created_at')))->ago();
+        return Jalalian::fromCarbon(Carbon::make($this->getAttribute('created_at')))->format('Y/m/d');
     }
 
     public function getDescription(): string
