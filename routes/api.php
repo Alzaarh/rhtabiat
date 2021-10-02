@@ -177,5 +177,13 @@ Route::apiResource('admin/articles', 'Blog\ArticleController')
     ->middleware('auth:admin');
 Route::patch('articles/{articleId}/verify', 'Blog\UpdateArticleVerifiedStatusController')->middleware('auth:admin');
 
+// auth related endpoints
+Route::namespace("Auth")->prefix("auth")->group(function () {
+    Route::post("users/register", "RegisterUserController");
+    Route::post("users/register/verify", "CreateUserController");
+    Route::post("users/login", "LoginUserController");
+    Route::post("users/login/verify", "VerifyUserLoginController");
+});
+
 // others
 Route::get('instagram', 'GetLatestInstagramPostController');
