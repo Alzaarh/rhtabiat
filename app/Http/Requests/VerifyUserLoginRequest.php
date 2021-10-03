@@ -35,7 +35,7 @@ class VerifyUserLoginRequest extends FormRequest
                         }
                     }
                     if (!$user) {
-                        $fail();
+                        $fail("کاربری وجود ندارد");
                     }
                 },
             ],

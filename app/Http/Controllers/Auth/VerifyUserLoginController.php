@@ -20,8 +20,8 @@ class VerifyUserLoginController
             }
             return response()->json([
                 "message" => "bad request",
-                "errors" => ["password" => "invalid credentials"],
-            ]);
+                "errors" => ["password" => "اطلاعات وارد شده درست نیست"],
+            ], 400);
         }
         $exists = VerificationCode::wherePhone($request->getUser()->phone)
             ->whereUsage(VerificationCode::USAGES["login"])
@@ -35,7 +35,7 @@ class VerifyUserLoginController
         }
         return response()->json([
             "message" => "bad request",
-            "errors" => ["code" => "invalid code"],
-        ]);
+            "errors" => ["code" => "کد اشتباه است"],
+        ], 400);
     }
 }
