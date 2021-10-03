@@ -149,6 +149,7 @@ return [
         'address' => 'آدرس پستی',
         'order_code' => 'کدسفارش',
         'promo_code' => 'کد تخفیف',
+        "phone" => "تلقن",
     ],
 
 ];
