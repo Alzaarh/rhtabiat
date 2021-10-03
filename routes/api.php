@@ -179,7 +179,7 @@ Route::patch('articles/{articleId}/verify', 'Blog\UpdateArticleVerifiedStatusCon
 
 // auth related endpoints
 Route::namespace("Auth")->prefix("auth")->group(function () {
-    Route::post("users/register", "RegisterUserController");
+    Route::post("users/register", "RegisterUserController")->middleware("throttle:60,1");
     Route::post("users/register/verify", "CreateUserController");
     Route::post("users/login", "LoginUserController");
     Route::post("users/login/verify", "VerifyUserLoginController");

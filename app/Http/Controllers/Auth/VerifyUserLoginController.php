@@ -2,24 +2,40 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\VerifyUserLoginRequest;
+use App\Models\VerificationCode;
+use Illuminate\Support\Facades\Hash;
 
 class VerifyUserLoginController
 {
-  public function __invoke(Request $request)
-  {
-    $request->validate([
-      // "has_password"
-      // "input" => [
-      //   "required",
-      //   function ($attr, $value, $fail) {
-      //     $user = User::wherePhone($value)->first();
-      //     if ($user) {
-
-      //     }
-      //   }
-      ]
-    ]);
-  }
+    public function __invoke(VerifyUserLoginRequest $request)
+    {
+        $pass = $request->getPassword();
+        if ($pass) {
+            if (Hash::check($request->input("password"), $pass)) {
+                return response()->json([
+                    "message" => "success",
+                    "data" => ["token" => auth("user")->login($request->getUser())],
+                ]);
+            }
+            return response()->json([
+                "message" => "bad request",
+                "errors" => ["password" => "invalid credentials"],
+            ]);
+        }
+        $exists = VerificationCode::wherePhone($request->getUser()->phone)
+            ->whereUsage(VerificationCode::USAGES["login"])
+            ->whereCode($request->input("code"))
+            ->exists();
+        if ($exists) {
+            return response()->json([
+                "message" => "success",
+                "data" => ["token" => auth("user")->login($request->getUser())],
+            ]);
+        }
+        return response()->json([
+            "message" => "bad request",
+            "errors" => ["code" => "invalid code"],
+        ]);
+    }
 }
