@@ -2,18 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::namespace('User')->group(function () {
+Route::namespace ('User')->group(function () {
     Route::get('provinces', 'IndexProvinces');
     Route::get('cities', 'IndexCities');
 });
 
-
 Route::prefix('comments')->group(function () {
-    Route::namespace('User')->group(function () {
+    Route::namespace ('User')->group(function () {
         Route::post('/', 'CommentController@store')->middleware('throttle:1,60');
     });
 
-    Route::namespace('Admin')->group(function () {
+    Route::namespace ('Admin')->group(function () {
         Route::middleware(['auth:admin', 'role:admin'])->group(function () {
             Route::get('/', 'CommentController@index');
             Route::patch('{comment}/status', 'UpdateCommentStatus');
@@ -23,13 +22,13 @@ Route::prefix('comments')->group(function () {
 });
 
 Route::prefix('logs')->group(function () {
-    Route::namespace('User')->group(function () {
+    Route::namespace ('User')->group(function () {
         Route::post('/', 'LogController@store');
     });
 });
 
 Route::prefix('orders')->group(function () {
-    Route::namespace('User')->group(function () {
+    Route::namespace ('User')->group(function () {
 
         Route::put('verify', 'VerifyOrder');
         Route::post('notify', 'NotifyUserForOrder');
@@ -40,7 +39,7 @@ Route::prefix('orders')->group(function () {
 
 Route::patch('orders/{order}/reject', 'User\OrderController@reject');
 
-Route::namespace('Blog')->group(function () {
+Route::namespace ('Blog')->group(function () {
     Route::prefix('article-categories')->group(function () {
         Route::get('/', 'ArticleCategoryController@index');
     });
@@ -53,7 +52,7 @@ Route::namespace('Blog')->group(function () {
 });
 
 Route::prefix('article-categories')->group(function () {
-    Route::namespace('Admin')->group(function () {
+    Route::namespace ('Admin')->group(function () {
         Route::post('/', 'ArticleCategoryController@store')->middleware(['auth:admin', 'role:admin']);
         Route::put('{category}', 'ArticleCategoryController@update')->middleware(['auth:admin', 'role:admin']);
         Route::delete('{category}', 'ArticleCategoryController@destroy')->middleware(['auth:admin', 'role:admin']);
@@ -67,13 +66,13 @@ Route::get('banners/locations', 'Shop\IndexBannerLocation');
 Route::get('images/{image}', 'Shop\ImageController@show');
 Route::apiResource('images', 'Shop\ImageController')->except('show')->middleware(['auth:admin', 'role:writer']);
 
-Route::namespace('Shop')->group(
+Route::namespace ('Shop')->group(
     function () {
         Route::get('testimonials', 'GetTestimonials');
     }
 );
 
-Route::namespace('Admin')->group(
+Route::namespace ('Admin')->group(
     function () {
         Route::prefix('admins')->group(
             function () {
@@ -84,46 +83,42 @@ Route::namespace('Admin')->group(
 );
 
 Route::post('verification-codes', 'User\VerificationCodeController@store')->middleware('throttle:1,1');
-Route::namespace('User')->group(
-    function () {
-        Route::prefix('users')->group(
-            function () {
-                Route::get('self', 'UserGetSelf')->middleware('auth:user');
-                Route::post('/', 'UserController@store');
-                Route::post('login', 'LoginUser');
-            }
-        );
-        Route::prefix('carts')->group(
-            function () {
-                Route::post('products', 'CartItemController@store')
-                    ->middleware('auth:user');
-                Route::get('products', 'CartItemController@index')
-                    ->middleware('auth:user');
-                Route::patch('products/{cartProduct}', 'CartItemController@update')
-                    ->middleware('auth:user');
-                Route::delete('products/{cartProduct}', 'CartItemController@destroy')
-                    ->middleware('auth:user');
-            }
-        );
-
-        Route::prefix('user-details')->group(
-            function () {
-                Route::put('/', 'UserDetailController@update')
-                    ->middleware('auth:user');
-                Route::put('passwords', 'UpdateUserPassword')->middleware('auth:user');
-            }
-        );
-
-        Route::apiResource('addresses', 'AddressController')
+Route::namespace ('User')->group(function () {
+    Route::prefix('users')->group(
+        function () {
+            Route::get('self', 'UserGetSelf')->middleware('auth:user');
+            Route::post('/', 'UserController@store');
+            Route::post('login', 'LoginUser');
+        }
+    );
+    Route::prefix('carts')->group(function () {
+        Route::post('products', 'CartItemController@store')->middleware('auth:user');
+        Route::get('products', 'CartItemController@index')
             ->middleware('auth:user');
+        Route::patch('products/{cartProduct}', 'CartItemController@update')
+            ->middleware('auth:user');
+        Route::delete('products/{cartProduct}', 'CartItemController@destroy')
+            ->middleware('auth:user');
+    });
 
-        Route::prefix('transactions')->group(
-            function () {
-                Route::post('/', 'TransactionController@store');
-                Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
-            }
-        );
-    }
+    Route::prefix('user-details')->group(
+        function () {
+            Route::put('/', 'UserDetailController@update')
+                ->middleware('auth:user');
+            Route::put('passwords', 'UpdateUserPassword')->middleware('auth:user');
+        }
+    );
+
+    Route::apiResource('addresses', 'AddressController')
+        ->middleware('auth:user');
+
+    Route::prefix('transactions')->group(
+        function () {
+            Route::post('/', 'TransactionController@store');
+            Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
+        }
+    );
+}
 );
 
 Route::get('admins/self', 'Admin\AdminController@getSelf')->middleware('auth:admin');
@@ -178,11 +173,16 @@ Route::apiResource('admin/articles', 'Blog\ArticleController')
 Route::patch('articles/{articleId}/verify', 'Blog\UpdateArticleVerifiedStatusController')->middleware('auth:admin');
 
 // auth related endpoints
-Route::namespace("Auth")->prefix("auth")->group(function () {
-    Route::post("users/register", "RegisterUserController")->middleware("throttle:60,1");
-    Route::post("users/register/verify", "CreateUserController");
-    Route::post("users/login", "LoginUserController");
-    Route::post("users/login/verify", "VerifyUserLoginController");
+Route::namespace ("Auth")->prefix("auth")->group(function () {
+    Route::prefix("users")->group(function () {
+        Route::post("register", "RegisterUserController")->middleware("throttle:60,1");
+        Route::post("register/verify", "CreateUserController");
+        Route::post("login", "LoginUserController");
+        Route::post("login/verify", "VerifyUserLoginController");
+        Route::post("forget", "ForgetPasswordController");
+        Route::post("forget/verify", "VerifyForgetPasswordController");
+        Route::put("forget/password", "ChangePasswordController");
+    });
 });
 
 // others

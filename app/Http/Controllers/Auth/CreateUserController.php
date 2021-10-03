@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Cart;
 use App\Models\User;
 use App\Models\VerificationCode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CreateUserController
 {
@@ -33,6 +35,7 @@ class CreateUserController
     $user = User::create([
       "phone" => $request->input("phone"),
     ]);
+    $user->cart()->save(new Cart);
     return response()->json([
       "message" => "created",
       "data" =>  ["token" => auth("user")->login($user)],

@@ -17,6 +17,8 @@ class VerificationCode extends Model
     public const USAGES = [
         'register' => 1,
         'login' => 2,
+        "forget" => 3,
+        "change_pass" => 4,
     ];
 
     public function scopeHasPhone($query, $phone)
