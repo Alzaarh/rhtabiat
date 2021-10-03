@@ -28,7 +28,7 @@ class LoginUserRequest extends FormRequest
           } else {
             $user = UserDetail::whereEmail($value)->first();
             if (!$user) {
-              $fail();
+              $fail("اطلاعات وارد شده صحیح نیست");
             } else {
               $this->hasPassword = (bool) $user->password;
             }
