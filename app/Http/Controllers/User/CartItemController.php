@@ -3,27 +3,24 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCartProduct;
+use App\Http\Requests\UpdateCartRequest;
 use App\Http\Resources\ProductItemResource;
 use App\Models\ProductItem;
 
 class CartItemController extends Controller
 {
-    public function store(StoreCartProduct $request)
+    public function store(UpdateCartRequest $request)
     {
-        $cartProducts = [];
-        foreach ($request->products as $product) {
-            $cartProducts[$product['id']] = [
-                'quantity' => $product['quantity'],
+        $cartItems = [];
+        foreach ($request->input("product_items") as $productItem) {
+            $cartItems[$productItem['id']] = [
+                'quantity' => $productItem['quantity'],
             ];
         }
-        
-        request()->user()
-            ->cart
-            ->Products()
-            ->attach($cartProducts);
-
-        return response()->json(['message' => 'Added to cart'], 201);
+        $cart = $request->user()->cart;
+        $cart->products()->detach();
+        $cart->Products()->attach($cartItems);
+        return response()->json(["message" => "به سبد خرید اضافه شد"]);
     }
 
     public function index()
@@ -45,7 +42,7 @@ class CartItemController extends Controller
                 $cartProduct->id,
                 ['quantity' => request()->quantity]
             );
-        
+
         return response()->json(['message' => 'Success']);
     }
 
@@ -56,7 +53,7 @@ class CartItemController extends Controller
             ->cart
             ->products()
             ->detach($cartProduct->id);
-        
+
         return response()->json(['message' => 'Success']);
     }
 }

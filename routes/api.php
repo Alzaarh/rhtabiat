@@ -84,21 +84,14 @@ Route::namespace ('Admin')->group(
 
 Route::post('verification-codes', 'User\VerificationCodeController@store')->middleware('throttle:1,1');
 Route::namespace ('User')->group(function () {
-    Route::prefix('users')->group(
-        function () {
-            Route::get('self', 'UserGetSelf')->middleware('auth:user');
-            Route::post('/', 'UserController@store');
-            Route::post('login', 'LoginUser');
-        }
-    );
+    Route::prefix('users')->group(function () {
+        Route::get('self', 'UserGetSelf')->middleware('auth:user');
+        Route::post('/', 'UserController@store');
+        Route::post('login', 'LoginUser');
+    });
     Route::prefix('carts')->group(function () {
         Route::post('products', 'CartItemController@store')->middleware('auth:user');
-        Route::get('products', 'CartItemController@index')
-            ->middleware('auth:user');
-        Route::patch('products/{cartProduct}', 'CartItemController@update')
-            ->middleware('auth:user');
-        Route::delete('products/{cartProduct}', 'CartItemController@destroy')
-            ->middleware('auth:user');
+        Route::get('products', 'CartItemController@index')->middleware('auth:user');
     });
 
     Route::prefix('user-details')->group(
