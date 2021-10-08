@@ -19,11 +19,9 @@ class UpdateCartRequest extends FormRequest
                 "array",
             ],
             'product_items.*.id' => [
-                'required',
                 'exists:product_items,id',
             ],
             'product_items.*.quantity' => [
-                "required",
                 "integer",
                 "min:1",
             ],
