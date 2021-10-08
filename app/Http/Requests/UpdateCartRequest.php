@@ -15,7 +15,6 @@ class UpdateCartRequest extends FormRequest
     {
         return [
             'product_items' => [
-                "required",
                 "array",
             ],
             'product_items.*.id' => [
