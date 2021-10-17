@@ -108,6 +108,7 @@ Route::namespace ('User')->group(function () {
 			Route::get('verify', 'TransactionController@verify')->name('transactions.verify');
 		}
 	);
+	Route::post("users/orders", "OrderController@store")->middleware("auth:user");
 }
 );
 
