@@ -152,6 +152,7 @@ return [
         "phone" => "تلقن",
         "password" => "رمز عبور",
         "new_password" => "رمز عبور جدید",
+        "email" => "ایمیل",
     ],
 
 ];

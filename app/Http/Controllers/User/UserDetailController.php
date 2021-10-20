@@ -16,7 +16,7 @@ class UserDetailController extends Controller
         empty($user->detail)
             ? $user->detail()->save(new UserDetail($request->validated()))
             : $user->detail->update($request->validated());
-            
-        return response()->json(['message' => 'Profile updated']);
+
+        return response()->json(['message' => 'پروفایل با موفقیت به روز رسانی شد']);
     }
 }

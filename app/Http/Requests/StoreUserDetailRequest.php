@@ -15,11 +15,6 @@ class StoreUserDetailRequest extends FormRequest
 
     public function rules(Request $request)
     {
-        $userEmail = "";
-        if (auth("user")->user()->detail) {
-            $userEmail = auth("user")->user()->detail->email;
-        }
-
         return [
             'name' => 'required|max:255',
             'username' => 'required|max:255',
@@ -27,7 +22,7 @@ class StoreUserDetailRequest extends FormRequest
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('user_details')->ignore($userEmail),
+                Rule::unique('user_details')->ignore(auth("user")->user()->detail),
             ],
         ];
     }
