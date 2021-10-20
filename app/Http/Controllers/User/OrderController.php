@@ -14,6 +14,11 @@ use App\Models\Address;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use App\Services\InitiateWithZarinpalService;
+use App\Models\PromoCode;
+use App\Rules\AvailablePromoCode;
+use App\Rules\CanUsePromoCode;
+use App\Rules\CheckMinPromoCode;
+use App\Rules\ValidPromoCode;
 
 class OrderController extends Controller {
 	public function index() {
@@ -59,11 +64,6 @@ class OrderController extends Controller {
 
 	public function store(Request $request, CalcOrderDeliveryCostService $calcDeliveryCost, InitiateWithZarinpalService $paymentInit)
 	{
-		$request->validate(["address_id" => [
-			"required",
-			"exists:addresses,id",
-		]]);
-
 		$address = Address::find($request->input("address_id"));
 		$orderItems = auth("user")->user()->cart->products->load("product");
 		$products = Product::find(
@@ -78,6 +78,23 @@ class OrderController extends Controller {
 			? auth("user")->user()->detail->email
 			: "";
 		$userPhone = auth("user")->user()->phone;
+
+		$itemsPrice = $orderItems->reduce(
+			fn ($carry, $item)
+				=> ((100 - $item->product->off) * $item->price / 100) *
+					$item->pivot->quantity +
+					$carry,
+					0
+			);
+
+		$request->validate([
+			"address_id" => [
+				"required",
+				"exists:addresses,id",
+			],
+		]);
+
+
 
 		foreach ($orderItems as $orderItem) {
 			if ($orderItem->pivot->quantity > $orderItem->quantity) {
@@ -146,5 +163,20 @@ class OrderController extends Controller {
 					'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
 			],
 		], 201);
+	}
+
+	public function getUserOrders(Request $request)
+	{
+		$query = Order::latest();
+		if ($request->has("status")) {
+			$query->whereStatus($request->query("status"));
+		}
+		return OrderResource::collection($query->paginate(10));
+	}
+
+	public function getUserOrder(Order $order)
+	{
+		$order->load('items.product');
+		return new OrderResource($order);
 	}
 }

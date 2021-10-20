@@ -109,6 +109,8 @@ Route::namespace ('User')->group(function () {
 		}
 	);
 	Route::post("users/orders", "OrderController@store")->middleware("auth:user");
+	Route::get("users/orders", "OrderController@getUserOrders")->middleware("auth:user");
+	Route::get("users/orders/{order}", "OrderController@getUserOrder")->middleware("auth:user");
 }
 );
 
