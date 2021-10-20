@@ -150,6 +150,8 @@ return [
         'order_code' => 'کدسفارش',
         'promo_code' => 'کد تخفیف',
         "phone" => "تلقن",
+        "password" => "رمز عبور",
+        "new_password" => "رمز عبور جدید",
     ],
 
 ];

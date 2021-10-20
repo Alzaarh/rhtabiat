@@ -6,12 +6,6 @@ use App\Http\Controllers\Controller;
 
 class UpdateUserPassword extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function __invoke()
     {
         request()->validate(
@@ -33,11 +27,11 @@ class UpdateUserPassword extends Controller
         }
 
         if ($badReq) {
-            return response()->json(['message' => 'Bad request'], 400);
+            return response()->json(['message' => 'اطلاعات وارد شده صحیح نیست'], 400);
         }
 
         $user->detail->save();
 
-        return response()->json(['message' => 'Success']);
+        return response()->json(['message' => 'رمز عبور با موفقیت تغییر کرد']);
     }
 }
