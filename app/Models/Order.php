@@ -54,6 +54,7 @@ class Order extends Model
         'delivery_cost',
         'package_price',
         'status',
+        "address_id",
     ];
 
     /*

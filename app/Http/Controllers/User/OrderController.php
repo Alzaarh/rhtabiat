@@ -143,6 +143,7 @@ class OrderController extends Controller {
 			$order = Order::create([
 				"delivery_cost" => $deliveryCost,
 				"package_price" => $packagePrice,
+				"address_id" => $address->id,
 			]);
 			$order->items()->attach($attachedItems);
 			DB::commit();
@@ -176,7 +177,7 @@ class OrderController extends Controller {
 
 	public function getUserOrder(Order $order)
 	{
-		$order->load('items.product');
+		$order->load('items.product', "address");
 		return new OrderResource($order);
 	}
 }

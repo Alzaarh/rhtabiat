@@ -22,6 +22,7 @@ class OrderResource extends JsonResource
             'status' => $this->translateStatus(),
             'products' => ProductItemResource::collection($this->whenLoaded('items')),
             'purchasedByGuest' => new GuestResource($this->whenLoaded('purchasedByGuest')),
+            "purchasedByUser" => new AddressResource($this->whenLoaded("address")),
             'delivery_cost' => $this->delivery_cost,
             'package_price' => $this->package_price,
             'deliveryCode' => $this->getDeliveryCode(),
