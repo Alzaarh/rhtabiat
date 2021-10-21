@@ -180,4 +180,113 @@ class OrderController extends Controller {
 		$order->load('items.product', "address");
 		return new OrderResource($order);
 	}
+
+	public function reorder(Order $order, CalcOrderDeliveryCostService $calcDeliveryCost, InitiateWithZarinpalService $paymentInit)
+	{
+		$userEmail = auth("user")->user()->detail ? auth("user")->user()->detail->email : "";
+		$userPhone = auth("user")->user()->phone;
+
+		if ($order->status === Order::STATUS["not_paid"]) {
+			$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
+			if (empty($result['errors']) && $result['data']['code'] == 100) {
+				$order->transactions()->create([
+					'amount' => $order->price,
+					'authority' => $result['data']['authority'],
+				]);
+			}
+			return response()->json([
+				'message' => __('messages.order.store'),
+				'data' => [
+						'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
+				],
+			], 201);
+		} else {
+			$orderItems = $order->items;
+			$products = Product::find(
+				$orderItems->map(fn ($item) => $item->product->id)->toArray()
+			);
+		$itemsPrice = 0;
+		$itemsWeight = 0;
+		$deliveryCost = 0;
+		$packagePrice = 0;
+		$attachedItems = [];
+
+		$itemsPrice = $orderItems->reduce(
+			fn ($carry, $item)
+				=> ((100 - $item->product->off) * $item->price / 100) *
+					$item->pivot->quantity +
+					$carry,
+					0
+			);
+
+		foreach ($orderItems as $orderItem) {
+			if ($orderItem->pivot->quantity > $orderItem->quantity) {
+				throw ValidationException::withMessages([
+					"quantity" => "تعداد محصول واردشده صحیح نمی باشد",
+				]);
+			}
+		}
+
+		$itemsPrice = $orderItems->reduce(
+			fn ($carry, $item)
+				=> ((100 - $item->product->off) * $item->price / 100) *
+					$item->pivot->quantity +
+					$carry,
+					0
+			);
+
+		$itemsWeight = $orderItems->reduce(
+			fn ($carry, $item) => $item->weight * $item->pivot->quantity + $carry,
+			0
+		);
+
+		$deliveryCost = $calcDeliveryCost->handle(
+			$itemsPrice,
+			$order->address->province_id,
+			$itemsWeight
+		);
+
+		$packagePrice = $products->reduce(
+			fn ($carry, $product) => $carry + $product->package_price,
+			0
+		);
+
+		foreach ($orderItems as $item) {
+			$attachedItems[$item->id] = [
+				"product_id" => $item->product->id,
+				"price" => $item->price,
+				"off" => $item->product->off,
+				"quantity" => $item->pivot->quantity,
+				"weight" => $item->weight,
+			];
+		}
+
+		DB::beginTransaction();
+		try {
+			$order = Order::create([
+				"delivery_cost" => $deliveryCost,
+				"package_price" => $packagePrice,
+				"address_id" => $order->address->id,
+			]);
+			$order->items()->attach($attachedItems);
+			DB::commit();
+		} catch (\Exception $e) {
+			DB::rollback();
+		}
+
+		$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
+		if (empty($result['errors']) && $result['data']['code'] == 100) {
+			$order->transactions()->create([
+					'amount' => $order->price,
+					'authority' => $result['data']['authority'],
+			]);
+		}
+		return response()->json([
+			'message' => __('messages.order.store'),
+			'data' => [
+					'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
+			],
+		], 201);
+		}
+	}
 }
