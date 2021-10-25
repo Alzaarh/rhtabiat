@@ -179,5 +179,8 @@ Route::namespace ("Auth")->prefix("auth")->group(function () {
 	});
 });
 
+// admin related endpoints
+Route::apiResource("admins", "Admin\AdminController")->middleware("auth:admin");
+
 // others
 Route::get('instagram', 'GetLatestInstagramPostController');

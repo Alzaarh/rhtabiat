@@ -10,6 +10,7 @@ class AdminResource extends JsonResource
     public function toArray($request)
     {
         return [
+            "id" => $this->id,
             'username' => $this->username,
             'role' => array_search($this->role, Admin::ROLES_FA),
         ];

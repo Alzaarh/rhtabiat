@@ -7,10 +7,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Admin extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * Indicates if the model should be timestamped.
