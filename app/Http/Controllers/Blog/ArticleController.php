@@ -17,6 +17,9 @@ class ArticleController extends Controller
     {
         if ($request->user('admin')) {
             $query = Article::withoutGlobalScope('available');
+            if ($request->user('admin')->role === 3) {
+                $query->where("admin_id", $request->user('admin')->id);
+            }
         } else {
             $query = Article::query();
         }
