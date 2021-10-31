@@ -27,4 +27,14 @@ class CommentController extends Controller
             'message' => __('messages.resource.destroy', ['resource' => 'کامنت']),
         ]);
     }
+
+    public function addReply(Comment $comment)
+    {
+        request()->validate(["reply" => ["required"]]);
+        $comment->reply = request()->reply;
+        $comment->save();
+        return response()->json([
+            'message' => "پاسخ با موفقیت اضافه شد",
+        ]);
+    }
 }

@@ -31,6 +31,7 @@ class CommentResource extends JsonResource
             'created_at' => $this->created_at,
 
             'created_at_fa' => $this->created_at_fa,
+            "reply" => $this->reply,
         ];
     }
 }

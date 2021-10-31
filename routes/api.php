@@ -9,14 +9,15 @@ Route::namespace ('User')->group(function () {
 
 Route::prefix('comments')->group(function () {
 	Route::namespace ('User')->group(function () {
-		Route::post('/', 'CommentController@store')->middleware('throttle:1,60');
+		Route::post('/', 'CommentController@store');
 	});
 
 	Route::namespace ('Admin')->group(function () {
-		Route::middleware(['auth:admin', 'role:admin'])->group(function () {
+		Route::middleware(['auth:admin'])->group(function () {
 			Route::get('/', 'CommentController@index');
 			Route::patch('{comment}/status', 'UpdateCommentStatus');
 			Route::delete('{comment}', 'CommentController@destroy');
+			Route::post('{comment}/reply', 'CommentController@addReply');
 		});
 	});
 });
