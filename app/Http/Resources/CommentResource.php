@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Morilog\Jalali\Jalalian;
+use Carbon\Carbon;
 
 class CommentResource extends JsonResource
 {
@@ -30,7 +32,7 @@ class CommentResource extends JsonResource
 
             'created_at' => $this->created_at,
 
-            'created_at_fa' => $this->created_at_fa,
+            'created_at_fa' => Jalalian::fromCarbon(Carbon::make($this->created_at))->format('Y/m/d'),
             "reply" => $this->reply,
         ];
     }

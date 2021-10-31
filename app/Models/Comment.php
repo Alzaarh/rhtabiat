@@ -6,6 +6,7 @@ use App\Traits\HasPersianDate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\LatestScope;
 
 /**
  * App\Models\Comment
@@ -77,6 +78,8 @@ class Comment extends Model
         static::creating(function ($comment) {
             $comment->status ??= self::NOT_VERIFIED;
         });
+
+        static::addGlobalScope(new LatestScope);
     }
 
     public function getResourceTypeAttribute(): string
