@@ -16,7 +16,7 @@ class ForgetPasswordController
             "code" => $code,
             "usage" => VerificationCode::USAGES["forget"],
         ]);
-        NotifyViaSms::dispatch($request->input("phone"), config("app.sms_patterns.verification"), ["code" => $code]);
+        NotifyViaSms::dispatch($request->input("input"), config("app.sms_patterns.verification"), ["code" => $code]);
         return response()->json([
             "message" => "success",
             "data" => [],
