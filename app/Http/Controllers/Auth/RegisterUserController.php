@@ -23,7 +23,7 @@ class RegisterUserController
       "usage" => VerificationCode::USAGES["register"],
       "code" => $code
     ]);
-    // send sms
-    return response()->json(["message" => __("messages.user.register"), "code" => $code]);
+    NotifyViaSms::dispatch($request->input("phone"), config("app.sms_patterns.verification"), ["code" => $code]);
+    return response()->json(["message" => __("messages.user.register")]);
   }
 }
