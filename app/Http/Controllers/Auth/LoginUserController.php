@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\LoginUserRequest;
 use App\Models\VerificationCode;
+use App\Jobs\NotifyViaSms;
 
 class LoginUserController
 {
@@ -22,11 +23,13 @@ class LoginUserController
       "usage" => VerificationCode::USAGES["login"],
       "phone" => $request->input("input"),
     ]);
+    if (!$hasPass) {
+      NotifyViaSms::dispatch($request->input("phone"), config("app.sms_patterns.verification"), ["code" => $code]);
+    }
     return response()->json([
       "message" => "success",
       "data" => [
         "has_password" => $hasPass,
-        "code" => $code,
       ],
     ]);
   }

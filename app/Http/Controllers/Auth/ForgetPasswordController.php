@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\ForgetPasswordRequest;
 use App\Models\VerificationCode;
+use App\Jobs\NotifyViaSms;
 
 class ForgetPasswordController
 {
@@ -15,11 +16,10 @@ class ForgetPasswordController
             "code" => $code,
             "usage" => VerificationCode::USAGES["forget"],
         ]);
+        NotifyViaSms::dispatch($request->input("phone"), config("app.sms_patterns.verification"), ["code" => $code]);
         return response()->json([
             "message" => "success",
-            "data" => [
-                "code" => $code,
-            ],
+            "data" => [],
         ]);
     }
 }
