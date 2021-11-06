@@ -23,8 +23,6 @@ class UpdateOrderStatusController
         $order->status = $request->input('status');
         $order->save();
 
-        // TODO: send sms to user according to status
-
         return response()->json([
             'statusCode' => '200',
             'message' => __('messages.order.updateStatus'),

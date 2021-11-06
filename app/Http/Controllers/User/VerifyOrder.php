@@ -33,15 +33,15 @@ class VerifyOrder extends Controller
                 $transaction->order->verify();
             });
 
-            // NotifyViaSms::dispatch(
-            //     $phone,
-            //     config('app.sms_patterns.order_verified'),
-            //     [
-            //         'name' => $name,
-            //         'url' => config('app.track_url'),
-            //         'code' => $transaction->order->code,
-            //     ]
-            // );
+            NotifyViaSms::dispatch(
+                $phone,
+                config('app.sms_patterns.order_verified'),
+                [
+                    'name' => $name,
+                    'url' => config('app.track_url'),
+                    'code' => $transaction->order->code,
+                ]
+            );
             return response()->json([
                 'message' => 'تراکنش با موفقیت انجام شد',
                 'data' => [
@@ -61,14 +61,14 @@ class VerifyOrder extends Controller
             $transaction->reject();
         });
 
-        // NotifyViaSms::dispatch(
-        //     $phone,
-        //     config('app.sms_patterns.order_rejected'),
-        //     [
-        //         'name' => $name,
-        //         'admin_phone' => '05144452940',
-        //     ]
-        // );
+        NotifyViaSms::dispatch(
+            $phone,
+            config('app.sms_patterns.order_rejected'),
+            [
+                'name' => $name,
+                'admin_phone' => '05144452940',
+            ]
+        );
         return response()->json([
             'message' => 'تراکنش با موفقیت انجام نشد',
             'data' => [
