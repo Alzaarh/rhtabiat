@@ -144,6 +144,7 @@ class OrderController extends Controller {
 				"delivery_cost" => $deliveryCost,
 				"package_price" => $packagePrice,
 				"address_id" => $address->id,
+				"referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id"),
 			]);
 			$order->items()->attach($attachedItems);
 			DB::commit();

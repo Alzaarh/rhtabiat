@@ -10,6 +10,7 @@ use App\Services\CalcOrderDeliveryCostService;
 use App\Services\InitiateWithZarinpalService;
 use App\Services\ValidateGuestOrderService;
 use DB;
+use App\Models\Admin;
 
 class GuestOrderController extends Controller
 {
@@ -61,6 +62,7 @@ class GuestOrderController extends Controller
                 ),
                 'promo_code_id' => $request->has('promo_code') ? $request->input('promo_code')->id : null,
                 'package_price' => $orderPackagePrice,
+                "referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id"),
             ]);
             if ($request->discount_code) {
                 $code = $request->discount_code;
