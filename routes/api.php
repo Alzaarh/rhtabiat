@@ -185,3 +185,6 @@ Route::apiResource("admins", "Admin\AdminController")->middleware("auth:admin");
 
 // others
 Route::get('instagram', 'GetLatestInstagramPostController');
+
+Route::get("users", "User\UserController@index")->middleware("auth:admin");
+Route::get("users/{user}", "User\UserController@show")->middleware("auth:admin");

@@ -9,6 +9,7 @@ use App\Models\VerificationCode;
 use App\Services\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -31,5 +32,15 @@ class UserController extends Controller
                 $this->userService->handleUserRegister()
             )],
         ], 201);
+    }
+
+    public function index()
+    {
+        return UserResource::collection(User::latest()->paginate(10));
+    }
+
+    public function show(User $user)
+    {
+        return new UserResource($user);
     }
 }
