@@ -13,6 +13,7 @@ use App\Rules\ValidPromoCode;
 use App\Rules\ValidQuantityOrder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
+use App\Models\Admin;
 
 class StoreGuestOrderRequest extends FormRequest
 {
@@ -97,6 +98,7 @@ class StoreGuestOrderRequest extends FormRequest
             'zipcode' => $this->zipcode,
             'address' => $this->address,
             'products' => $this->products,
+            "referer_id" => Admin::where("social_token", $this->social_token)->value("id"),
         ];
     }
 

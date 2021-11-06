@@ -7,21 +7,16 @@ use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Models\Admin;
 
 class OrderController
 {
-    /**
-     * List orders.
-     * Search through orders by code.
-     * Filter order by status.
-     *
-     * @param Request $request
-     * @return ResourceCollection
-     */
     public function index(Request $request): ResourceCollection
     {
         $order = Order::query();
-
+        if ($request->user()->role === Admin::ROLES["discount_generator"]) {
+            $order->where("referer_id", $request->user()->id);
+        }
         $request->whenHas('status', fn (int $status) => $order->filter($status));
 
         $request->whenHas('orderCode', fn (string $orderCode) => $order->search($orderCode));

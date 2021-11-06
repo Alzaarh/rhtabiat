@@ -55,6 +55,7 @@ class Order extends Model
         'package_price',
         'status',
         "address_id",
+        "referer_id",
     ];
 
     /*

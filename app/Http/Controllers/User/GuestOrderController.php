@@ -35,6 +35,7 @@ class GuestOrderController extends Controller
      */
     public function store(StoreGuestOrderRequest $request)
     {
+        dd("asd");
         $orderItems = $this->validateOrder->handle($request->products);
         $orderPrice = array_reduce(
             $orderItems,

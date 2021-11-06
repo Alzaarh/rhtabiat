@@ -24,19 +24,20 @@ class UpdateUserPassword extends Controller
                 $user->detail()->create(["password" => request()->input('password')]);
             } else {
                 $user->detail->password = request()->input('password');
+                $user->detail->save();
             }
         } else {
             $user->canUpdatePassword(request()->input('password'))
                 ? $user->detail->password = request()->input('new_password')
                 : $badReq = true;
+            if (!$badReq) {
+                $user->detail->save();
+            }
         }
 
         if ($badReq) {
             return response()->json(['message' => 'اطلاعات وارد شده صحیح نیست'], 400);
         }
-
-        $user->detail->save();
-
         return response()->json(['message' => 'رمز عبور با موفقیت تغییر کرد']);
     }
 }
