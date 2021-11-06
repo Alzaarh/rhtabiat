@@ -13,7 +13,7 @@ class AdminResource extends JsonResource
             "id" => $this->id,
             'username' => $this->username,
             'role' => array_search($this->role, Admin::ROLES_FA),
-            "social_token" => env("DOMAIN") . "?social_token=" . $this->social_token,
+            "social_token" => $this->social_token,
         ];
     }
 }
