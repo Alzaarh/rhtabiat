@@ -14,6 +14,7 @@ class ProductItem extends Model
     public const PLASTIC_CONTAINER = 2;
     public $timestamps = false;
     protected $fillable = ['weight', 'price', 'quantity', 'container'];
+
     protected $touches = ['carts'];
 
     public function getContainerFaAttribute(): ?string

@@ -7,6 +7,7 @@ use App\Models\Guest;
 use App\Models\Order;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\Cart;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,27 +28,28 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        Guest::where('created_at', '<=', now()->subHours(12))
-            ->whereDoesntHave('orders', function ($query) {
-                $query->where('created_at', '>=', now()->subHours(2))
-                    ->whereHas('order', function ($query) {
-                        $query->whereStatus(Order::STATUS['not_paid']);
-                    });
-            })
-            ->whereHasSentSms(false)
-            ->get()
-            ->each(function ($guest) use ($schedule) {
-                $guest->has_sent_sms = true;
-                $guest->save();
-                $schedule->job(
-                    new NotifyViaSms(
-                        $guest->phone,
-                        config('app.sms_patterns.order_waiting'),
-                        ['keyword' => 'اعتماد']
-                    )
-                )
-                ->everySixHours();
-            });
+        $schedule->call(function () {
+            $carts = Cart::has('products')->whereBetween(
+                'updated_at',
+                [now()->subHours(12), now()->subHours(11)]
+            );
+            $users = [];
+            foreach ($carts as $cart) {
+                $user = $cart->user;
+                if ($user->detail) {
+                    array_push($users, ['phone' => $user->phone, 'name' => $user->detail->name]);
+                } else {
+                    array_push($users, ['phone' => $user->phone, 'name' => 'کاربر']);
+                }
+            }
+            foreach ($users as $user) {
+                NotifyViaSms::dispatch([
+                    'phone' => $user['phone'],
+                    'pattern' => config('app.sms_patterns.order_waiting'),
+                    ['name' => $user['name'], 'link' => 'https://rhtabiat.ir/checkout/cart']
+                ]);
+            }
+        })->everyMinute();
     }
 
     /**
