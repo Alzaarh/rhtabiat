@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserDetail;
 
 class UpdateUserPassword extends Controller
 {
@@ -10,7 +11,7 @@ class UpdateUserPassword extends Controller
     {
         request()->validate(
             [
-                'password' => 'required|string|between:6,30',
+                'password' => 'string|between:6,30',
                 'new_password' => 'string|between:6,30',
             ]
         );
@@ -19,7 +20,11 @@ class UpdateUserPassword extends Controller
         $badReq = false;
 
         if (request()->missing('new_password')) {
-            $user->canStorePassword() ? $user->detail->password = request()->input('password') : $badReq = true;
+            if (!$user->detail) {
+                $user->detail()->create(["password" => request()->input('password')]);
+            } else {
+                $user->detail->password = request()->input('password');
+            }
         } else {
             $user->canUpdatePassword(request()->input('password'))
                 ? $user->detail->password = request()->input('new_password')
