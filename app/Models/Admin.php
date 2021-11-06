@@ -39,7 +39,7 @@ class Admin extends Authenticatable implements JWTSubject
         'مدیر اصلی' => 1,
         'حسابدار' => 2,
         'نویسنده' => 3,
-        'مسئول کدتخفیف' => 4,
+        'مدیر شبکه های اجتماعی' => 4,
     ];
 
     public function getJWTIdentifier()

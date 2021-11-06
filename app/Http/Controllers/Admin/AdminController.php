@@ -7,6 +7,7 @@ use App\Http\Resources\AdminResource;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -28,7 +29,14 @@ class AdminController extends Controller
                 Rule::in(Admin::ROLES)
             ],
         ]);
-        Admin::create($request->all());
+        $admin = new Admin;
+        $admin->username = $request->input("username");
+        $admin->password = $request->input("password");
+        $admin->role = $request->input("role");
+        if ($request->input("role") === Admin::ROLES["discount_generator"]) {
+            $admin->social_token = Str::random(40) . Admin::count();
+        }
+        $admin->save();
         return response()->json(["message" => "ادمین با موفقیت اضافه شد"], 201);
     }
 
