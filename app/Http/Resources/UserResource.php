@@ -20,7 +20,7 @@ class UserResource extends JsonResource
                 "=",
                 "addresses.id"
             )->where("user_id", $this->id)->count(),
-            'created_at' => Jalalian::fromCarbon(Carbon::make($this->createdAt))->format('Y/m/d'),
+            'created_at' => Jalalian::fromCarbon(Carbon::make($this->created_at))->format('Y/m/d'),
             'updated _at' => $this->updated_at,
         ];
     }
