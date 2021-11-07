@@ -19,6 +19,7 @@ class AdminStoreOrderRequest extends FormRequest
             'products' => ['required', 'array'],
             'products.*.id' => ['required', 'exists:product_items'],
             'products.*.quantity' => ['required', 'integer', 'min:1'],
+            'company' => 'string',
         ];
     }
 }
