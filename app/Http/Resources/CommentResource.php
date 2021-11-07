@@ -29,7 +29,7 @@ class CommentResource extends JsonResource
             'resource_id' => $this->commentable_id,
 
             'resource_type' => $this->resource_type,
-
+            'resourceable' => $this->commentable,
             'created_at' => $this->created_at,
 
             'created_at_fa' => Jalalian::fromCarbon(Carbon::make($this->created_at))->format('Y/m/d'),
