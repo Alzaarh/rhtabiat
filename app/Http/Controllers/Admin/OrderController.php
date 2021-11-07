@@ -16,7 +16,7 @@ class OrderController extends Controller
 
     protected CalcOrderDeliveryCostService $calcOrderDeliveryCostService;
 
-    public function __construct(ValidateGuestOrderService $validateGuestOrderService, CalcOrderDeliveryCostService $calcOrderDeliveryCostService) 
+    public function __construct(ValidateGuestOrderService $validateGuestOrderService, CalcOrderDeliveryCostService $calcOrderDeliveryCostService)
     {
         $this->validateGuestOrderService = $validateGuestOrderService;
         $this->calcOrderDeliveryCostService = $calcOrderDeliveryCostService;
@@ -37,7 +37,7 @@ class OrderController extends Controller
                 'delivery_cost' => $this->calcOrderDeliveryCostService->handle($orderPrice, $request->province_id, $orderWeight),
                 'status' => Order::STATUS['being_processed'],
             ]);
-            $order->guestDetail()->create($request->validated());
+            $order->getGuestDetail()->create($request->validated());
             $order->items()->attach($orderItems);
             // Decrease items quantity
             foreach ($orderItems as $item) {
