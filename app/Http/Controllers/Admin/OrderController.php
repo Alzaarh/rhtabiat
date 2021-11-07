@@ -37,7 +37,7 @@ class OrderController extends Controller
                 'delivery_cost' => $this->calcOrderDeliveryCostService->handle($orderPrice, $request->province_id, $orderWeight),
                 'status' => Order::STATUS['being_processed'],
             ]);
-            $order->getGuestDetail()->create($request->validated());
+            $order->guestOrder()->create($request->validated());
             $order->items()->attach($orderItems);
             // Decrease items quantity
             foreach ($orderItems as $item) {
