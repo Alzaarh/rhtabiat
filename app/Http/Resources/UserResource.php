@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Morilog\Jalali\Jalalian;
 
 class UserResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class UserResource extends JsonResource
                 "=",
                 "addresses.id"
             )->where("user_id", $this->id)->count(),
-            'created_at' => $this->created_at,
+            'created_at' => Jalalian::fromCarbon(Carbon::make($this->createdAt))->format('Y/m/d'),
             'updated _at' => $this->updated_at,
         ];
     }
