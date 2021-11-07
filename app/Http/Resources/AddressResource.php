@@ -18,6 +18,7 @@ class AddressResource extends JsonResource {
 			"city_id" => $this->city_id,
 			'city' => $this->city,
 			'zipcode' => $this->zipcode,
+			'user_id' => $this->user_id,
 		];
 	}
 }
