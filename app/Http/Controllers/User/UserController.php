@@ -36,7 +36,13 @@ class UserController extends Controller
 
     public function index()
     {
-        return UserResource::collection(User::latest()->paginate(10));
+        $query = User::latest();
+        if (request()->query('search')) {
+            $query->whereHas('detail', function ($query) {
+                $query->where('name', 'like', '%' . request()->query('search') . '%');
+            });
+        }
+        return UserResource::collection($query->paginate(10));
     }
 
     public function show(User $user)
