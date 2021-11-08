@@ -170,6 +170,9 @@ class OrderController extends Controller {
 	public function getUserOrders(Request $request)
 	{
 		$query = Order::latest();
+		$query->whereHas('address', function ($query) {
+			$query->where('user_id', $request->user()->id);
+		});
 		if ($request->has("status")) {
 			$query->whereStatus($request->query("status"));
 		}
