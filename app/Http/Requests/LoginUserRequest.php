@@ -24,7 +24,11 @@ class LoginUserRequest extends FormRequest
         function ($attr, $value, $fail) {
           $user = User::wherePhone($value)->first();
           if ($user) {
-          $this->hasPassword = (bool) $user->detail;
+            if ($user->detail) {
+              $this->hasPassword = (bool) $user->detail->password;
+            } else {
+              $this->hasPassword = false;
+            }
           } else {
             $user = UserDetail::whereEmail($value)->first();
             if (!$user) {
