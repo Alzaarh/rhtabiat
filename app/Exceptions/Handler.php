@@ -61,8 +61,8 @@ class Handler extends ExceptionHandler
                 case 429:
                     return response()->json(['message' => 'لطفا یک دقیقه دیگر امتحان کنید'], 429);
 
-                // default:
-                //     return response()->json(['message' => 'خطایی رخ داده است'], 500);
+                default:
+                    return response()->json(['message' => 'خطایی رخ داده است دقایقی دیگر تلاش کنید'], 500);
             }
         });
     }
