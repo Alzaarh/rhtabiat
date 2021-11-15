@@ -33,7 +33,6 @@ class ImageController extends Controller
     public function store(StoreImageRequest $request)
     {
         $image = new Image($request->validated());
-        $image->resize();
         $image->upload();
         $image->save();
 

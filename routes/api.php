@@ -172,7 +172,7 @@ Route::namespace ("Auth")->prefix("auth")->group(function () {
 	Route::prefix("users")->group(function () {
 		Route::post("register", "RegisterUserController");
 		Route::post("register/verify", "CreateUserController");
-		Route::post("login", "LoginUserController")->middleware("throttle:1,1");
+		Route::post("login", "LoginUserController");
 		Route::post("login/verify", "VerifyUserLoginController");
 		Route::post("forget", "ForgetPasswordController");
 		Route::post("forget/verify", "VerifyForgetPasswordController");

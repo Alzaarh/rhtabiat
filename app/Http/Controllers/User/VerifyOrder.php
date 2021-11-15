@@ -18,22 +18,43 @@ class VerifyOrder extends Controller
         $transaction = $request->transaction;
         $phone = null;
         $name = null;
-        if ($transaction->order->forGuest()) {
-            $phone = $transaction->order->guestDetail->mobile;
-            $name = $transaction->order->guestDetail->name;
-        } elseif ($transaction->order->forUser()) {
+        if ($transaction->order->getGuestDetail()) {
+            $phone = $transaction->order->getGuestDetail()->mobile;
+            $name = $transaction->order->getGuestDetail()->name;
+        } else {
             $phone = $transaction->order->address->mobile;
             $name = $transaction->order->address->name;
         }
         $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
+        // if (empty($result['errors']) && $result['data']['code'] == 100) {
+        //     DB::transaction(function () use ($transaction, $result) {
+        //         $transaction->verify($result['data']['ref_id']);
+        //         $transaction->order->verify();
+        //     });
 
-        if (empty($result['errors']) && $result['data']['code'] == 100) {
+        //     NotifyViaSms::dispatch(
+        //         $phone,
+        //         config('app.sms_patterns.order_verified'),
+        //         [
+        //             'name' => $name,
+        //             'url' => config('app.track_url'),
+        //             'code' => $transaction->order->code,
+        //         ]
+        //     );
+        //     return response()->json([
+        //         'message' => 'تراکنش با موفقیت انجام شد',
+        //         'data' => [
+        //             'code' => 1,
+        //         ],
+        //     ]);
+        // }
+        if (empty($result['errors'])) {
             DB::transaction(function () use ($transaction, $result) {
-                $transaction->verify($result['data']['ref_id']);
+                $transaction->verify($result['RefID']);
                 $transaction->order->verify();
             });
 
-            NotifyViaSms::dispatch(
+            NotifyViaSms::dispatchSync(
                 $phone,
                 config('app.sms_patterns.order_verified'),
                 [
@@ -48,20 +69,13 @@ class VerifyOrder extends Controller
                     'code' => 1,
                 ],
             ]);
-            return response()->json([
-                'message' => 'تراکنش با موفقیت انجام شد',
-                'data' => [
-                    'code' => 1,
-                ],
-            ]);
         }
-
 
         DB::transaction(function () use ($transaction) {
             $transaction->reject();
         });
 
-        NotifyViaSms::dispatch(
+        NotifyViaSms::dispatchSync(
             $phone,
             config('app.sms_patterns.order_rejected'),
             [

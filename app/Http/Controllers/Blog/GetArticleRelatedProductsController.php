@@ -12,7 +12,7 @@ class GetArticleRelatedProductsController
     {
         $product = Product::withoutGlobalScope('latest');
 
-        foreach (explode(' ', $article->title) as $productName) {
+        foreach (explode('-', $article->slug) as $productName) {
             $product->orWhere('name', 'like', '%' . $productName . '%');
         }
 

@@ -85,11 +85,6 @@ class Image extends Model
         return $this->hasMany(Article::class);
     }
 
-    /**
-     * if image dimensions are greater than 1200 resize it to 1200
-     *
-     * @return void
-     */
     public function resize()
     {
         $image = \Image::make($this->image);
