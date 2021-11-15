@@ -153,16 +153,22 @@ class OrderController extends Controller {
 		}
 
 		$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
-		if (empty($result['errors']) && $result['data']['code'] == 100) {
+		// if (empty($result['errors']) && $result['data']['code'] == 100) {
+		// 	$order->transactions()->create([
+		// 			'amount' => $order->price,
+		// 			'authority' => $result['data']['authority'],
+		// 	]);
+		// }
+		if (empty($result['errors'])) {
 			$order->transactions()->create([
 					'amount' => $order->price,
-					'authority' => $result['data']['authority'],
+					'authority' => $result['Authority'],
 			]);
 		}
 		return response()->json([
 			'message' => __('messages.order.store'),
 			'data' => [
-					'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
+					'redirect_url' => config('app.zarinpal.redirect_url') . $result['Authority'],
 			],
 		], 201);
 	}
