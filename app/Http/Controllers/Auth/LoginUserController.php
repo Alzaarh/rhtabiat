@@ -18,14 +18,14 @@ class LoginUserController
       ]);
     }
     $code = rand(10000, 99999);
+    $phone = User::wherePhone($request->input('input'))->value('phone');
+    $detail = UserDetail::whereEmail($request->input('input'))->first();
     VerificationCode::create([
       "code" => $code,
       "usage" => VerificationCode::USAGES["login"],
-      "phone" => $request->input("input"),
+      "phone" => $phone ?? $detail->user->phone,
     ]);
-    if (!$hasPass) {
-      NotifyViaSms::dispatch($request->input("input"), config("app.sms_patterns.verification"), ["code" => $code]);
-    }
+    NotifyViaSms::dispatch($phone ?? $detail->user->phone, config("app.sms_patterns.verification"), ["code" => $code]);
     return response()->json([
       "message" => "success",
       "data" => [
