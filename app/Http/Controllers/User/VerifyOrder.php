@@ -26,35 +26,13 @@ class VerifyOrder extends Controller
             $name = $transaction->order->address->name;
         }
         $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
-        // if (empty($result['errors']) && $result['data']['code'] == 100) {
-        //     DB::transaction(function () use ($transaction, $result) {
-        //         $transaction->verify($result['data']['ref_id']);
-        //         $transaction->order->verify();
-        //     });
-
-        //     NotifyViaSms::dispatch(
-        //         $phone,
-        //         config('app.sms_patterns.order_verified'),
-        //         [
-        //             'name' => $name,
-        //             'url' => config('app.track_url'),
-        //             'code' => $transaction->order->code,
-        //         ]
-        //     );
-        //     return response()->json([
-        //         'message' => 'تراکنش با موفقیت انجام شد',
-        //         'data' => [
-        //             'code' => 1,
-        //         ],
-        //     ]);
-        // }
-        if (empty($result['errors'])) {
+        if (empty($result['errors']) && $result['data']['code'] == 100) {
             DB::transaction(function () use ($transaction, $result) {
-                $transaction->verify($result['RefID']);
+                $transaction->verify($result['data']['ref_id']);
                 $transaction->order->verify();
             });
 
-            NotifyViaSms::dispatchSync(
+            NotifyViaSms::dispatch(
                 $phone,
                 config('app.sms_patterns.order_verified'),
                 [
@@ -70,7 +48,6 @@ class VerifyOrder extends Controller
                 ],
             ]);
         }
-
         DB::transaction(function () use ($transaction) {
             $transaction->reject();
         });

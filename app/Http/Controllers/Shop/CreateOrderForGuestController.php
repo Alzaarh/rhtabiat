@@ -15,29 +15,16 @@ class CreateOrderForGuestController
 
         $result = $initiateWithZarinpal->handle($order->getPrice(), $request->input('email', ''), $request->input('mobile'));
 
-        // if (empty($result['errors']) && $result['data']['code'] == 100) {
-        //     $order->transactions()->create([
-        //         'amount' => $order->getPrice(),
-        //         'authority' => $result['data']['authority'],
-        //     ]);
-
-        //     return response()->json([
-        //         'message' => __('messages.order.store'),
-        //         'data' => [
-        //             'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
-        //         ],
-        //     ], 201);
-        // }
-        if ($result['Authority']) {
+        if (empty($result['errors']) && $result['data']['code'] == 100) {
             $order->transactions()->create([
                 'amount' => $order->getPrice(),
-                'authority' => $result['Authority'],
+                'authority' => $result['data']['authority'],
             ]);
 
             return response()->json([
                 'message' => __('messages.order.store'),
                 'data' => [
-                    'redirect_url' => config('app.zarinpal.redirect_url') . $result['Authority'],
+                    'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
                 ],
             ], 201);
         }

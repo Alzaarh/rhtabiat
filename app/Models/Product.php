@@ -39,7 +39,10 @@ class Product extends Model
 
     */
 
-    protected $casts = ['is_best_selling' => 'boolean'];
+    protected $casts = [
+        'is_best_selling' => 'boolean',
+        'is_disabled' => 'boolean',
+    ];
 
     protected $fillable = [
         'name',
@@ -52,6 +55,7 @@ class Product extends Model
         'is_best_selling',
         'package_price',
         'unit',
+        'is_disabled',
     ];
 
     protected $with = ['image'];

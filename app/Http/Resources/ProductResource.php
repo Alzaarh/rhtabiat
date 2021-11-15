@@ -37,6 +37,7 @@ class ProductResource extends JsonResource
             'items' => $this->when(isset($items), $items),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'createdAt' => $this->getCreatedAt(),
+            'is_disabled' => $this->is_disabled,
         ];
     }
 }

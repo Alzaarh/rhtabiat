@@ -140,12 +140,22 @@ class OrderController extends Controller {
 
 		DB::beginTransaction();
 		try {
-			$order = Order::create([
-				"delivery_cost" => $deliveryCost,
-				"package_price" => $packagePrice,
-				"address_id" => $address->id,
-				"referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id"),
-			]);
+			if ($result->input('promoCode')) {
+				$promoCode = PromoCode::whereCode($result->input('promoCode'))->first();
+				$promoCode->orders()->create([
+					"delivery_cost" => $deliveryCost,
+					"package_price" => $packagePrice,
+					"address_id" => $address->id,
+					"referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id") ?? 0,
+				])
+			} else {
+				$order = Order::create([
+					"delivery_cost" => $deliveryCost,
+					"package_price" => $packagePrice,
+					"address_id" => $address->id,
+					"referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id"),
+				]);
+			}
 			$order->items()->attach($attachedItems);
 			DB::commit();
 		} catch (\Exception $e) {
@@ -153,22 +163,16 @@ class OrderController extends Controller {
 		}
 
 		$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
-		// if (empty($result['errors']) && $result['data']['code'] == 100) {
-		// 	$order->transactions()->create([
-		// 			'amount' => $order->price,
-		// 			'authority' => $result['data']['authority'],
-		// 	]);
-		// }
-		if (empty($result['errors'])) {
+		if (empty($result['errors']) && $result['data']['code'] == 100) {
 			$order->transactions()->create([
 					'amount' => $order->price,
-					'authority' => $result['Authority'],
+					'authority' => $result['data']['authority'],
 			]);
 		}
 		return response()->json([
 			'message' => __('messages.order.store'),
 			'data' => [
-					'redirect_url' => config('app.zarinpal.redirect_url') . $result['Authority'],
+					'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
 			],
 		], 201);
 	}

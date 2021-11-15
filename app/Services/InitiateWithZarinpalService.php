@@ -8,22 +8,13 @@ class InitiateWithZarinpalService
 {
     public function handle(int $amount, string $userEmail, string $userMobile): array
     {
-        // $jsonData = json_encode(
-        //     [
-        //         'merchant_id' => config('app.zarinpal.key'),
-        //         'amount' => $amount * 10,
-        //         'callback_url' => config('app.zarinpal.callback_url'),
-        //         'description' => 'خرید از فروشگاه '.config('app.name'),
-        //         'metadata' => ['email' => $userEmail, 'mobile' => $userMobile],
-        //     ]
-        // );
         $jsonData = json_encode(
             [
-                'MerchantID' => config('app.zarinpal.key'),
-                'Amount' => $amount * 10,
-                'CallbackURL' => config('app.zarinpal.callback_url'),
-                'Description' => 'خرید از فروشگاه '.config('app.name'),
-                'Metadata' => ['email' => $userEmail, 'mobile' => $userMobile],
+                'merchant_id' => config('app.zarinpal.key'),
+                'amount' => $amount * 10,
+                'callback_url' => config('app.zarinpal.callback_url'),
+                'description' => 'خرید از فروشگاه '.config('app.name'),
+                'metadata' => ['email' => $userEmail, 'mobile' => $userMobile],
             ]
         );
         $ch = curl_init(config('app.zarinpal.initiate_url'));
