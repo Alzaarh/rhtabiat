@@ -192,6 +192,7 @@ class Product extends Model
     public function scopeOrderByPrice(Builder $query, string $ascOrDesc): Builder
     {
         return $query->join('product_items', 'products.id', '=', 'product_items.product_id')
+            ->groupBy('products.id')
             ->selectRaw('price / weight as basePrice')
             ->orderBy('basePrice', $ascOrDesc);
     }
