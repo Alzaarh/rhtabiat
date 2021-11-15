@@ -10,7 +10,7 @@ class IndexProductRequest extends FormRequest
     {
         return [
             'count' => 'integer|between:1,30',
-            'sort_by' => 'in:lowest_price,highest_price,highest_score',
+            'sort_by' => 'in:lowest_price,highest_price,highest_rated,latest',
             'search' => 'string|between:1,30',
             'best_selling' => 'in:true',
             'featured' => 'in:true',

@@ -42,10 +42,7 @@ class ProductService
             case 'highest_price':
                 $query->orderByPrice('desc');
                 break;
-            case 'highest_rated':
-                // TODO
         }
-
         return $query;
     }
 
