@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Requests\LoginUserRequest;
 use App\Models\VerificationCode;
 use App\Jobs\NotifyViaSms;
+use App\Models\User;
+use App\Models\UserDetail;
 
 class LoginUserController
 {
