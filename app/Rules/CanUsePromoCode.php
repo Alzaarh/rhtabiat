@@ -26,8 +26,14 @@ class CanUsePromoCode implements Rule
      */
     public function passes($attribute, $value)
     {
-        // TODO: when user is implemented change this.
-        return !PromoCode::whereCode($value)->first()->user_only;
+        if (PromoCode::whereCode($value)->first()->user_only) {
+            if (auth('user')->user()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
