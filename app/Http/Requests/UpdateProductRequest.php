@@ -37,6 +37,7 @@ class UpdateProductRequest extends FormRequest
             'is_best_selling' => 'boolean',
             'package_price' => 'integer|min:0',
             'unit' => Rule::in(Product::UNITS),
+            'is_disabled' => 'boolean',
         ];
     }
 }

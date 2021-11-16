@@ -45,7 +45,7 @@ class NotifyViaSms implements ShouldQueue
         $input_data = $this->data;
 
         $client = new SoapClient($url);
-        
+
         $client->sendPatternSms(
             $from,
             $this->phone,

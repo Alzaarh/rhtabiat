@@ -6,11 +6,13 @@ use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Requests\UpdateProductCategoryRequest;
 use App\Http\Resources\ProductCategoryResource;
 use App\Models\ProductCategory;
+use App\Jobs\ProcessCart;
 
 class ProductCategoryController
 {
     public function index()
     {
+        ProcessCart::dispatchSync();
         return ProductCategoryResource::collection(
             ProductCategory::with(['products', 'children', 'image', 'imageMobile'])->get()
         );

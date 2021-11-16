@@ -9,6 +9,10 @@ class Cart extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'is_sms_sent' => 'boolean',
+    ];
+
     public function getTotalPriceAttribute()
     {
         return $this

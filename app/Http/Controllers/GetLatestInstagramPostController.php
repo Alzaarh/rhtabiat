@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\ProcessCart;
 
 class GetLatestInstagramPostController
 {
