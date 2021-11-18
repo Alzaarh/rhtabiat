@@ -148,6 +148,7 @@ class OrderController extends Controller {
 					"address_id" => $address->id,
 					"referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id") ?? 0,
 				]);
+				dd($order);
 			} else {
 				$order = Order::create([
 					"delivery_cost" => $deliveryCost,
