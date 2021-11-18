@@ -137,7 +137,7 @@ class OrderController extends Controller {
 				"weight" => $item->weight,
 			];
 		}
-
+		$order = null;
 		DB::beginTransaction();
 		try {
 			if ($result->input('promoCode')) {
