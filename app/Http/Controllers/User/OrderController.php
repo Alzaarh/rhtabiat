@@ -158,11 +158,7 @@ class OrderController extends Controller {
 			}
 			$order->items()->attach($attachedItems);
 			DB::commit();
-		} catch (\Exception $e) {
-			DB::rollback();
-		}
-
-		$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
+			$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
 		if (empty($result['errors']) && $result['data']['code'] == 100) {
 			$order->transactions()->create([
 					'amount' => $order->price,
@@ -175,6 +171,9 @@ class OrderController extends Controller {
 					'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
 			],
 		], 201);
+		} catch (\Exception $e) {
+			DB::rollback();
+		}
 	}
 
 	public function getUserOrders(Request $request)
