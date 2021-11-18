@@ -140,7 +140,7 @@ class OrderController extends Controller {
 		$order = null;
 		DB::beginTransaction();
 		try {
-			if ($result->input('promoCode')) {
+			if ($request->input('promoCode')) {
 				$promoCode = PromoCode::whereCode($result->input('promoCode'))->first();
 				$order = $promoCode->orders()->create([
 					"delivery_cost" => $deliveryCost,
@@ -148,7 +148,6 @@ class OrderController extends Controller {
 					"address_id" => $address->id,
 					"referer_id" => Admin::where("social_token", $request->input("social_token"))->value("id") ?? 0,
 				]);
-				dd($order);
 			} else {
 				$order = Order::create([
 					"delivery_cost" => $deliveryCost,
