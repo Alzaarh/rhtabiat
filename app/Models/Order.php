@@ -102,8 +102,8 @@ class Order extends Model
         $off = 0;
         $price = $this->items->reduce(fn ($c, $i) => $i->pivot->price * (100 - $i->pivot->off) / 100 * $i->pivot->quantity + $c, 0);
         $priceWithoutOff = $this->items->reduce(fn ($c, $i) => $i->pivot->price * $i->pivot->quantity + $c, 0);
-        if (filled($this->discountCode)) {
-            $off = $this->discountCode->calc($priceWithoutOff);
+        if (filled($this->promoCode)) {
+            $off = $this->promoCode->calculateOff($priceWithoutOff);
         }
         return $price - $off + $this->delivery_cost + $this->package_price;
     }
