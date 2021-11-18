@@ -17,7 +17,7 @@ class SaveAddressRequest extends FormRequest
             'name' => 'required|max:255',
             'company' => 'string|max:255',
             'mobile' => 'required|digits:11',
-            'phone' => 'digits:11',
+            'phone' => 'digits:11|nullable',
             'province_id' => 'required|exists:provinces,id',
             'city_id' => 'required|exists:cities,id',
             'zipcode' => 'required|digits:10',
