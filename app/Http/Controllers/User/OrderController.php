@@ -142,7 +142,7 @@ class OrderController extends Controller {
 		try {
 			if ($result->input('promoCode')) {
 				$promoCode = PromoCode::whereCode($result->input('promoCode'))->first();
-				$promoCode->orders()->create([
+				$order = $promoCode->orders()->create([
 					"delivery_cost" => $deliveryCost,
 					"package_price" => $packagePrice,
 					"address_id" => $address->id,
