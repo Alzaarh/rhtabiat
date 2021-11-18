@@ -16,8 +16,8 @@ class UpdatePromoCodeRequest extends FormRequest
         return [
             'user_only' => 'boolean',
             'one_per_user' => 'boolean',
-            'off_percent' => 'integer|min:1|max:99',
-            'off_value' => 'integer|min:1000',
+            'off_percent' => 'integer|min:1|max:99|nullable',
+            'off_value' => 'integer|min:1000||nullable',
             'max' => 'integer|min:1000',
             'min' => 'integer|min:1000',
             'infinite' => 'boolean',

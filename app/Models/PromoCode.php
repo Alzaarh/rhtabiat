@@ -28,7 +28,7 @@ class PromoCode extends Model
     {
         static::addGlobalScope(new LatestScope);
 
-        static::creating(function (self $promoCode) {
+        static::saving(function (self $promoCode) {
             // construct valid_date field from valid_days which is sent from
             // client
             $promoCode->valid_date = now()->addDays($promoCode->valid_days);
