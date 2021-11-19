@@ -34,6 +34,7 @@ class CommentResource extends JsonResource
 
             'created_at_fa' => Jalalian::fromCarbon(Carbon::make($this->created_at))->format('Y/m/d'),
             "reply" => $this->reply,
+            'is_testimonial' => $this->is_testimonial,
         ];
     }
 }

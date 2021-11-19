@@ -64,6 +64,10 @@ class Comment extends Model
         'status',
     ];
 
+    protected $casts = [
+        'is_testimonial' => 'boolean',
+    ];
+
     public static function getLatest($count)
     {
         return self::latest()->take($count)->get();

@@ -11,7 +11,7 @@ class GetTestimonials extends Controller
     public function __invoke()
     {
         return CommentResource::collection(
-            Comment::testimonials()->take(request()->count)->get()
+            Comment::where('is_testimonial', true)->take(request()->count)->get()
         );
     }
 }

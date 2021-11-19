@@ -16,6 +16,7 @@ Route::prefix('comments')->group(function () {
 		Route::middleware(['auth:admin'])->group(function () {
 			Route::get('/', 'CommentController@index');
 			Route::patch('{comment}/status', 'UpdateCommentStatus');
+			Route::patch('{comment}/testimonial', 'UpdateCommentTestimonial');
 			Route::delete('{comment}', 'CommentController@destroy');
 			Route::post('{comment}/reply', 'CommentController@addReply');
 		});
