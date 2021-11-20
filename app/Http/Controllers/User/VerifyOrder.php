@@ -66,7 +66,7 @@ class VerifyOrder extends Controller
             'data' => [
                 'code' => 0,
             ],
-            'code' => $result['data']['code'],
+            'code' => $result,
         ]);
     }
 }
