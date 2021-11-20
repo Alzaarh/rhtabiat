@@ -26,7 +26,7 @@ class VerifyOrder extends Controller
             $name = $transaction->order->address->name;
         }
         $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
-        if (empty($result['errors'])) {
+        if (empty($result['errors']) && $result['data']['code'] == 100) {
             DB::transaction(function () use ($transaction, $result) {
                 $transaction->verify($result['data']['ref_id']);
                 $transaction->order->verify();
