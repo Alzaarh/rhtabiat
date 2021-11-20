@@ -46,6 +46,7 @@ class VerifyOrder extends Controller
                 'data' => [
                     'code' => 1,
                 ],
+                'code' => $result['data']['code'],
             ]);
         }
         DB::transaction(function () use ($transaction) {
@@ -65,6 +66,7 @@ class VerifyOrder extends Controller
             'data' => [
                 'code' => 0,
             ],
+            'code' => $result['data']['code'],
         ]);
     }
 }
