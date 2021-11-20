@@ -26,7 +26,7 @@ class VerifyOrder extends Controller
             $name = $transaction->order->address->name;
         }
         $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
-        if (empty($result['errors']) && $result['data']['code'] == 100) {
+        if (empty($result['errors'])) {
             DB::transaction(function () use ($transaction, $result) {
                 $transaction->verify($result['data']['ref_id']);
                 $transaction->order->verify();
@@ -46,14 +46,14 @@ class VerifyOrder extends Controller
                 'data' => [
                     'code' => 1,
                 ],
-                'code' => $result['data']['code'],
+                'code' => $result,
             ]);
         }
         DB::transaction(function () use ($transaction) {
             $transaction->reject();
         });
 
-        NotifyViaSms::dispatchSync(
+        NotifyViaSms::dispatch(
             $phone,
             config('app.sms_patterns.order_rejected'),
             [
