@@ -41,6 +41,11 @@ class Order extends Model
 
     public const REJECTED = 5;
 
+    public const PAYMENT_METHODS = [
+        'zarinpal' => 1,
+        'idpay' => 2,
+    ];
+
     /*
 
     #--------------------------------------------------------------------------
@@ -56,6 +61,7 @@ class Order extends Model
         'status',
         "address_id",
         "referer_id",
+        'payment_method',
     ];
 
     /*

@@ -78,6 +78,10 @@ class StoreGuestOrderRequest extends FormRequest
                 new CheckMinPromoCode($this->orderCost()),
                 new AvailablePromoCode,
             ],
+            'payment_method' => [
+                'required',
+                'in:zarinpal,idpay',
+            ],
         ];
     }
 
@@ -99,6 +103,7 @@ class StoreGuestOrderRequest extends FormRequest
             'address' => $this->address,
             'products' => $this->products,
             "referer_id" => Admin::where("social_token", $this->social_token)->value("id"),
+            'payment_method' => Order::PAYMENT_METHODS[$this->payment_method],
         ];
     }
 

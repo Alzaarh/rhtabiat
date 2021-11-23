@@ -41,6 +41,7 @@ return [
     ],
 
     'track_url' => env('TRACK_URL', 'https://rhtabiat.ir/track'),
+    'payment_callback_url' => env('ZARINPAL_CALLBACK_URL', '127.0.0.1'),
 
     /*
     |--------------------------------------------------------------------------

@@ -10,11 +10,9 @@ use DB;
 
 class VerifyOrder extends Controller
 {
-    /**
-     * @throws \Throwable
-     */
     public function __invoke(VerifyOrderRequest $request, VerifyZarinpalService $verifyZarinpal)
     {
+        dd($request);
         $transaction = $request->transaction;
         $phone = null;
         $name = null;

@@ -12,7 +12,6 @@ class VerifyOrderRequest extends FormRequest
     {
         return [
             'authority' => [
-                'required',
                 function ($attr, $value, $fail) {
                     $transaction = Transaction::whereAuthority($value)
                         ->whereStatus(Transaction::STATUS['not_verified'])

@@ -32,7 +32,7 @@ Route::prefix('logs')->group(function () {
 Route::prefix('orders')->group(function () {
 	Route::namespace ('User')->group(function () {
 
-		Route::put('verify', 'VerifyOrder');
+		Route::get('verify', 'VerifyOrder');
 		Route::post('notify', 'NotifyUserForOrder');
 	});
 	Route::get('status', 'User\GetOrderStatus');
