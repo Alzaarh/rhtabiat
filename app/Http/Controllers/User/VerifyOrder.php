@@ -28,7 +28,7 @@ class VerifyOrder extends Controller
                 $phone = $order->address->mobile;
                 $name = $order->address->name;
             }
-            if (!$result->error_code && $result->status == '100') {
+            if (!property_exists($result, 'error_code') && $result->status == '100') {
                 DB::transaction(function () use ($transaction, $result) {
                     $transaction->verify($result->track_id);
                     $transaction->order->verify();
