@@ -30,4 +30,24 @@ class IdpayPayment
         curl_close($ch);
         return json_decode($result);
     }
+
+    public function verify(array $data)
+    {
+        $params = [
+            'id' => $data['id'],
+            'order_id' => $data['order_id'],
+        ];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.idpay.ir/v1.1/payment/verify');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/json',
+        'X-API-KEY: 6a7f99eb-7c20-4412-a972-6dfb7cd253a4',
+        'X-SANDBOX: 1',
+        ));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        dd($result);
+    }
 }

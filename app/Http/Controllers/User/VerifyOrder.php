@@ -5,14 +5,14 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VerifyOrderRequest;
 use App\Jobs\NotifyViaSms;
+use App\Services\IdpayPayment;
 use App\Services\VerifyZarinpalService;
 use DB;
 
 class VerifyOrder extends Controller
 {
-    public function __invoke(VerifyOrderRequest $request, VerifyZarinpalService $verifyZarinpal)
+    public function __invoke(VerifyOrderRequest $request, VerifyZarinpalService $verifyZarinpal, IdpayPayment $idpayPayment)
     {
-        dd($request);
         $transaction = $request->transaction;
         $phone = null;
         $name = null;
@@ -23,48 +23,53 @@ class VerifyOrder extends Controller
             $phone = $transaction->order->address->mobile;
             $name = $transaction->order->address->name;
         }
-        $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
-        if (empty($result['errors']) && $result['data']['code'] == 100) {
-            DB::transaction(function () use ($transaction, $result) {
-                $transaction->verify($result['data']['ref_id']);
-                $transaction->order->verify();
+        if ($request->input('track_id')) {
+            $idpayPayment->verify(['id' => $request->input('id'), 'order_id' => $request->input('order_id')]);
+        } else {
+            $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
+            if (empty($result['errors']) && $result['data']['code'] == 100) {
+                DB::transaction(function () use ($transaction, $result) {
+                    $transaction->verify($result['data']['ref_id']);
+                    $transaction->order->verify();
+                });
+
+                NotifyViaSms::dispatch(
+                    $phone,
+                    config('app.sms_patterns.order_verified'),
+                    [
+                        'name' => $name,
+                        'url' => config('app.track_url'),
+                        'code' => $transaction->order->code,
+                    ]
+                );
+                return response()->json([
+                    'message' => 'تراکنش با موفقیت انجام شد',
+                    'data' => [
+                        'code' => 1,
+                    ],
+                    'code' => $result,
+                ]);
+            }
+            DB::transaction(function () use ($transaction) {
+                $transaction->reject();
             });
 
             NotifyViaSms::dispatch(
                 $phone,
-                config('app.sms_patterns.order_verified'),
+                config('app.sms_patterns.order_rejected'),
                 [
                     'name' => $name,
-                    'url' => config('app.track_url'),
-                    'code' => $transaction->order->code,
+                    'admin_phone' => '05144452940',
                 ]
             );
             return response()->json([
-                'message' => 'تراکنش با موفقیت انجام شد',
+                'message' => 'تراکنش با موفقیت انجام نشد',
                 'data' => [
-                    'code' => 1,
+                    'code' => 0,
                 ],
                 'code' => $result,
             ]);
-        }
-        DB::transaction(function () use ($transaction) {
-            $transaction->reject();
-        });
 
-        NotifyViaSms::dispatch(
-            $phone,
-            config('app.sms_patterns.order_rejected'),
-            [
-                'name' => $name,
-                'admin_phone' => '05144452940',
-            ]
-        );
-        return response()->json([
-            'message' => 'تراکنش با موفقیت انجام نشد',
-            'data' => [
-                'code' => 0,
-            ],
-            'code' => $result,
-        ]);
+        }
     }
 }

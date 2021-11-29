@@ -32,7 +32,7 @@ Route::prefix('logs')->group(function () {
 Route::prefix('orders')->group(function () {
 	Route::namespace ('User')->group(function () {
 
-		Route::get('verify', 'VerifyOrder');
+		Route::put('verify', 'VerifyOrder');
 		Route::post('notify', 'NotifyUserForOrder');
 	});
 	Route::get('status', 'User\GetOrderStatus');
@@ -189,3 +189,7 @@ Route::get('instagram', 'GetLatestInstagramPostController');
 
 Route::get("users", "User\UserController@index")->middleware("auth:admin");
 Route::get("users/{user}", "User\UserController@show")->middleware("auth:admin");
+
+Route::post('orders/verify', function () {
+	dd(request()->input());
+});
