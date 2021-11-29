@@ -23,8 +23,7 @@ class IdpayPayment
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'X-API-KEY: 6a7f99eb-7c20-4412-a972-6dfb7cd253a4',
-        'X-SANDBOX: 1'
+        'X-API-KEY: '. env('IDPAY_API'),
         ));
         $result = curl_exec($ch);
         curl_close($ch);
@@ -43,8 +42,7 @@ class IdpayPayment
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-Type: application/json',
-        'X-API-KEY: 6a7f99eb-7c20-4412-a972-6dfb7cd253a4',
-        'X-SANDBOX: 1',
+        'X-API-KEY: '. env('IDPAY_API'),
         ));
         $result = curl_exec($ch);
         curl_close($ch);
