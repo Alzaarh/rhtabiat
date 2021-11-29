@@ -19,6 +19,7 @@ use App\Rules\AvailablePromoCode;
 use App\Rules\CanUsePromoCode;
 use App\Rules\CheckMinPromoCode;
 use App\Rules\ValidPromoCode;
+use App\Services\IdpayPayment;
 
 class OrderController extends Controller {
 	public function index() {
@@ -62,7 +63,7 @@ class OrderController extends Controller {
 		return response()->json(['message' => 'سفارش با موفقیت به رد شد']);
 	}
 
-	public function store(Request $request, CalcOrderDeliveryCostService $calcDeliveryCost, InitiateWithZarinpalService $paymentInit)
+	public function store(Request $request, CalcOrderDeliveryCostService $calcDeliveryCost, InitiateWithZarinpalService $paymentInit, IdpayPayment $idpay)
 	{
 		$address = Address::find($request->input("address_id"));
 		$orderItems = auth("user")->user()->cart->products->load("product");
@@ -161,19 +162,37 @@ class OrderController extends Controller {
 		} catch (\Exception $e) {
 			DB::rollback();
 		}
-		$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
-		if (empty($result['errors']) && $result['data']['code'] == 100) {
-			$order->transactions()->create([
-					'amount' => $order->price,
-					'authority' => $result['data']['authority'],
-			]);
+		if ($request->input('payment_method') === 'idpay') {
+			$result = $idpay->pay($order);
+            if ($result->id) {
+                $order->transactions()->create([
+                    'amount' => $order->getPrice(),
+                    'authority' => $result->id,
+                ]);
+                return response()->json([
+                    'message' => __('messages.order.store'),
+                    'data' => [
+                        'redirect_url' => $result->link,
+                    ],
+                ], 201);
+            }
+            return response()->json(['data' => $result], 400);
+		} else {
+			$result = $paymentInit->handle($order->price, $userEmail, $userPhone);
+			if (empty($result['errors']) && $result['data']['code'] == 100) {
+				$order->transactions()->create([
+						'amount' => $order->price,
+						'authority' => $result['data']['authority'],
+				]);
+			}
+			return response()->json([
+				'message' => __('messages.order.store'),
+				'data' => [
+						'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
+				],
+			], 201);
 		}
-		return response()->json([
-			'message' => __('messages.order.store'),
-			'data' => [
-					'redirect_url' => config('app.zarinpal.redirect_url') . $result['data']['authority'],
-			],
-		], 201);
+
 	}
 
 	public function getUserOrders(Request $request)
