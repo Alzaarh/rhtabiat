@@ -17,7 +17,6 @@ class VerifyOrder extends Controller
     {
         if ($request->input('track_id')) {
             $result = json_decode($idpayPayment->verify(['id' => $request->input('id'), 'order_id' => $request->input('order_id')]));
-            dd($result);
             $order = Order::find($request->input('order_id'));
             $transaction = Transaction::where('authority', $request->input('id'))->first();
             $phone = null;
