@@ -48,6 +48,6 @@ class IdpayPayment
         ));
         $result = curl_exec($ch);
         curl_close($ch);
-        dd($result);
+        return $result;
     }
 }
