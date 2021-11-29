@@ -191,5 +191,5 @@ Route::get("users", "User\UserController@index")->middleware("auth:admin");
 Route::get("users/{user}", "User\UserController@show")->middleware("auth:admin");
 
 Route::post('orders/verify', function () {
-	redirect(env('REDIRECT_PAYMENT'));
+	redirect(url(env('PAYMENT_REDIRECT'), request()->input()));
 });
