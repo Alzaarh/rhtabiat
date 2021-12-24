@@ -88,7 +88,7 @@ class VerifyOrder extends Controller
             if ($transaction->order->address_id) {
                 Cart::where('user_id', $transaction->order->address->user_id)->update(['is_sms_sent' => false]);
             }
-                $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
+                $result = $verifyZarinpal->handle($request->Authority, $transaction->amount);
                 if (empty($result['errors']) && $result['data']['code'] == 100) {
                     DB::transaction(function () use ($transaction, $result) {
                         $transaction->verify($result['data']['ref_id']);
