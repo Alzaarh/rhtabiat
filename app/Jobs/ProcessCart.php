@@ -41,8 +41,5 @@ class ProcessCart implements ShouldQueue
         if ($carts->count() > 0) {
             $carts->toQuery()->update(['is_sms_sent' => true]);
         }
-        Cart::where('updated_at', '<=', now()->subHours(12))
-            ->whereIsSmsSent(true)
-            ->update(['is_sms_sent' => false]);
     }
 }

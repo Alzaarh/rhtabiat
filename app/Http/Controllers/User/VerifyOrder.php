@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VerifyOrderRequest;
 use App\Jobs\NotifyViaSms;
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Services\IdpayPayment;
@@ -18,6 +19,9 @@ class VerifyOrder extends Controller
         if ($request->input('track_id')) {
             $result = json_decode($idpayPayment->verify(['id' => $request->input('id'), 'order_id' => $request->input('order_id')]));
             $order = Order::find($request->input('order_id'));
+            if ($order->address_id) {
+                Cart::where('user_id', $order->address->user_id)->update(['is_sms_sent' => false]);
+            }
             $transaction = Transaction::where('authority', $request->input('id'))->first();
             $phone = null;
             $name = null;
@@ -81,7 +85,9 @@ class VerifyOrder extends Controller
                 $phone = $transaction->order->address->mobile;
                 $name = $transaction->order->address->name;
             }
-
+            if ($transaction->order->address_id) {
+                Cart::where('user_id', $transaction->order->address->user_id)->update(['is_sms_sent' => false]);
+            }
                 $result = $verifyZarinpal->handle($request->authority, $transaction->amount);
                 if (empty($result['errors']) && $result['data']['code'] == 100) {
                     DB::transaction(function () use ($transaction, $result) {
